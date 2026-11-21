@@ -197,6 +197,7 @@ td.n::before { content: "✗ "; color: var(--no); font-weight: 700; }
 .screenmap svg { display: block; width: 100%; height: auto; min-width: 560px; max-width: 760px; font-family: var(--font-body); }
 .smap-key { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: 0.9rem; }
 .smap-key b { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--accent); color: var(--surface); font-size: 0.72rem; margin-right: 6px; }
+.smap + .smap, .seeit + .smap { margin-top: 22px; padding-top: 22px; border-top: 1px dashed var(--line); }
 
 /* Part B: architecture tiers */
 .arch { display: grid; gap: 10px; }
@@ -324,69 +325,210 @@ footer { font-size: 0.82rem; color: var(--muted); border-top: 1px solid var(--li
       <li>Skills, competencies and certificates are also mapped to the role (from Talent Intelligence Hub), each marked <b>mandatory</b> or <b>optional</b>. They sync to employees' Growth Portfolio.</li>
     </ul>
     <div class="smap">
-      <p class="smap-head"><b>Screen map: Manage Job Profile Content</b> <i>(my own sketch of the layout, not SAP's screenshot)</i></p>
+      <p class="smap-head"><b>Screen map: how families, roles, job codes and positions relate</b> <i>(my own sketch of SAP's diagram, not a copy)</i></p>
       <div class="screenmap">
-<svg viewBox="0 0 760 360" role="img" aria-label="Screen map of Manage Job Profile Content: content type dropdown on the left; families, roles, and the selected role's job codes and mapped skills on the right">
-<rect x="1" y="1" width="758" height="358" rx="10" style="fill:var(--surface);stroke:var(--line);stroke-width:1.5"/>
-<text x="20" y="26" style="fill:var(--accent);font-size:11px">Back to: Admin Center</text>
-<text x="20" y="49" style="fill:var(--ink);font-size:16px;font-weight:600">Manage Job Profile Content</text>
-<rect x="20" y="64" width="210" height="26" rx="5" style="fill:none;stroke:var(--ink)"/>
-<text x="30" y="81" style="fill:var(--ink);font-size:11px">Set Up Families and Roles ▾</text>
-<rect x="20" y="94" width="210" height="186" rx="4" style="fill:var(--code-bg);stroke:var(--line)"/>
-<rect x="22" y="98" width="206" height="19" style="fill:var(--accent-soft)"/>
-<g style="fill:var(--ink);font-size:10.5px">
-<text x="30" y="112">Set Up Families and Roles</text><text x="30" y="131">Certification</text><text x="30" y="150">Employment Condition</text>
-<text x="30" y="169">Education - Degree</text><text x="30" y="188">Education - Major</text><text x="30" y="207">Interview Question</text>
-<text x="30" y="226">Job Responsibility</text><text x="30" y="245">Physical Requirement</text><text x="30" y="264">Relevant Industry</text>
+<svg viewBox="0 0 760 380" role="img" aria-label="Diagram sketch: a role belongs to a family; skills and competencies are mapped to families and roles; competencies have behaviors; a role maps to job codes; an employee belongs to a position, which has a job code; another employee has a job code directly">
+<defs><marker id="ah-rel" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" style="fill:var(--accent)"/></marker></defs>
+<rect x="1" y="1" width="758" height="378" rx="10" style="fill:var(--surface);stroke:var(--line);stroke-width:1.5"/>
+<g style="fill:none;stroke:var(--accent);stroke-width:1.5">
+<line x1="100" y1="280" x2="100" y2="98" marker-end="url(#ah-rel)"/>
+<line x1="160" y1="70" x2="296" y2="46" marker-end="url(#ah-rel)"/>
+<line x1="430" y1="41" x2="556" y2="41" marker-end="url(#ah-rel)"/>
+<line x1="150" y1="94" x2="268" y2="158" marker-end="url(#ah-rel)"/>
+<line x1="160" y1="288" x2="276" y2="198" marker-end="url(#ah-rel)"/>
+<polyline points="160,300 390,300 390,62" marker-end="url(#ah-rel)"/>
+<polyline points="100,314 100,356 585,356 585,328" marker-end="url(#ah-rel)"/>
+<line x1="456" y1="176" x2="496" y2="176" marker-end="url(#ah-rel)"/>
+<line x1="565" y1="196" x2="580" y2="286" marker-end="url(#ah-rel)"/>
+<polyline points="700,206 700,307 654,307" marker-end="url(#ah-rel)"/>
 </g>
-<rect x="246" y="64" width="496" height="280" rx="6" style="fill:none;stroke:var(--line)"/>
-<line x1="378" y1="72" x2="378" y2="336" style="stroke:var(--line)"/><line x1="540" y1="72" x2="540" y2="336" style="stroke:var(--line)"/>
-<text x="258" y="86" style="fill:var(--muted);font-size:10.5px;font-weight:600">Families</text>
-<rect x="252" y="94" width="120" height="22" rx="4" style="fill:var(--accent-soft)"/>
-<text x="260" y="109" style="fill:var(--ink);font-size:11px;font-weight:600">Technology</text>
-<text x="260" y="133" style="fill:var(--ink);font-size:11px">Human Resources</text><text x="260" y="155" style="fill:var(--ink);font-size:11px">Sales</text>
-<text x="388" y="86" style="fill:var(--muted);font-size:10.5px;font-weight:600">Roles in Technology</text>
-<rect x="384" y="94" width="150" height="22" rx="4" style="fill:var(--accent-soft)"/>
-<text x="392" y="109" style="fill:var(--ink);font-size:11px;font-weight:600">Senior ABAP Developer</text>
-<text x="392" y="133" style="fill:var(--ink);font-size:11px">SAP BTP Developer</text><text x="392" y="155" style="fill:var(--ink);font-size:11px">Solution Architect</text>
-<text x="550" y="86" style="fill:var(--ink);font-size:12px;font-weight:600">Senior ABAP Developer</text>
-<text x="550" y="105" style="fill:var(--muted);font-size:10.5px">Job codes: ABAP_SR</text>
-<rect x="550" y="116" width="82" height="20" rx="4" style="fill:var(--accent-soft)"/>
-<text x="557" y="130" style="fill:var(--accent);font-size:10px;font-weight:600">Mapped Skills</text>
-<text x="642" y="130" style="fill:var(--muted);font-size:10px">Competencies</text>
-<line x1="550" y1="140" x2="732" y2="140" style="stroke:var(--line)"/>
-<g style="font-size:10.5px">
-<text x="552" y="158" style="fill:var(--ink)">ABAP Objects</text><text x="652" y="158" style="fill:var(--muted)">Mandatory</text>
-<text x="552" y="180" style="fill:var(--ink)">CDS Views</text><text x="652" y="180" style="fill:var(--muted)">Mandatory</text>
-<text x="552" y="202" style="fill:var(--ink)">S/4HANA</text><text x="652" y="202" style="fill:var(--muted)">Mandatory</text>
-<text x="552" y="224" style="fill:var(--ink)">SAP BTP</text><text x="652" y="224" style="fill:var(--muted)">Optional</text>
+<g style="fill:var(--accent-soft);stroke:var(--accent)">
+<rect x="40" y="60" width="120" height="34" rx="5"/><rect x="300" y="24" width="130" height="34" rx="5"/><rect x="560" y="24" width="120" height="34" rx="5"/>
+<rect x="250" y="160" width="110" height="34" rx="5"/><rect x="40" y="280" width="120" height="34" rx="5"/>
+<rect x="500" y="160" width="120" height="34" rx="5"/><rect x="520" y="290" width="130" height="34" rx="5"/>
 </g>
-<rect x="550" y="240" width="88" height="24" rx="5" style="fill:none;stroke:var(--accent)"/>
-<text x="565" y="256" style="fill:var(--accent);font-size:11px;font-weight:600">Map Skills</text>
+<g style="fill:var(--ink);font-size:12px;font-weight:600" text-anchor="middle">
+<text x="100" y="82">Family</text><text x="365" y="46">Competency</text><text x="620" y="46">Behavior</text>
+<text x="305" y="182">Skills</text><text x="100" y="302">Role</text><text x="560" y="182">Position</text><text x="585" y="312">Job Code</text>
+</g>
+<g style="fill:var(--muted)"><circle cx="440" cy="158" r="8"/><rect x="432" y="168" width="16" height="24" rx="5"/><circle cx="700" cy="168" r="8"/><rect x="692" y="178" width="16" height="24" rx="5"/></g>
+<g style="fill:var(--ink);font-size:10.5px" text-anchor="middle"><text x="440" y="210">Employee 1</text><text x="700" y="220">Employee 2</text></g>
+<g style="fill:var(--muted);font-size:10px">
+<text x="108" y="190">belongs to</text><text x="190" y="50">map competencies</text><text x="470" y="34">has a</text>
+<text x="208" y="112">map skills</text><text x="186" y="252">map skills</text><text x="200" y="294">map competencies</text>
+<text x="260" y="350">job code mapping</text><text x="448" y="168">belongs to</text><text x="578" y="240">has a</text><text x="706" y="262">has a</text>
+</g>
 <g style="font-size:10px;font-weight:700">
-<circle cx="238" cy="77" r="9" style="fill:var(--accent)"/><text x="235" y="81" style="fill:var(--surface)">1</text>
-<circle cx="372" cy="70" r="9" style="fill:var(--accent)"/><text x="369" y="74" style="fill:var(--surface)">2</text>
-<circle cx="730" cy="100" r="9" style="fill:var(--accent)"/><text x="727" y="104" style="fill:var(--surface)">3</text>
-<circle cx="730" cy="168" r="9" style="fill:var(--accent)"/><text x="727" y="172" style="fill:var(--surface)">4</text>
-<circle cx="650" cy="252" r="9" style="fill:var(--accent)"/><text x="647" y="256" style="fill:var(--surface)">5</text>
+<circle cx="30" cy="190" r="9" style="fill:var(--accent)"/><text x="27" y="194" style="fill:var(--surface)">1</text>
+<circle cx="245" cy="148" r="9" style="fill:var(--accent)"/><text x="242" y="152" style="fill:var(--surface)">2</text>
+<circle cx="690" cy="24" r="9" style="fill:var(--accent)"/><text x="687" y="28" style="fill:var(--surface)">3</text>
+<circle cx="250" cy="370" r="9" style="fill:var(--accent)"/><text x="247" y="374" style="fill:var(--surface)">4</text>
+<circle cx="630" cy="160" r="9" style="fill:var(--accent)"/><text x="627" y="164" style="fill:var(--surface)">5</text>
 </g>
 </svg>
       </div>
       <ul class="smap-key">
-        <li><b>1</b>Content type: pick <i>Set Up Families and Roles</i>, or a library such as Job Responsibility or Education.</li>
-        <li><b>2</b>Families, then the roles inside the selected family.</li>
-        <li><b>3</b>The selected role and its job codes.</li>
-        <li><b>4</b>Mapped Skills tab: each skill marked Mandatory or Optional for the role.</li>
-        <li><b>5</b>Map Skills: add skills from Talent Intelligence Hub to the role.</li>
+        <li><b>1</b>A role belongs to one family.</li>
+        <li><b>2</b>Skills and competencies are mapped to families and to roles.</li>
+        <li><b>3</b>Each competency has behaviors.</li>
+        <li><b>4</b>A role is mapped to its job codes.</li>
+        <li><b>5</b>An employee belongs to a position, which has a job code; an employee without a position has a job code directly.</li>
       </ul>
+      <div class="seeit"><span class="lbl">See the real screen</span><a href="https://help.sap.com/doc/6653514fe7d84eca8e9bc2d38e46666d/2611/en-US/loio1900ec4587fc4cab85aac99ec7c65234_LowRes.png" target="_blank" rel="noopener">Relationship diagram<small>SAP Help</small></a></div>
     </div>
-    <div class="seeit">
-      <span class="lbl">See the real screen</span>
-      <a href="https://help.sap.com/doc/6653514fe7d84eca8e9bc2d38e46666d/2611/en-US/loio1900ec4587fc4cab85aac99ec7c65234_LowRes.png" target="_blank" rel="noopener">Relationship diagram<small>SAP Help</small></a>
-      <a href="https://learning.sap.com/service/media/topic/f3ff419a-4c5a-4dbb-bc97-4f6e3b9e443e/THR103_2511_en-US_media/THR103_2511_en-US_images/U1L1_04MngeJPCnt_Scr.png" target="_blank" rel="noopener">Job Profile Content screen<small>SAP Learning</small></a>
-      <a href="https://learning.sap.com/service/media/topic/b6a2fed4-cb2b-4b2c-a624-a31d8e5a84cb/THR103_2511_en-US_media/THR103_2511_en-US_images/U1L1_05_CrtSklCmptTIH_Scr.png" target="_blank" rel="noopener">Attribute screen in Talent Intelligence Hub<small>SAP Learning</small></a>
-      <a href="https://community.sap.com/legacyfs/online/storage/blog_attachments/2018/01/02-Families-and-Roles.jpg" target="_blank" rel="noopener">Creating a family and role<small>SAP Community, 2018</small></a>
-      <a href="https://community.sap.com/legacyfs/online/storage/blog_attachments/2018/01/03-Role-and-Job-Code.jpg" target="_blank" rel="noopener">Assigning a job code to a role<small>SAP Community, 2018</small></a>
+
+    <div class="smap">
+      <p class="smap-head"><b>Screen map: Manage Job Profile Content</b> <i>(my own sketch of the layout, not SAP's screenshot)</i></p>
+      <div class="screenmap">
+<svg viewBox="0 0 760 300" role="img" aria-label="Screen map of Manage Job Profile Content: a content type dropdown opened, listing Set Up Families and Roles and the content libraries">
+<rect x="1" y="1" width="758" height="298" rx="10" style="fill:var(--surface);stroke:var(--line);stroke-width:1.5"/>
+<text x="20" y="26" style="fill:var(--accent);font-size:11px">Back to: Admin Center</text>
+<text x="20" y="49" style="fill:var(--ink);font-size:16px;font-weight:600">Manage Job Profile Content</text>
+<text x="20" y="72" style="fill:var(--muted);font-size:11px">View and manage job profile content: add, delete, inactivate or modify. Choose a content type first.</text>
+<rect x="20" y="84" width="200" height="26" rx="5" style="fill:none;stroke:var(--ink)"/>
+<text x="30" y="101" style="fill:var(--ink);font-size:11px">Select Content Type…  ▾</text>
+<rect x="20" y="114" width="200" height="176" rx="4" style="fill:var(--code-bg);stroke:var(--line)"/>
+<rect x="22" y="118" width="196" height="18" style="fill:var(--accent-soft)"/>
+<g style="fill:var(--ink);font-size:10.5px">
+<text x="30" y="131" style="font-weight:600">Set Up Families and Roles</text><text x="30" y="149">Certification</text><text x="30" y="167">Employment Condition</text>
+<text x="30" y="185">Education - Degree</text><text x="30" y="203">Education - Major</text><text x="30" y="221">Interview Question</text>
+<text x="30" y="239">Job Responsibility</text><text x="30" y="257">Physical Requirement</text><text x="30" y="275">Relevant Industry</text>
+</g>
+<rect x="250" y="84" width="490" height="206" rx="6" style="fill:none;stroke:var(--line);stroke-dasharray:4 4"/>
+<text x="495" y="186" text-anchor="middle" style="fill:var(--muted);font-size:11px">The list for the chosen content type opens here</text>
+<g style="font-size:10px;font-weight:700">
+<circle cx="230" cy="97" r="9" style="fill:var(--accent)"/><text x="227" y="101" style="fill:var(--surface)">1</text>
+<circle cx="230" cy="127" r="9" style="fill:var(--accent)"/><text x="227" y="131" style="fill:var(--surface)">2</text>
+<circle cx="230" cy="212" r="9" style="fill:var(--accent)"/><text x="227" y="216" style="fill:var(--surface)">3</text>
+</g>
+</svg>
+      </div>
+      <ul class="smap-key">
+        <li><b>1</b>Content type: choose what you want to manage.</li>
+        <li><b>2</b>Set Up Families and Roles: the job architecture.</li>
+        <li><b>3</b>Content libraries used in job profiles: certifications, employment conditions, education, interview questions, responsibilities and more.</li>
+      </ul>
+      <div class="seeit"><span class="lbl">See the real screen</span><a href="https://learning.sap.com/service/media/topic/f3ff419a-4c5a-4dbb-bc97-4f6e3b9e443e/THR103_2511_en-US_media/THR103_2511_en-US_images/U1L1_04MngeJPCnt_Scr.png" target="_blank" rel="noopener">Job Profile Content screen<small>SAP Learning</small></a></div>
+    </div>
+
+    <div class="smap">
+      <p class="smap-head"><b>Screen map: Set Up Families and Roles</b> <i>(my own sketch of the layout, not SAP's screenshot · older 2018 screen)</i></p>
+      <div class="screenmap">
+<svg viewBox="0 0 760 320" role="img" aria-label="Screen map of Set Up Families and Roles: Families and Roles tabs, search, add from SuccessStore or create family, and a table of families with roles count, status, GUID and actions">
+<rect x="1" y="1" width="758" height="318" rx="10" style="fill:var(--surface);stroke:var(--line);stroke-width:1.5"/>
+<text x="20" y="30" style="fill:var(--ink);font-size:16px;font-weight:600">Manage Job Profile Content</text>
+<rect x="20" y="44" width="180" height="24" rx="4" style="fill:none;stroke:var(--line)"/><text x="28" y="60" style="fill:var(--ink);font-size:10.5px">Set Up Families and Roles ▾</text>
+<text x="34" y="98" style="fill:var(--accent);font-size:12px;font-weight:600">Families</text><rect x="30" y="104" width="56" height="2" style="fill:var(--accent)"/>
+<text x="104" y="98" style="fill:var(--ink);font-size:12px">Roles</text>
+<rect x="540" y="84" width="200" height="22" rx="4" style="fill:none;stroke:var(--line)"/><text x="548" y="99" style="fill:var(--muted);font-size:10.5px">Search Families</text>
+<text x="20" y="134" style="fill:var(--ink);font-size:10.5px">6 Families</text>
+<text x="420" y="134" style="fill:var(--accent);font-size:10.5px">⊕ Add Families from SuccessStore  |  ⊕ Create Family</text>
+<rect x="20" y="144" width="50" height="20" rx="4" style="fill:var(--code-bg);stroke:var(--line)"/><text x="29" y="158" style="fill:var(--muted);font-size:10px">Delete</text>
+<rect x="640" y="144" width="100" height="20" rx="4" style="fill:none;stroke:var(--line)"/><text x="648" y="158" style="fill:var(--ink);font-size:10px">US English ▾</text>
+<g style="font-size:10.5px">
+<text x="20" y="190" style="fill:var(--muted);font-weight:600">Family Name</text><text x="250" y="190" style="fill:var(--muted);font-weight:600">Roles</text><text x="350" y="190" style="fill:var(--muted);font-weight:600">Status</text><text x="500" y="190" style="fill:var(--muted);font-weight:600">GUID</text><text x="680" y="190" style="fill:var(--muted);font-weight:600">Actions</text>
+<line x1="20" y1="198" x2="740" y2="198" style="stroke:var(--line)"/>
+<text x="20" y="218" style="fill:var(--accent)">☐ Technology</text><text x="250" y="218" style="fill:var(--ink)">3</text><text x="350" y="218" style="fill:var(--ink)">Active</text><text x="500" y="218" style="fill:var(--ink)">1002700</text><text x="690" y="218" style="fill:var(--ink)">⚙</text>
+<text x="20" y="242" style="fill:var(--accent)">☐ Human Resources</text><text x="250" y="242" style="fill:var(--ink)">2</text><text x="350" y="242" style="fill:var(--ink)">Active</text><text x="500" y="242" style="fill:var(--ink)">1002704</text><text x="690" y="242" style="fill:var(--ink)">⚙</text>
+<text x="20" y="266" style="fill:var(--accent)">☐ Sales</text><text x="250" y="266" style="fill:var(--ink)">4</text><text x="350" y="266" style="fill:var(--ink)">Active</text><text x="500" y="266" style="fill:var(--ink)">1002702</text><text x="690" y="266" style="fill:var(--ink)">⚙</text>
+</g>
+<g style="font-size:10px;font-weight:700">
+<circle cx="150" cy="94" r="9" style="fill:var(--accent)"/><text x="147" y="98" style="fill:var(--surface)">1</text>
+<circle cx="410" cy="130" r="9" style="fill:var(--accent)"/><text x="407" y="134" style="fill:var(--surface)">2</text>
+<circle cx="280" cy="214" r="9" style="fill:var(--accent)"/><text x="277" y="218" style="fill:var(--surface)">3</text>
+<circle cx="530" cy="214" r="9" style="fill:var(--accent)"/><text x="527" y="218" style="fill:var(--surface)">4</text>
+<circle cx="722" cy="214" r="9" style="fill:var(--accent)"/><text x="719" y="218" style="fill:var(--surface)">5</text>
+</g>
+</svg>
+      </div>
+      <ul class="smap-key">
+        <li><b>1</b>Families and Roles tabs: switch between the two lists.</li>
+        <li><b>2</b>Add families from SAP's SuccessStore content, or create your own.</li>
+        <li><b>3</b>How many roles each family holds.</li>
+        <li><b>4</b>GUID: the family's ID, which integrations use instead of the name.</li>
+        <li><b>5</b>Actions (⚙): edit, inactivate or delete.</li>
+      </ul>
+      <div class="seeit"><span class="lbl">See the real screen</span><a href="https://community.sap.com/legacyfs/online/storage/blog_attachments/2018/01/02-Families-and-Roles.jpg" target="_blank" rel="noopener">Creating a family and role<small>SAP Community, 2018</small></a></div>
+    </div>
+
+    <div class="smap">
+      <p class="smap-head"><b>Screen map: Edit Role, mapped job codes</b> <i>(my own sketch of the layout, not SAP's screenshot · older 2018 screen)</i></p>
+      <div class="screenmap">
+<svg viewBox="0 0 760 300" role="img" aria-label="Screen map of Edit Role: role name and family, tabs for mapped job codes, skills, competencies and talent pools, and a job code table with positions, usage and type">
+<rect x="1" y="1" width="758" height="298" rx="10" style="fill:var(--surface);stroke:var(--line);stroke-width:1.5"/>
+<text x="20" y="24" style="fill:var(--accent);font-size:10.5px">Back to: Admin Center</text>
+<text x="20" y="46" style="fill:var(--ink);font-size:16px;font-weight:600">Edit: Role</text>
+<text x="20" y="68" style="fill:var(--muted);font-size:10.5px">Edit the content (Role) that can be used for job profiles.</text>
+<text x="60" y="96" style="fill:var(--ink);font-size:10.5px">* Role Name</text><rect x="140" y="83" width="220" height="20" rx="3" style="fill:none;stroke:var(--line)"/><text x="148" y="97" style="fill:var(--ink);font-size:10.5px">Senior ABAP Developer</text>
+<text x="80" y="124" style="fill:var(--ink);font-size:10.5px">* Family</text><rect x="140" y="111" width="110" height="20" rx="3" style="fill:none;stroke:var(--line)"/><text x="148" y="125" style="fill:var(--ink);font-size:10.5px">Technology ▾</text>
+<g style="font-size:11px">
+<text x="20" y="160" style="fill:var(--accent);font-weight:600">2 Mapped Job Codes</text><rect x="20" y="165" width="118" height="2" style="fill:var(--accent)"/>
+<text x="160" y="160" style="fill:var(--ink)">4 Mapped Skills</text><text x="270" y="160" style="fill:var(--ink)">3 Mapped Competencies</text><text x="420" y="160" style="fill:var(--ink)">0 Mapped Talent Pools</text>
+</g>
+<rect x="20" y="176" width="720" height="110" rx="5" style="fill:var(--code-bg);stroke:var(--line)"/>
+<text x="30" y="196" style="fill:var(--ink);font-size:10.5px">2 Job Codes</text><text x="640" y="196" style="fill:var(--accent);font-size:10.5px">⊕ Add Job Code</text>
+<g style="font-size:10.5px">
+<text x="30" y="220" style="fill:var(--muted);font-weight:600">Job Code</text><text x="230" y="220" style="fill:var(--muted);font-weight:600"># Positions</text><text x="350" y="220" style="fill:var(--muted);font-weight:600">Usage</text><text x="470" y="220" style="fill:var(--muted);font-weight:600">Type</text><text x="660" y="220" style="fill:var(--muted);font-weight:600">Actions</text>
+<line x1="30" y1="226" x2="730" y2="226" style="stroke:var(--line)"/>
+<text x="30" y="246" style="fill:var(--ink)">50070999</text><text x="230" y="246" style="fill:var(--accent)">12</text><text x="350" y="246" style="fill:var(--ink)">Default</text><text x="470" y="246" style="fill:var(--ink)">JOBCLASSIFICATION</text><text x="672" y="246" style="fill:var(--ink)">⚙</text>
+<text x="30" y="270" style="fill:var(--ink)">ABAP_SR</text><text x="230" y="270" style="fill:var(--accent)">0</text><text x="350" y="270" style="fill:var(--ink)">Default</text><text x="470" y="270" style="fill:var(--ink)">JOBCODE</text><text x="672" y="270" style="fill:var(--ink)">⚙</text>
+</g>
+<g style="font-size:10px;font-weight:700">
+<circle cx="372" cy="93" r="9" style="fill:var(--accent)"/><text x="369" y="97" style="fill:var(--surface)">1</text>
+<circle cx="580" cy="156" r="9" style="fill:var(--accent)"/><text x="577" y="160" style="fill:var(--surface)">2</text>
+<circle cx="628" cy="192" r="9" style="fill:var(--accent)"/><text x="625" y="196" style="fill:var(--surface)">3</text>
+<circle cx="296" cy="242" r="9" style="fill:var(--accent)"/><text x="293" y="246" style="fill:var(--surface)">4</text>
+<circle cx="600" cy="258" r="9" style="fill:var(--accent)"/><text x="597" y="262" style="fill:var(--surface)">5</text>
+</g>
+</svg>
+      </div>
+      <ul class="smap-key">
+        <li><b>1</b>Role name and the one family it belongs to.</li>
+        <li><b>2</b>What is mapped to the role: job codes, skills, competencies, talent pools.</li>
+        <li><b>3</b>Add Job Code links another job code to this role.</li>
+        <li><b>4</b># Positions: how many positions use that job code.</li>
+        <li><b>5</b>Type: JOBCLASSIFICATION (from Employee Central) or JOBCODE (from the user data file).</li>
+      </ul>
+      <div class="seeit"><span class="lbl">See the real screen</span><a href="https://community.sap.com/legacyfs/online/storage/blog_attachments/2018/01/03-Role-and-Job-Code.jpg" target="_blank" rel="noopener">Assigning a job code to a role<small>SAP Community, 2018</small></a></div>
+    </div>
+
+    <div class="smap">
+      <p class="smap-head"><b>Screen map: Create Attribute in Talent Intelligence Hub</b> <i>(my own sketch of the layout, not SAP's screenshot)</i></p>
+      <div class="screenmap">
+<svg viewBox="0 0 760 290" role="img" aria-label="Screen map of Create Attribute: attribute type, name and description on the left; status and tags on the right">
+<rect x="1" y="1" width="758" height="288" rx="10" style="fill:var(--surface);stroke:var(--line);stroke-width:1.5"/>
+<text x="20" y="24" style="fill:var(--accent);font-size:10.5px">Attributes <tspan style="fill:var(--muted)">/ Create Attribute</tspan></text>
+<text x="20" y="50" style="fill:var(--ink);font-size:17px;font-weight:700">Create Attribute</text>
+<rect x="40" y="66" width="680" height="210" rx="8" style="fill:var(--code-bg);stroke:var(--line)"/>
+<text x="56" y="88" style="fill:var(--ink);font-size:12px;font-weight:600">Details</text><line x1="56" y1="96" x2="704" y2="96" style="stroke:var(--line)"/>
+<g style="font-size:10.5px">
+<text x="56" y="118" style="fill:var(--ink)">Attribute Type: <tspan style="fill:var(--accent)">*</tspan></text>
+<rect x="56" y="124" width="250" height="22" rx="4" style="fill:var(--surface);stroke:var(--line)"/><text x="64" y="139" style="fill:var(--muted)">Choose an attribute type ▾</text>
+<text x="56" y="166" style="fill:var(--ink)">Name: <tspan style="fill:var(--accent)">*</tspan></text>
+<rect x="56" y="172" width="250" height="22" rx="4" style="fill:var(--surface);stroke:var(--line)"/><text x="64" y="187" style="fill:var(--muted)">Enter Name</text>
+<text x="56" y="212" style="fill:var(--ink)">Description:</text>
+<rect x="56" y="218" width="250" height="48" rx="4" style="fill:var(--surface);stroke:var(--line)"/><text x="64" y="234" style="fill:var(--muted)">Enter an attribute description</text>
+<text x="400" y="118" style="fill:var(--ink)">Status: <tspan style="fill:var(--accent)">*</tspan></text>
+<circle cx="408" cy="136" r="7" style="fill:none;stroke:var(--muted)"/><text x="420" y="140" style="fill:var(--ink)">Active</text>
+<circle cx="474" cy="136" r="7" style="fill:none;stroke:var(--muted)"/><text x="486" y="140" style="fill:var(--ink)">Inactive</text>
+<text x="400" y="166" style="fill:var(--ink)">Tags:</text>
+<rect x="400" y="172" width="250" height="22" rx="4" style="fill:var(--surface);stroke:var(--line)"/><text x="408" y="187" style="fill:var(--muted)">Choose Tags</text>
+</g>
+<g style="font-size:10px;font-weight:700">
+<circle cx="318" cy="135" r="9" style="fill:var(--accent)"/><text x="315" y="139" style="fill:var(--surface)">1</text>
+<circle cx="318" cy="183" r="9" style="fill:var(--accent)"/><text x="315" y="187" style="fill:var(--surface)">2</text>
+<circle cx="560" cy="136" r="9" style="fill:var(--accent)"/><text x="557" y="140" style="fill:var(--surface)">3</text>
+<circle cx="662" cy="183" r="9" style="fill:var(--accent)"/><text x="659" y="187" style="fill:var(--surface)">4</text>
+</g>
+</svg>
+      </div>
+      <ul class="smap-key">
+        <li><b>1</b>Attribute type: skill, competency, certificate or a custom attribute.</li>
+        <li><b>2</b>Name and description of the attribute.</li>
+        <li><b>3</b>Status: only active attributes can be mapped to roles.</li>
+        <li><b>4</b>Tags to group and find attributes.</li>
+      </ul>
+      <div class="seeit"><span class="lbl">See the real screen</span><a href="https://learning.sap.com/service/media/topic/b6a2fed4-cb2b-4b2c-a624-a31d8e5a84cb/THR103_2511_en-US_media/THR103_2511_en-US_images/U1L1_05_CrtSklCmptTIH_Scr.png" target="_blank" rel="noopener">Attribute screen in Talent Intelligence Hub<small>SAP Learning</small></a></div>
     </div>
   </div>
 
@@ -461,10 +603,60 @@ footer { font-size: 0.82rem; color: var(--muted); border-top: 1px solid var(--li
         <li><b>5</b>I'm done saves the template.</li>
       </ul>
     </div>
-    <div class="seeit">
-      <span class="lbl">See the real screen</span>
-      <a href="https://learning.sap.com/service/media/topic/fafef635-4b67-4f90-8497-a8342185064a/THR103_2511_en-US_media/THR103_2511_en-US_images/U1L1_09JobDscTmplDsign_Scr.png" target="_blank" rel="noopener">Job profile template design<small>SAP Learning</small></a>
-      <a href="https://community.sap.com/legacyfs/online/storage/blog_attachments/2018/01/04-Job-profile-template.jpg" target="_blank" rel="noopener">Template sections<small>SAP Community, 2018</small></a>
+    <div class="seeit"><span class="lbl">See the real screen</span><a href="https://learning.sap.com/service/media/topic/fafef635-4b67-4f90-8497-a8342185064a/THR103_2511_en-US_media/THR103_2511_en-US_images/U1L1_09JobDscTmplDsign_Scr.png" target="_blank" rel="noopener">Job profile template design<small>SAP Learning</small></a></div>
+
+    <div class="smap">
+      <p class="smap-head"><b>Screen map: Edit Job Description Template, Add Section and posting options</b> <i>(my own sketch of the layout, not SAP's screenshot · older 2018 screen)</i></p>
+      <div class="screenmap">
+<svg viewBox="0 0 760 380" role="img" aria-label="Screen map of the 2018 template editor: sections on the left, the Add Section list of content types open, and on the right the selected section's options including Show in Job Requisition for external and internal posting">
+<rect x="1" y="1" width="758" height="378" rx="10" style="fill:var(--surface);stroke:var(--line);stroke-width:1.5"/>
+<text x="20" y="22" style="fill:var(--accent);font-size:10px">Back to: Admin Center</text>
+<text x="20" y="42" style="fill:var(--ink);font-size:15px;font-weight:600">Edit Job Description Template</text>
+<text x="20" y="62" style="fill:var(--ink);font-size:11px;font-weight:600">Step 2: Design your template</text>
+<rect x="20" y="72" width="470" height="296" rx="6" style="fill:none;stroke:var(--line)"/>
+<rect x="30" y="80" width="450" height="34" rx="4" style="fill:var(--code-bg)"/>
+<text x="40" y="94" style="fill:var(--ink);font-size:10.5px;font-weight:600">Template: Standard Template</text><text x="40" y="108" style="fill:var(--muted);font-size:10px">Job Families: Technology, Human Resources…</text>
+<text x="200" y="134" text-anchor="middle" style="fill:var(--ink);font-size:11.5px;font-weight:600">Job Title</text>
+<text x="300" y="152" style="fill:var(--accent);font-size:10.5px">⊕ Add Section ▾</text>
+<g style="font-size:10.5px">
+<rect x="30" y="160" width="170" height="20" rx="3" style="fill:var(--accent-soft);stroke:var(--accent)"/><text x="38" y="174" style="fill:var(--ink);font-weight:600">Job Description</text>
+<text x="38" y="204" style="fill:var(--ink);font-weight:600">Job Summary</text><text x="38" y="232" style="fill:var(--ink);font-weight:600">Competencies</text>
+<text x="38" y="260" style="fill:var(--ink);font-weight:600">Skills</text><text x="38" y="288" style="fill:var(--ink);font-weight:600">Education</text><text x="38" y="316" style="fill:var(--ink);font-weight:600">Interview Questions</text>
+</g>
+<rect x="340" y="160" width="140" height="202" rx="4" style="fill:var(--surface);stroke:var(--accent)"/>
+<g style="fill:var(--ink);font-size:9.5px">
+<text x="348" y="174">Short Description</text><text x="348" y="188">Long Description</text><text x="348" y="202">Certifications</text><text x="348" y="216">Compensation Data</text>
+<text x="348" y="230">Competencies</text><text x="348" y="244">Conditions of Employment</text><text x="348" y="258">Education</text><text x="348" y="272">Interview Questions</text>
+<text x="348" y="286">Job Responsibilities</text><text x="348" y="300">Physical Requirements</text><text x="348" y="314">Relevant Industries</text><text x="348" y="328">Skills</text>
+<text x="348" y="342">Header</text><text x="348" y="356">Footer</text>
+</g>
+<rect x="500" y="72" width="240" height="296" rx="6" style="fill:var(--code-bg);stroke:var(--line)"/>
+<text x="512" y="94" style="fill:var(--ink);font-size:12px;font-weight:600">Long Description</text>
+<text x="512" y="118" style="fill:var(--muted);font-size:9.5px;font-weight:700">DISPLAY OPTIONS</text>
+<g style="font-size:10.5px;fill:var(--ink)">
+<text x="512" y="138">☑ Make this a required section</text><text x="512" y="156">☐ Section visible to Admins only</text>
+<text x="512" y="180">☑ Show in Job Requisition</text><text x="526" y="198">☑ Show in external posting</text><text x="526" y="216">☑ Show in internal posting</text>
+</g>
+<rect x="506" y="166" width="226" height="58" rx="4" style="fill:none;stroke:var(--accent)"/>
+<text x="512" y="244" style="fill:var(--muted);font-size:9.5px;font-weight:700">TITLE STYLE</text>
+<text x="512" y="262" style="fill:var(--ink);font-size:10.5px">Font Size 16 ▾   B  I  U</text>
+<text x="512" y="292" style="fill:var(--muted);font-size:10px">Section Type: LONGDESCRIPTION</text>
+<text x="512" y="320" style="fill:var(--accent);font-size:10.5px">Delete Section</text>
+<g style="font-size:10px;font-weight:700">
+<circle cx="398" cy="146" r="9" style="fill:var(--accent)"/><text x="395" y="150" style="fill:var(--surface)">1</text>
+<circle cx="212" cy="170" r="9" style="fill:var(--accent)"/><text x="209" y="174" style="fill:var(--surface)">2</text>
+<circle cx="742" cy="194" r="9" style="fill:var(--accent)"/><text x="739" y="198" style="fill:var(--surface)">3</text>
+<circle cx="726" cy="288" r="9" style="fill:var(--accent)"/><text x="723" y="292" style="fill:var(--surface)">4</text>
+</g>
+</svg>
+      </div>
+      <ul class="smap-key">
+        <li><b>1</b>Add Section lists every content type a job profile can hold.</li>
+        <li><b>2</b>The selected section (here the long job description) on the template.</li>
+        <li><b>3</b>Show in Job Requisition, and whether the section appears on the external and internal posting.</li>
+        <li><b>4</b>Section type: the technical type behind the section name.</li>
+      </ul>
+      <div class="seeit"><span class="lbl">See the real screen</span><a href="https://community.sap.com/legacyfs/online/storage/blog_attachments/2018/01/04-Job-profile-template.jpg" target="_blank" rel="noopener">Template sections<small>SAP Community, 2018</small></a></div>
     </div>
   </div>
 
@@ -487,74 +679,153 @@ footer { font-size: 0.82rem; color: var(--muted); border-top: 1px solid var(--li
       </div>
     </div>
     <div class="smap">
-      <p class="smap-head"><b>Screen map: Job Profile list and Create Job Profile</b> <i>(my own sketch of the layout, not SAP's screenshots)</i></p>
+      <p class="smap-head"><b>Screen map: the Job Profile list</b> <i>(my own sketch of the layout, not SAP's screenshot)</i></p>
       <div class="screenmap">
-<svg viewBox="0 0 760 400" role="img" aria-label="Screen map: on the left the Job Profile list with filters, Create Job Profile button and an Actions menu with Activate; on the right the Create Job Profile page with name, role, sections and I'm done">
-<rect x="1" y="1" width="758" height="398" rx="10" style="fill:var(--surface);stroke:var(--line);stroke-width:1.5"/>
-<text x="20" y="26" style="fill:var(--accent);font-size:11px">Back to: Admin Center</text>
-<text x="20" y="47" style="fill:var(--ink);font-size:15px;font-weight:600">Job Profile</text>
-<text x="20" y="72" style="fill:var(--ink);font-size:11px;font-weight:600">Job Profile</text><rect x="20" y="77" width="58" height="2" style="fill:var(--accent)"/>
-<text x="96" y="72" style="fill:var(--muted);font-size:11px">In-workflow Job Profile</text>
+<svg viewBox="0 0 760 330" role="img" aria-label="Screen map of the Job Profile list: tabs for job profiles and in-workflow profiles, filters, search, Create Job Profile, and a table where the Actions menu offers View, Copy, Activate and Delete">
+<rect x="1" y="1" width="758" height="328" rx="10" style="fill:var(--surface);stroke:var(--line);stroke-width:1.5"/>
+<text x="20" y="24" style="fill:var(--accent);font-size:10.5px">Back to: Admin Center</text>
+<text x="20" y="46" style="fill:var(--ink);font-size:16px;font-weight:600">Job Profile</text>
+<text x="20" y="66" style="fill:var(--muted);font-size:10.5px">Create and manage your job profiles.</text>
+<text x="30" y="94" style="fill:var(--ink);font-size:12px;font-weight:600">Job Profile</text><rect x="28" y="100" width="66" height="2" style="fill:var(--ink)"/>
+<text x="118" y="94" style="fill:var(--ink);font-size:12px">In-workflow Job Profile</text>
 <g style="font-size:10px">
-<rect x="20" y="88" width="70" height="20" rx="4" style="fill:none;stroke:var(--line)"/><text x="27" y="102" style="fill:var(--muted)">Family ▾</text>
-<rect x="96" y="88" width="66" height="20" rx="4" style="fill:none;stroke:var(--line)"/><text x="103" y="102" style="fill:var(--muted)">Role ▾</text>
-<rect x="168" y="88" width="76" height="20" rx="4" style="fill:none;stroke:var(--line)"/><text x="175" y="102" style="fill:var(--muted)">Position ▾</text>
-<rect x="250" y="88" width="30" height="20" rx="4" style="fill:none;stroke:var(--accent)"/><text x="257" y="102" style="fill:var(--accent)">Go</text>
+<text x="30" y="124" style="fill:var(--ink)">Family</text><text x="110" y="124" style="fill:var(--ink)">Role</text><text x="190" y="124" style="fill:var(--ink)">Position</text>
+<rect x="30" y="130" width="72" height="20" rx="4" style="fill:none;stroke:var(--line)"/><text x="36" y="144" style="fill:var(--muted)">No Selection ▾</text>
+<rect x="110" y="130" width="72" height="20" rx="4" style="fill:none;stroke:var(--line)"/><text x="116" y="144" style="fill:var(--muted)">No Selection ▾</text>
+<rect x="190" y="130" width="72" height="20" rx="4" style="fill:none;stroke:var(--line)"/><text x="196" y="144" style="fill:var(--muted)">No Selection ▾</text>
+<rect x="270" y="130" width="28" height="20" rx="4" style="fill:none;stroke:var(--accent)"/><text x="277" y="144" style="fill:var(--accent)">Go</text>
 </g>
-<rect x="250" y="118" width="112" height="22" rx="5" style="fill:var(--accent)"/><text x="259" y="133" style="fill:var(--surface);font-size:10.5px;font-weight:600">Create Job Profile</text>
+<text x="520" y="124" style="fill:var(--ink);font-size:10.5px">Search Profiles</text><rect x="520" y="130" width="210" height="20" rx="4" style="fill:none;stroke:var(--line)"/>
+<text x="30" y="172" style="fill:var(--ink);font-size:10.5px">You currently have 50 profiles.</text>
+<rect x="622" y="158" width="108" height="22" rx="5" style="fill:var(--accent)"/><text x="630" y="173" style="fill:var(--surface);font-size:10.5px;font-weight:600">Create Job Profile</text>
+<rect x="600" y="188" width="130" height="20" rx="4" style="fill:none;stroke:var(--line)"/><text x="608" y="202" style="fill:var(--ink);font-size:10px">US English ▾</text>
 <g style="font-size:10.5px">
-<text x="20" y="162" style="fill:var(--muted);font-weight:600">Name</text><text x="150" y="162" style="fill:var(--muted);font-weight:600">Role</text><text x="246" y="162" style="fill:var(--muted);font-weight:600">Status</text><text x="318" y="162" style="fill:var(--muted)">⚙</text>
-<line x1="20" y1="168" x2="364" y2="168" style="stroke:var(--line)"/>
-<text x="20" y="188" style="fill:var(--accent)">Senior ABAP Dev</text><text x="150" y="188" style="fill:var(--ink)">Sr ABAP Dev</text><text x="246" y="188" style="fill:var(--muted)">Inactive</text><text x="318" y="188" style="fill:var(--ink)">⚙</text>
-<text x="20" y="212" style="fill:var(--accent)">SAP BTP Developer</text><text x="150" y="212" style="fill:var(--ink)">BTP Dev</text><text x="246" y="212" style="fill:var(--ink)">Active</text>
-<text x="20" y="236" style="fill:var(--accent)">HR Business Partner</text><text x="150" y="236" style="fill:var(--ink)">HRBP</text><text x="246" y="236" style="fill:var(--ink)">Active</text>
+<text x="30" y="230" style="fill:var(--muted);font-weight:600">Name</text><text x="170" y="230" style="fill:var(--muted);font-weight:600">Family</text><text x="270" y="230" style="fill:var(--muted);font-weight:600">Role</text><text x="400" y="230" style="fill:var(--muted);font-weight:600">Last Modified</text><text x="510" y="230" style="fill:var(--muted);font-weight:600">Status</text><text x="580" y="230" style="fill:var(--muted);font-weight:600">Actions</text>
+<line x1="30" y1="236" x2="730" y2="236" style="stroke:var(--line)"/>
+<text x="30" y="256" style="fill:var(--accent)">Senior ABAP Dev</text><text x="170" y="256" style="fill:var(--ink)">Technology</text><text x="270" y="256" style="fill:var(--ink)">Senior ABAP Dev</text><text x="400" y="256" style="fill:var(--ink)">11/20/2026</text><text x="510" y="256" style="fill:var(--muted)">Inactive</text><text x="590" y="256" style="fill:var(--ink)">⚙</text>
+<text x="30" y="280" style="fill:var(--accent)">SAP BTP Developer</text><text x="170" y="280" style="fill:var(--ink)">Technology</text><text x="270" y="280" style="fill:var(--ink)">SAP BTP Developer</text><text x="400" y="280" style="fill:var(--ink)">05/02/2026</text><text x="510" y="280" style="fill:var(--ink)">Active</text>
+<text x="30" y="304" style="fill:var(--accent)">HR Business Partner</text><text x="170" y="304" style="fill:var(--ink)">HR</text><text x="270" y="304" style="fill:var(--ink)">HR Business Partner</text><text x="400" y="304" style="fill:var(--ink)">04/20/2026</text><text x="510" y="304" style="fill:var(--ink)">Active</text>
 </g>
-<rect x="282" y="194" width="80" height="92" rx="5" style="fill:var(--surface);stroke:var(--line)"/>
-<g style="font-size:10.5px">
-<text x="292" y="212" style="fill:var(--ink)">View</text><text x="292" y="232" style="fill:var(--ink)">Copy</text>
-<rect x="284" y="240" width="76" height="20" rx="3" style="fill:var(--accent-soft)"/><text x="292" y="254" style="fill:var(--accent);font-weight:600">Activate</text>
-<text x="292" y="276" style="fill:var(--ink)">Delete</text>
-</g>
-<line x1="384" y1="12" x2="384" y2="388" style="stroke:var(--line)"/>
-<text x="398" y="47" style="fill:var(--ink);font-size:15px;font-weight:600">Create Job Profile</text>
-<rect x="398" y="60" width="342" height="290" rx="6" style="fill:none;stroke:var(--line)"/>
-<text x="569" y="86" text-anchor="middle" style="fill:var(--ink);font-size:12px;font-weight:600">Type Job Profile Name</text>
-<text x="569" y="104" text-anchor="middle" style="fill:var(--ink);font-size:10.5px">Role: Senior ABAP Developer <tspan style="fill:var(--accent)">Change</tspan></text>
-<line x1="410" y1="116" x2="728" y2="116" style="stroke:var(--line)"/>
-<text x="412" y="138" style="fill:var(--ink);font-size:12px;font-weight:600">Short Description</text>
-<rect x="424" y="148" width="290" height="6" rx="3" style="fill:var(--line)"/><rect x="424" y="160" width="250" height="6" rx="3" style="fill:var(--line)"/>
-<text x="412" y="190" style="fill:var(--ink);font-size:12px;font-weight:600">Job Responsibilities</text>
-<rect x="424" y="200" width="270" height="6" rx="3" style="fill:var(--line)"/><rect x="424" y="212" width="230" height="6" rx="3" style="fill:var(--line)"/>
-<text x="412" y="242" style="fill:var(--ink);font-size:12px;font-weight:600">Competencies</text>
-<rect x="502" y="232" width="34" height="14" rx="7" style="fill:var(--accent-soft)"/><text x="508" y="243" style="fill:var(--accent);font-size:9.5px">+Edit</text>
-<text x="424" y="264" style="fill:var(--ink);font-size:10.5px">Problem Solving ▾</text><text x="424" y="284" style="fill:var(--ink);font-size:10.5px">Collaboration ▾</text>
-<rect x="552" y="360" width="52" height="22" rx="5" style="fill:none;stroke:var(--line)"/><text x="562" y="375" style="fill:var(--ink);font-size:10.5px">Cancel</text>
-<rect x="610" y="360" width="44" height="22" rx="5" style="fill:none;stroke:var(--line)"/><text x="620" y="375" style="fill:var(--ink);font-size:10.5px">Back</text>
-<rect x="660" y="360" width="66" height="22" rx="5" style="fill:var(--accent)"/><text x="671" y="375" style="fill:var(--surface);font-size:10.5px;font-weight:600">I'm done</text>
+<rect x="606" y="244" width="84" height="80" rx="5" style="fill:var(--surface);stroke:var(--line)"/>
+<g style="font-size:10.5px"><text x="616" y="260" style="fill:var(--ink)">View</text><text x="616" y="278" style="fill:var(--ink)">Copy</text>
+<rect x="608" y="284" width="80" height="18" rx="3" style="fill:var(--accent-soft)"/><text x="616" y="297" style="fill:var(--accent);font-weight:600">Activate</text><text x="616" y="316" style="fill:var(--ink)">Delete</text></g>
 <g style="font-size:10px;font-weight:700">
-<circle cx="370" cy="129" r="9" style="fill:var(--accent)"/><text x="367" y="133" style="fill:var(--surface)">1</text>
-<circle cx="230" cy="68" r="9" style="fill:var(--accent)"/><text x="227" y="72" style="fill:var(--surface)">2</text>
-<circle cx="740" cy="86" r="9" style="fill:var(--accent)"/><text x="737" y="90" style="fill:var(--surface)">3</text>
-<circle cx="400" cy="190" r="9" style="fill:var(--accent)"/><text x="397" y="194" style="fill:var(--surface)">4</text>
-<circle cx="740" cy="371" r="9" style="fill:var(--accent)"/><text x="737" y="375" style="fill:var(--surface)">5</text>
-<circle cx="372" cy="250" r="9" style="fill:var(--accent)"/><text x="369" y="254" style="fill:var(--surface)">6</text>
+<circle cx="276" cy="90" r="9" style="fill:var(--accent)"/><text x="273" y="94" style="fill:var(--surface)">1</text>
+<circle cx="308" cy="140" r="9" style="fill:var(--accent)"/><text x="305" y="144" style="fill:var(--surface)">2</text>
+<circle cx="612" cy="169" r="9" style="fill:var(--accent)"/><text x="609" y="173" style="fill:var(--surface)">3</text>
+<circle cx="556" cy="252" r="9" style="fill:var(--accent)"/><text x="553" y="256" style="fill:var(--surface)">4</text>
+<circle cx="700" cy="293" r="9" style="fill:var(--accent)"/><text x="697" y="297" style="fill:var(--surface)">5</text>
 </g>
 </svg>
       </div>
       <ul class="smap-key">
-        <li><b>1</b>Create Job Profile starts a new profile (filters above narrow the list by family, role or position).</li>
-        <li><b>2</b>In-workflow Job Profile: profiles waiting in the approval workflow.</li>
-        <li><b>3</b>The profile name and the role it belongs to (Change picks another role).</li>
-        <li><b>4</b>Sections from the template: short description, responsibilities, competencies and so on.</li>
-        <li><b>5</b>I'm done creates the profile, which starts as Inactive.</li>
-        <li><b>6</b>Actions (⚙) on the list: Activate makes the profile usable.</li>
+        <li><b>1</b>In-workflow Job Profile: profiles still in the approval workflow.</li>
+        <li><b>2</b>Filter by family, role or position.</li>
+        <li><b>3</b>Create Job Profile opens the page in the next map.</li>
+        <li><b>4</b>A new profile starts as Inactive.</li>
+        <li><b>5</b>Actions (⚙) → Activate makes it usable.</li>
       </ul>
+      <div class="seeit"><span class="lbl">See the real screen</span><a href="https://learning.sap.com/service/media/topic/d916e479-1e6d-41e9-bd45-cd7b88f7f854/THR103_2511_en-US_media/THR103_2511_en-US_images/U1L1_11JbPrfActivtn_Scr.png" target="_blank" rel="noopener">Activating a job profile<small>SAP Learning</small></a></div>
     </div>
-    <div class="seeit">
-      <span class="lbl">See the real screen</span>
-      <a href="https://learning.sap.com/service/media/topic/d916e479-1e6d-41e9-bd45-cd7b88f7f854/THR103_2511_en-US_media/THR103_2511_en-US_images/U1L1_10JbProfCntCretion_Scr.png" target="_blank" rel="noopener">Create Job Profile page<small>SAP Learning</small></a>
-      <a href="https://learning.sap.com/service/media/topic/d916e479-1e6d-41e9-bd45-cd7b88f7f854/THR103_2511_en-US_media/THR103_2511_en-US_images/U1L1_11JbPrfActivtn_Scr.png" target="_blank" rel="noopener">Activating a job profile<small>SAP Learning</small></a>
-      <a href="https://community.sap.com/legacyfs/online/storage/blog_attachments/2017/10/JA-2.png" target="_blank" rel="noopener">Job Analyzer bias panel<small>SAP Community, 2017</small></a>
+
+    <div class="smap">
+      <p class="smap-head"><b>Screen map: Create Job Profile</b> <i>(my own sketch of the layout, not SAP's screenshot)</i></p>
+      <div class="screenmap">
+<svg viewBox="0 0 760 340" role="img" aria-label="Screen map of Create Job Profile: profile name, role with Change link, sections from the template such as short description, responsibilities and competencies with Edit, and Cancel, Back and I'm done buttons">
+<rect x="1" y="1" width="758" height="338" rx="10" style="fill:var(--surface);stroke:var(--line);stroke-width:1.5"/>
+<text x="20" y="24" style="fill:var(--accent);font-size:10.5px">Back to: Admin Center</text>
+<text x="20" y="46" style="fill:var(--ink);font-size:16px;font-weight:600">Create Job Profile</text>
+<rect x="110" y="60" width="540" height="232" rx="6" style="fill:var(--surface);stroke:var(--line)"/>
+<text x="380" y="86" text-anchor="middle" style="fill:var(--ink);font-size:13px;font-weight:600">Type Job Profile Name</text>
+<text x="380" y="104" text-anchor="middle" style="fill:var(--ink);font-size:10.5px">Role: Senior ABAP Developer <tspan style="fill:var(--accent)">Change</tspan></text>
+<line x1="124" y1="116" x2="636" y2="116" style="stroke:var(--line)"/>
+<text x="130" y="138" style="fill:var(--ink);font-size:12px;font-weight:600">Short Description</text>
+<rect x="146" y="148" width="460" height="6" rx="3" style="fill:var(--line)"/><rect x="146" y="160" width="400" height="6" rx="3" style="fill:var(--line)"/>
+<text x="130" y="192" style="fill:var(--ink);font-size:12px;font-weight:600">Job Responsibilities</text>
+<rect x="146" y="202" width="380" height="6" rx="3" style="fill:var(--line)"/>
+<text x="130" y="234" style="fill:var(--ink);font-size:12px;font-weight:600">Competencies</text>
+<rect x="222" y="224" width="34" height="14" rx="7" style="fill:var(--accent-soft)"/><text x="228" y="235" style="fill:var(--accent);font-size:9.5px">+Edit</text>
+<text x="146" y="256" style="fill:var(--ink);font-size:10.5px">Problem Solving ▾</text><text x="146" y="276" style="fill:var(--ink);font-size:10.5px">Collaboration ▾</text>
+<rect x="472" y="302" width="54" height="24" rx="5" style="fill:none;stroke:var(--line)"/><text x="482" y="318" style="fill:var(--ink);font-size:10.5px">Cancel</text>
+<rect x="532" y="302" width="46" height="24" rx="5" style="fill:none;stroke:var(--line)"/><text x="542" y="318" style="fill:var(--ink);font-size:10.5px">Back</text>
+<rect x="584" y="302" width="66" height="24" rx="5" style="fill:var(--accent)"/><text x="595" y="318" style="fill:var(--surface);font-size:10.5px;font-weight:600">I'm done</text>
+<g style="font-size:10px;font-weight:700">
+<circle cx="526" cy="82" r="9" style="fill:var(--accent)"/><text x="523" y="86" style="fill:var(--surface)">1</text>
+<circle cx="540" cy="100" r="9" style="fill:var(--accent)"/><text x="537" y="104" style="fill:var(--surface)">2</text>
+<circle cx="100" cy="166" r="9" style="fill:var(--accent)"/><text x="97" y="170" style="fill:var(--surface)">3</text>
+<circle cx="268" cy="231" r="9" style="fill:var(--accent)"/><text x="265" y="235" style="fill:var(--surface)">4</text>
+<circle cx="664" cy="314" r="9" style="fill:var(--accent)"/><text x="661" y="318" style="fill:var(--surface)">5</text>
+</g>
+</svg>
+      </div>
+      <ul class="smap-key">
+        <li><b>1</b>The job profile name.</li>
+        <li><b>2</b>The role it belongs to; Change picks another role.</li>
+        <li><b>3</b>Sections come from the family's template: write text or pick library items.</li>
+        <li><b>4</b>+Edit adds or removes library items such as competencies.</li>
+        <li><b>5</b>I'm done creates the profile (it then needs activating).</li>
+      </ul>
+      <div class="seeit"><span class="lbl">See the real screen</span><a href="https://learning.sap.com/service/media/topic/d916e479-1e6d-41e9-bd45-cd7b88f7f854/THR103_2511_en-US_media/THR103_2511_en-US_images/U1L1_10JbProfCntCretion_Scr.png" target="_blank" rel="noopener">Create Job Profile page<small>SAP Learning</small></a></div>
+    </div>
+
+    <div class="smap">
+      <p class="smap-head"><b>Screen map: Job Analyzer next to a job description</b> <i>(my own sketch of the layout, not SAP's screenshot · older 2017 screen)</i></p>
+      <div class="screenmap">
+<svg viewBox="0 0 760 420" role="img" aria-label="Screen map of Job Analyzer: requisition form with the job description editor on the left; on the right a panel with hireability, gender bias scan, biased words, text analysis, skills found and skills competitors use">
+<rect x="1" y="1" width="758" height="418" rx="10" style="fill:var(--surface);stroke:var(--line);stroke-width:1.5"/>
+<text x="20" y="26" style="fill:var(--ink);font-size:13px;font-weight:600">Job requisition</text>
+<text x="200" y="26" style="fill:var(--ink);font-size:10.5px">Language</text><rect x="256" y="14" width="140" height="18" rx="3" style="fill:none;stroke:var(--line)"/><text x="262" y="27" style="fill:var(--ink);font-size:10px">English (UK) ▾</text>
+<g style="fill:var(--line)">
+<rect x="20" y="46" width="80" height="6" rx="3"/><rect x="130" y="42" width="200" height="14" rx="3" style="fill:none;stroke:var(--line)"/>
+<rect x="20" y="70" width="80" height="6" rx="3"/><rect x="130" y="66" width="200" height="14" rx="3" style="fill:none;stroke:var(--line)"/>
+<rect x="20" y="94" width="80" height="6" rx="3"/><rect x="130" y="90" width="200" height="14" rx="3" style="fill:none;stroke:var(--line)"/>
+<rect x="20" y="118" width="80" height="6" rx="3"/><rect x="130" y="114" width="200" height="14" rx="3" style="fill:none;stroke:var(--line)"/>
+</g>
+<text x="20" y="160" style="fill:var(--ink);font-size:11px;font-weight:600">Internal job description</text>
+<rect x="20" y="168" width="390" height="238" rx="5" style="fill:none;stroke:var(--line)"/>
+<rect x="21" y="169" width="388" height="22" style="fill:var(--code-bg)"/><text x="30" y="184" style="fill:var(--muted);font-size:10px">B  I  U  ≡  •</text>
+<g style="fill:var(--line)"><rect x="32" y="204" width="360" height="6" rx="3"/><rect x="32" y="218" width="330" height="6" rx="3"/><rect x="32" y="232" width="350" height="6" rx="3"/><rect x="32" y="246" width="300" height="6" rx="3"/></g>
+<rect x="430" y="10" width="318" height="400" rx="6" style="fill:var(--code-bg);stroke:var(--line)"/>
+<text x="442" y="30" style="fill:var(--ink);font-size:12px;font-weight:600">Job Analyzer</text><text x="728" y="30" style="fill:var(--muted);font-size:12px">⟳</text>
+<text x="442" y="54" style="fill:var(--ink);font-size:11px;font-weight:600">▾ Hireability</text><text x="690" y="54" style="fill:var(--accent);font-size:10.5px">Easier</text>
+<text x="452" y="72" style="fill:var(--ink);font-size:10px">Likelihood to fill position</text>
+<rect x="452" y="78" width="250" height="8" rx="4" style="fill:var(--line)"/><rect x="452" y="78" width="200" height="8" rx="4" style="fill:var(--accent)"/><text x="708" y="86" style="fill:var(--ink);font-size:10px">80%</text>
+<text x="452" y="100" style="fill:var(--muted);font-size:9.5px">Harder          Average          Easier</text>
+<line x1="442" y1="112" x2="738" y2="112" style="stroke:var(--line)"/>
+<text x="442" y="132" style="fill:var(--ink);font-size:11px;font-weight:600">▾ Language</text><text x="682" y="132" style="fill:var(--accent);font-size:11px">★★★★☆</text>
+<text x="452" y="152" style="fill:var(--ink);font-size:10.5px;font-weight:600">Gender Bias Scan</text>
+<rect x="452" y="160" width="62" height="20" style="fill:var(--accent)"/><rect x="514" y="160" width="62" height="20" style="fill:var(--accent-soft);stroke:var(--accent)"/><rect x="576" y="160" width="124" height="20" style="fill:var(--line)"/>
+<text x="462" y="174" style="fill:var(--surface);font-size:9.5px">25%</text><text x="526" y="174" style="fill:var(--accent);font-size:9.5px">25%</text><text x="626" y="174" style="fill:var(--ink);font-size:9.5px">50%</text>
+<text x="452" y="194" style="fill:var(--muted);font-size:9.5px">masculine · feminine · neutral</text>
+<text x="452" y="214" style="fill:var(--ink);font-size:10px">2 biased words in 4 locations:</text>
+<text x="462" y="230" style="fill:var(--accent);font-size:10px">– superior <tspan style="fill:var(--muted)">(masculine tone)</tspan></text>
+<text x="462" y="246" style="fill:var(--accent);font-size:10px">– delicate <tspan style="fill:var(--muted)">(feminine tone)</tspan></text>
+<text x="442" y="272" style="fill:var(--ink);font-size:10.5px;font-weight:600">Text Analysis</text>
+<text x="452" y="288" style="fill:var(--muted);font-size:10px">The job description is not too long.</text>
+<text x="442" y="312" style="fill:var(--ink);font-size:10.5px;font-weight:600">Skills</text>
+<text x="452" y="328" style="fill:var(--muted);font-size:10px">8 skills found in your job description</text>
+<g style="fill:var(--surface);stroke:var(--line)"><rect x="452" y="334" width="50" height="16" rx="3"/><rect x="508" y="334" width="50" height="16" rx="3"/><rect x="564" y="334" width="60" height="16" rx="3"/></g>
+<text x="452" y="368" style="fill:var(--muted);font-size:10px">4 more skills found in competitors' descriptions</text>
+<g style="fill:var(--surface);stroke:var(--accent)"><rect x="452" y="374" width="60" height="16" rx="3"/><rect x="518" y="374" width="60" height="16" rx="3"/></g>
+<g style="font-size:10px;font-weight:700">
+<circle cx="420" cy="190" r="9" style="fill:var(--accent)"/><text x="417" y="194" style="fill:var(--surface)">1</text>
+<circle cx="740" cy="54" r="9" style="fill:var(--accent)"/><text x="737" y="58" style="fill:var(--surface)">2</text>
+<circle cx="740" cy="170" r="9" style="fill:var(--accent)"/><text x="737" y="174" style="fill:var(--surface)">3</text>
+<circle cx="600" cy="238" r="9" style="fill:var(--accent)"/><text x="597" y="242" style="fill:var(--surface)">4</text>
+<circle cx="640" cy="342" r="9" style="fill:var(--accent)"/><text x="637" y="346" style="fill:var(--surface)">5</text>
+<circle cx="600" cy="382" r="9" style="fill:var(--accent)"/><text x="597" y="386" style="fill:var(--surface)">6</text>
+</g>
+</svg>
+      </div>
+      <ul class="smap-key">
+        <li><b>1</b>The job description being written.</li>
+        <li><b>2</b>Hireability: how easy the job looks to fill.</li>
+        <li><b>3</b>Gender bias scan: share of masculine, feminine and neutral wording.</li>
+        <li><b>4</b>The biased words found, with where they appear.</li>
+        <li><b>5</b>Skills found in the description.</li>
+        <li><b>6</b>Extra skills competitors' descriptions often mention.</li>
+      </ul>
+      <div class="seeit"><span class="lbl">See the real screen</span><a href="https://community.sap.com/legacyfs/online/storage/blog_attachments/2017/10/JA-2.png" target="_blank" rel="noopener">Job Analyzer bias panel<small>SAP Community, 2017</small></a></div>
     </div>
   </div>
 
@@ -650,11 +921,79 @@ footer { font-size: 0.82rem; color: var(--muted); border-top: 1px solid var(--li
         <li><b>5</b>Preview of the role's job profile, which will be copied to the requisition.</li>
       </ul>
     </div>
-    <div class="seeit">
-      <span class="lbl">See the real screen</span>
-      <a href="https://learning.sap.com/service/media/topic/f3ac9543-0b3c-4437-a975-faeb6fc57df8/THR103_2511_en-US_media/THR103_2511_en-US_images/U1L1_13JbRqCretFmRle_Scr.png" target="_blank" rel="noopener">New requisition via Browse Families and Roles<small>SAP Learning</small></a>
-      <a href="https://learning.sap.com/service/media/topic/cff47ce9-199d-4bad-8df4-93dc9de5924a/THR103_2511_en-US_media/THR103_2511_en-US_images/U1L1_02JPBEnblmntRcSet_Scr.png" target="_blank" rel="noopener">Setting: Use Job Profiles in Requisitions<small>SAP Learning</small></a>
-      <a href="https://community.sap.com/legacyfs/online/storage/blog_attachments/2018/01/07-Job-Profile-in-Rec-1.jpg" target="_blank" rel="noopener">Changing the role or job code<small>SAP Community, 2018</small></a>
+    <div class="seeit"><span class="lbl">See the real screen</span><a href="https://learning.sap.com/service/media/topic/f3ac9543-0b3c-4437-a975-faeb6fc57df8/THR103_2511_en-US_media/THR103_2511_en-US_images/U1L1_13JbRqCretFmRle_Scr.png" target="_blank" rel="noopener">New requisition via Browse Families and Roles<small>SAP Learning</small></a></div>
+
+    <div class="smap">
+      <p class="smap-head"><b>Screen map: Job Requisition settings, Use Job Profiles in Requisitions</b> <i>(my own sketch of the layout, not SAP's screenshot)</i></p>
+      <div class="screenmap">
+<svg viewBox="0 0 760 290" role="img" aria-label="Screen map of the Job Requisition settings in Admin Center: a list of checkboxes, the last one Use Job Profiles in Requisitions ticked">
+<rect x="1" y="1" width="758" height="288" rx="10" style="fill:var(--surface);stroke:var(--line);stroke-width:1.5"/>
+<text x="20" y="28" style="fill:var(--ink);font-size:14px;font-weight:700">SuccessFactors</text><text x="140" y="28" style="fill:var(--muted);font-size:12px">Admin Center ▾</text>
+<line x1="1" y1="40" x2="759" y2="40" style="stroke:var(--line)"/>
+<text x="20" y="66" style="fill:var(--ink);font-size:15px;font-weight:600">Job Requisition</text>
+<line x1="20" y1="76" x2="740" y2="76" style="stroke:var(--line)"/>
+<g style="fill:var(--ink);font-size:10.5px">
+<text x="24" y="98">☐ Use originator's preferred language as the default language of a new job requisition</text>
+<text x="24" y="120">☐ Allow forwarding of candidates to unposted jobs</text>
+<text x="24" y="142">☑ Enable private postings of jobs</text>
+<text x="24" y="164">☐ Show job description to applicants even after the job posting is taken down</text>
+<text x="24" y="186">☐ Disable "Add Role" on Forward to Requisition dialogue</text>
+<text x="24" y="208">☑ Allow users to view pre-approved requisitions without regard to route map status</text>
+<text x="24" y="230">☐ …</text>
+</g>
+<rect x="18" y="242" width="230" height="26" rx="4" style="fill:var(--accent-soft);stroke:var(--accent)"/>
+<text x="24" y="259" style="fill:var(--ink);font-size:11px;font-weight:600">☑ Use Job Profiles in Requisitions  ⓘ</text>
+<g style="font-size:10px;font-weight:700"><circle cx="262" cy="255" r="9" style="fill:var(--accent)"/><text x="259" y="259" style="fill:var(--surface)">1</text></g>
+</svg>
+      </div>
+      <ul class="smap-key">
+        <li><b>1</b>Use Job Profiles in Requisitions: turn this on so requisitions get the role's job profile (and Browse Families &amp; Roles works). It sits among the other Job Requisition settings in Admin Center.</li>
+      </ul>
+      <div class="seeit"><span class="lbl">See the real screen</span><a href="https://learning.sap.com/service/media/topic/cff47ce9-199d-4bad-8df4-93dc9de5924a/THR103_2511_en-US_media/THR103_2511_en-US_images/U1L1_02JPBEnblmntRcSet_Scr.png" target="_blank" rel="noopener">Setting: Use Job Profiles in Requisitions<small>SAP Learning</small></a></div>
+    </div>
+
+    <div class="smap">
+      <p class="smap-head"><b>Screen map: Update the job role on a requisition</b> <i>(my own sketch of the layout, not SAP's screenshot · older 2018 screen)</i></p>
+      <div class="screenmap">
+<svg viewBox="0 0 760 360" role="img" aria-label="Screen map of the Update the job role dialog: job family dropdown, list of roles with job codes and Select buttons, preview of the job description, and Cancel">
+<rect x="1" y="1" width="758" height="358" rx="10" style="fill:var(--code-bg);stroke:var(--line);stroke-width:1.5"/>
+<rect x="60" y="16" width="640" height="328" rx="8" style="fill:var(--surface);stroke:var(--line);stroke-width:1.5"/>
+<text x="76" y="40" style="fill:var(--ink);font-size:12.5px;font-weight:600">Update the job role</text>
+<line x1="60" y1="50" x2="700" y2="50" style="stroke:var(--line)"/>
+<text x="76" y="70" style="fill:var(--ink);font-size:10.5px">Select the job role that matches your requisition</text>
+<text x="76" y="94" style="fill:var(--ink);font-size:10.5px">Job Family</text>
+<rect x="140" y="81" width="190" height="20" rx="3" style="fill:none;stroke:var(--line)"/><text x="148" y="95" style="fill:var(--ink);font-size:10.5px">Technology ▾</text>
+<rect x="76" y="110" width="220" height="196" rx="4" style="fill:none;stroke:var(--line)"/>
+<text x="86" y="128" style="fill:var(--ink);font-size:10.5px">Solution Architect</text>
+<rect x="77" y="136" width="218" height="104" style="fill:var(--code-bg)"/>
+<text x="86" y="152" style="fill:var(--ink);font-size:10.5px;font-weight:600">Senior ABAP Developer</text>
+<text x="96" y="172" style="fill:var(--muted);font-size:10px">Select job code:</text>
+<text x="96" y="194" style="fill:var(--ink);font-size:10.5px">ABAP_SR</text><rect x="160" y="182" width="44" height="18" rx="3" style="fill:var(--accent)"/><text x="167" y="195" style="fill:var(--surface);font-size:10px">Select</text>
+<text x="96" y="222" style="fill:var(--ink);font-size:10.5px">ABAP_SR_DE</text><rect x="174" y="210" width="44" height="18" rx="3" style="fill:var(--accent)"/><text x="181" y="223" style="fill:var(--surface);font-size:10px">Select</text>
+<text x="86" y="262" style="fill:var(--ink);font-size:10.5px">Technical Lead</text>
+<rect x="306" y="110" width="380" height="196" rx="4" style="fill:none;stroke:var(--line)"/>
+<rect x="312" y="116" width="368" height="18" rx="3" style="fill:none;stroke:var(--line)"/><text x="318" y="129" style="fill:var(--ink);font-size:10px">Senior ABAP Developer</text>
+<text x="318" y="158" style="fill:var(--ink);font-size:12px">T  Job Description</text>
+<text x="318" y="178" style="fill:var(--ink);font-size:10.5px;font-weight:600">Primary duties and responsibilities</text>
+<g style="fill:var(--line)"><rect x="330" y="188" width="320" height="6" rx="3"/><rect x="330" y="202" width="300" height="6" rx="3"/><rect x="330" y="222" width="310" height="6" rx="3"/><rect x="330" y="236" width="280" height="6" rx="3"/><rect x="330" y="256" width="300" height="6" rx="3"/></g>
+<rect x="632" y="314" width="56" height="22" rx="4" style="fill:var(--accent)"/><text x="642" y="329" style="fill:var(--surface);font-size:10.5px">Cancel</text>
+<g style="font-size:10px;font-weight:700">
+<circle cx="342" cy="91" r="9" style="fill:var(--accent)"/><text x="339" y="95" style="fill:var(--surface)">1</text>
+<circle cx="66" cy="148" r="9" style="fill:var(--accent)"/><text x="63" y="152" style="fill:var(--surface)">2</text>
+<circle cx="230" cy="219" r="9" style="fill:var(--accent)"/><text x="227" y="223" style="fill:var(--surface)">3</text>
+<circle cx="676" cy="158" r="9" style="fill:var(--accent)"/><text x="673" y="162" style="fill:var(--surface)">4</text>
+<circle cx="620" cy="325" r="9" style="fill:var(--accent)"/><text x="617" y="329" style="fill:var(--surface)">5</text>
+</g>
+</svg>
+      </div>
+      <ul class="smap-key">
+        <li><b>1</b>Job Family: narrows the role list.</li>
+        <li><b>2</b>The roles; the selected one shows its job codes.</li>
+        <li><b>3</b>Select a job code to switch the requisition to this role. Its profile replaces the current one, and earlier edits are overwritten.</li>
+        <li><b>4</b>Preview of the role's job description.</li>
+        <li><b>5</b>Cancel keeps the current role.</li>
+      </ul>
+      <div class="seeit"><span class="lbl">See the real screen</span><a href="https://community.sap.com/legacyfs/online/storage/blog_attachments/2018/01/07-Job-Profile-in-Rec-1.jpg" target="_blank" rel="noopener">Changing the role or job code<small>SAP Community, 2018</small></a></div>
     </div>
   </div>
 
@@ -726,11 +1065,87 @@ footer { font-size: 0.82rem; color: var(--muted); border-top: 1px solid var(--li
       <li><b>6</b>Preview the internal and external job postings.</li>
     </ul>
   </div>
-  <div class="seeit">
-    <span class="lbl">See the real screen</span>
-    <a href="https://learning.sap.com/service/media/topic/f3ac9543-0b3c-4437-a975-faeb6fc57df8/THR103_2511_en-US_media/THR103_2511_en-US_images/U1L1_14JbPrfTbJbRq_Scr.png" target="_blank" rel="noopener">Job Profile tab on a requisition<small>SAP Learning</small></a>
-    <a href="https://community.sap.com/legacyfs/online/storage/blog_attachments/2018/01/08-Job-Profile-tab-1.jpg" target="_blank" rel="noopener">Job Profile tab<small>SAP Community, 2018</small></a>
-    <a href="https://community.sap.com/legacyfs/online/storage/blog_attachments/2018/01/09-Competencies.jpg" target="_blank" rel="noopener">Editing a section on a requisition<small>SAP Community, 2018</small></a>
+  <div class="seeit"><span class="lbl">See the real screen</span><a href="https://learning.sap.com/service/media/topic/f3ac9543-0b3c-4437-a975-faeb6fc57df8/THR103_2511_en-US_media/THR103_2511_en-US_images/U1L1_14JbPrfTbJbRq_Scr.png" target="_blank" rel="noopener">Job Profile tab on a requisition<small>SAP Learning</small></a></div>
+
+  <div class="smap">
+    <p class="smap-head"><b>Screen map: requisition tabs and job titles</b> <i>(my own sketch of the layout, not SAP's screenshot · older 2018 screen)</i></p>
+    <div class="screenmap">
+<svg viewBox="0 0 760 240" role="img" aria-label="Screen map of an older requisition screen: tabs for details, job profile, candidates and job postings; requisition ID, internal and external job titles with Same as Internal, and status">
+<rect x="1" y="1" width="758" height="238" rx="10" style="fill:var(--surface);stroke:var(--line);stroke-width:1.5"/>
+<g style="font-size:10.5px">
+<text x="24" y="32" style="fill:var(--muted)">JOB REQUISITION DETAIL</text>
+<rect x="178" y="17" width="88" height="22" rx="3" style="fill:none;stroke:var(--accent)"/><text x="186" y="32" style="fill:var(--accent);font-weight:600">JOB PROFILE</text>
+<text x="284" y="32" style="fill:var(--muted)">CANDIDATES (1)</text><text x="392" y="32" style="fill:var(--muted)">JOB POSTINGS (1)</text>
+</g>
+<line x1="1" y1="48" x2="759" y2="48" style="stroke:var(--line)"/>
+<g style="font-size:10.5px">
+<text x="40" y="90" style="fill:var(--muted)">Req Id</text><text x="240" y="90" style="fill:var(--ink)">2041</text>
+<rect x="30" y="104" width="560" height="62" rx="4" style="fill:var(--accent-soft)"/>
+<text x="40" y="124" style="fill:var(--muted)">Internal Job Title</text><rect x="240" y="111" width="190" height="20" rx="3" style="fill:var(--surface);stroke:var(--line)"/><text x="248" y="125" style="fill:var(--ink)">Senior ABAP Developer</text>
+<text x="40" y="154" style="fill:var(--muted)">External Job Title</text><rect x="240" y="141" width="190" height="20" rx="3" style="fill:var(--surface);stroke:var(--line)"/><text x="248" y="155" style="fill:var(--ink)">Senior ABAP Developer</text>
+<rect x="438" y="141" width="96" height="20" rx="3" style="fill:var(--surface);stroke:var(--line)"/><text x="446" y="155" style="fill:var(--ink)">Same as Internal</text>
+<text x="40" y="196" style="fill:var(--muted)">Status</text><rect x="240" y="183" width="140" height="20" rx="3" style="fill:none;stroke:var(--line)"/><text x="248" y="197" style="fill:var(--ink)">Open ▾</text>
+</g>
+<g style="font-size:10px;font-weight:700">
+<circle cx="278" cy="20" r="9" style="fill:var(--accent)"/><text x="275" y="24" style="fill:var(--surface)">1</text>
+<circle cx="602" cy="118" r="9" style="fill:var(--accent)"/><text x="599" y="122" style="fill:var(--surface)">2</text>
+<circle cx="546" cy="151" r="9" style="fill:var(--accent)"/><text x="543" y="155" style="fill:var(--surface)">3</text>
+</g>
+</svg>
+    </div>
+    <ul class="smap-key">
+      <li><b>1</b>The Job Profile tab, next to the requisition details.</li>
+      <li><b>2</b>Internal and external job titles, kept per language.</li>
+      <li><b>3</b>Same as Internal copies the internal title to the external one.</li>
+    </ul>
+    <div class="seeit"><span class="lbl">See the real screen</span><a href="https://community.sap.com/legacyfs/online/storage/blog_attachments/2018/01/08-Job-Profile-tab-1.jpg" target="_blank" rel="noopener">Job Profile tab<small>SAP Community, 2018</small></a></div>
+  </div>
+
+  <div class="smap">
+    <p class="smap-head"><b>Screen map: editing a section on a requisition</b> <i>(my own sketch of the layout, not SAP's screenshot · older 2018 screen)</i></p>
+    <div class="screenmap">
+<svg viewBox="0 0 760 360" role="img" aria-label="Screen map of editing a job profile section on a requisition: sections with Edit and reorder arrows behind a dialog with title, show in external and internal posting, title style, and Cancel, Delete Section and Save">
+<rect x="1" y="1" width="758" height="358" rx="10" style="fill:var(--code-bg);stroke:var(--line);stroke-width:1.5"/>
+<text x="20" y="28" style="fill:var(--muted);font-size:13px">Job Requisition: <tspan style="fill:var(--ink);font-weight:600">Senior ABAP Developer</tspan></text>
+<g style="font-size:10.5px;fill:var(--muted)"><text x="20" y="52">Req Id: 2041   View Details</text><text x="200" y="52" style="fill:var(--ink);font-weight:600">Job Profile</text><text x="280" y="52">Candidates (1)</text><text x="380" y="52">Job Postings (1)</text></g>
+<line x1="1" y1="62" x2="759" y2="62" style="stroke:var(--line)"/>
+<text x="20" y="100" style="fill:var(--ink);font-size:12px;font-weight:600">T  Job Description</text>
+<rect x="138" y="89" width="34" height="14" rx="7" style="fill:var(--accent-soft);stroke:var(--accent)"/><text x="144" y="100" style="fill:var(--accent);font-size:9.5px">+Edit</text><text x="178" y="101" style="fill:var(--muted);font-size:11px">△▽</text>
+<g style="fill:var(--line)"><rect x="34" y="112" width="200" height="6" rx="3"/><rect x="34" y="126" width="190" height="6" rx="3"/><rect x="34" y="140" width="210" height="6" rx="3"/><rect x="34" y="154" width="180" height="6" rx="3"/></g>
+<text x="20" y="200" style="fill:var(--ink);font-size:12px;font-weight:600">T  Job Summary</text><text x="132" y="200" style="fill:var(--muted);font-size:10px">+Edit △▽</text>
+<rect x="34" y="210" width="200" height="6" rx="3" style="fill:var(--line)"/>
+<text x="20" y="252" style="fill:var(--ink);font-size:12px;font-weight:600">Competencies</text><text x="118" y="252" style="fill:var(--muted);font-size:10px">+Edit △▽</text>
+<rect x="300" y="78" width="360" height="232" rx="6" style="fill:var(--surface);stroke:var(--line);stroke-width:1.5"/>
+<text x="644" y="96" style="fill:var(--muted);font-size:12px">×</text>
+<text x="318" y="116" style="fill:var(--muted);font-size:9.5px;font-weight:700">TITLE</text>
+<rect x="318" y="122" width="120" height="20" rx="3" style="fill:none;stroke:var(--line)"/><text x="324" y="136" style="fill:var(--ink);font-size:10.5px">Job Description</text>
+<text x="318" y="164" style="fill:var(--muted);font-size:9.5px;font-weight:700">DISPLAY OPTIONS</text>
+<text x="318" y="182" style="fill:var(--ink);font-size:10.5px">☑ Show in external posting</text>
+<text x="318" y="200" style="fill:var(--ink);font-size:10.5px">☑ Show in internal posting</text>
+<text x="318" y="224" style="fill:var(--muted);font-size:9.5px;font-weight:700">TITLE STYLE</text>
+<text x="318" y="242" style="fill:var(--ink);font-size:10.5px">Font Size 16 ▾   B  I  U</text>
+<rect x="432" y="276" width="54" height="22" rx="4" style="fill:var(--accent)"/><text x="442" y="291" style="fill:var(--surface);font-size:10.5px">Cancel</text>
+<rect x="492" y="276" width="90" height="22" rx="4" style="fill:var(--accent)"/><text x="501" y="291" style="fill:var(--surface);font-size:10.5px">Delete Section</text>
+<rect x="588" y="276" width="56" height="22" rx="4" style="fill:var(--accent)"/><text x="603" y="291" style="fill:var(--surface);font-size:10.5px">Save</text>
+<g style="font-size:10px;font-weight:700">
+<circle cx="155" cy="80" r="9" style="fill:var(--accent)"/><text x="152" y="84" style="fill:var(--surface)">1</text>
+<circle cx="450" cy="132" r="9" style="fill:var(--accent)"/><text x="447" y="136" style="fill:var(--surface)">2</text>
+<circle cx="490" cy="191" r="9" style="fill:var(--accent)"/><text x="487" y="195" style="fill:var(--surface)">3</text>
+<circle cx="537" cy="266" r="9" style="fill:var(--accent)"/><text x="534" y="270" style="fill:var(--surface)">4</text>
+<circle cx="654" cy="287" r="9" style="fill:var(--accent)"/><text x="651" y="291" style="fill:var(--surface)">5</text>
+<circle cx="212" cy="97" r="9" style="fill:var(--accent)"/><text x="209" y="101" style="fill:var(--surface)">6</text>
+</g>
+</svg>
+    </div>
+    <ul class="smap-key">
+      <li><b>1</b>+Edit on a section opens the dialog.</li>
+      <li><b>2</b>Rename the section title.</li>
+      <li><b>3</b>Show the section on the external posting, the internal posting, or both.</li>
+      <li><b>4</b>Delete Section removes it from this requisition only.</li>
+      <li><b>5</b>Save keeps the change on this requisition; the role's profile is not changed.</li>
+      <li><b>6</b>△▽ moves the section up or down.</li>
+    </ul>
+    <div class="seeit"><span class="lbl">See the real screen</span><a href="https://community.sap.com/legacyfs/online/storage/blog_attachments/2018/01/09-Competencies.jpg" target="_blank" rel="noopener">Editing a section on a requisition<small>SAP Community, 2018</small></a></div>
   </div>
 
   <div class="two">
