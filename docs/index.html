@@ -1528,6 +1528,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
           <tr><td>HR updates the master while a manager is drafting</td><td>The draft is moved onto the new master when saved, and the manager sees the differences.</td></tr>
           <tr><td>Evergreen requisitions</td><td>Treated like posted jobs: updates need recruiter confirmation.</td></tr>
           <tr><td>Requisitions created by import or integration</td><td>Picked up by the same event or 10-minute check as manual ones.</td></tr>
+          <tr><td>Two roles have the same name</td><td>Joule shows each role's family and job code and asks which; everything is stored by role ID.</td></tr>
           <tr><td>A language version is missing</td><td>Flagged for translation; the requisition keeps its current text until approved.</td></tr>
         </tbody>
       </table>
@@ -1553,13 +1554,14 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 
 <section id="decisions" aria-label="Solution in brief">
   <div class="summary">
-    <span class="eyebrow">The solution in five decisions</span>
+    <span class="eyebrow">The solution in six decisions</span>
     <ol>
       <li><b>Manage the JD at role level, not requisition level.</b> The role's Job Profile Builder profile is the HR-owned master. The assistant keeps versions of it.</li>
       <li><b>Hiring managers get variants, stored as patches.</b> A variant holds only section-level changes on top of a master version. Locked sections cannot be patched.</li>
       <li><b>Requisition JDs are rendered, not generated.</b> AI runs once per master or variant. Each requisition is filled deterministically from master + variant + requisition facts, so ten requisitions cost one AI call.</li>
       <li><b>Sync is event-driven.</b> SuccessFactors' “Update of Job Requisition” event triggers the assistant, which writes the JD back through the OData API. A fingerprint stops repeat work and loops.</li>
       <li><b>Drafting is grounded.</b> Every draft uses the master, a monthly market benchmark and an anonymous profile of recent hires, through AI Core orchestration with data masking and a JSON output schema.</li>
+      <li><b>Everything is keyed by SuccessFactors IDs.</b> Roles, job codes, managers, locations and org units are stored and matched by ID; names are used only for display, search and the JD text.</li>
     </ol>
   </div>
 </section>
@@ -1637,11 +1639,34 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
     <div class="layer"><b>Rendered JD (requisition)</b><span>Master + patch + requisition facts. Written to SuccessFactors.</span></div>
   </div>
 
+  <div class="panel">
+    <h4>ID rule: store IDs, show names</h4>
+    <p class="panel-sub">Every SuccessFactors object is stored and matched by its ID. Names are used only for display, Joule search and the JD text, because names can repeat and change.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Object</th><th>Stored and matched by</th><th>Name used only for</th></tr></thead>
+        <tbody>
+          <tr><td>Role</td><td><code>RoleEntity.externalCode</code></td><td>Display, Joule search</td></tr>
+          <tr><td>Job profile</td><td><code>JobProfile.externalCode</code></td><td>–</td></tr>
+          <tr><td>Job code</td><td>Job classification or <code>JOBCODE</code> value</td><td>–</td></tr>
+          <tr><td>Family</td><td><code>FamilyEntity</code> code</td><td>Grouping on screens</td></tr>
+          <tr><td>Hiring manager</td><td>SuccessFactors user ID (from <code>JobRequisitionOperator</code>)</td><td>Greeting in Joule</td></tr>
+          <tr><td>Location</td><td>Foundation location code (<code>JobReqFOLocation</code>)</td><td>Text in the JD</td></tr>
+          <tr><td>Org unit</td><td>Department or division code</td><td>–</td></tr>
+          <tr><td>Country, language</td><td>ISO country code, SuccessFactors locale (<code>en_US</code>)</td><td>–</td></tr>
+          <tr><td>Requisition</td><td><code>jobReqId</code></td><td>–</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="caption">Exact property names for the manager's user ID and the location code: <span class="c">◐</span> confirmed in Sprint 0 (spike S2).</p>
+  </div>
+
   <div class="two codes">
     <div class="part">
       <h4>Master JD (stored as JSON)</h4>
 <pre><code>{
   "role_id": "1000435",
+  "jpb_profile_code": "JP_1000435",
   "locale": "en_US",
   "version": 3,
   "sections": {
@@ -1663,7 +1688,9 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
   "variant_id": "b7f2…",
   "role_id": "1000435",
   "base_version": 3,
-  "scope": {"type": "MANAGER_LOCATION", "manager": "priya.k", "location": "Pune"},
+  "scope": {"type": "MANAGER_LOCATION",
+            "manager_user_id": "PKUMAR01",
+            "location_code": "IN-PUN-01"},
   "ops": [
     {"section": "team_context", "op": "replace",
      "text": "You'll join the S/4HANA migration squad…"},
@@ -1680,20 +1707,22 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
   <div class="two codes">
     <div class="panel">
       <h4>Resolution rule: which JD a requisition gets</h4>
-<pre><code>def resolve(role_id, locale, manager, location, org):
-    for scope in [("MANAGER_LOCATION", manager, location),
-                  ("MANAGER", manager), ("ORG", org),
-                  ("LOCATION", location)]:
-        v = store.approved_variant(role_id, locale, scope)
-        if v: return master(role_id, v.base_version), v
-    return latest_master(role_id, locale), None</code></pre>
+<pre><code>def resolve(req):   # every value is a SuccessFactors ID or code, never a name
+    for scope in [("MANAGER_LOCATION", req.manager_user_id, req.location_code),
+                  ("MANAGER", req.manager_user_id),
+                  ("JOB_CODE", req.job_code),
+                  ("ORG", req.org_code),
+                  ("LOCATION", req.location_code)]:
+        v = store.approved_variant(req.role_id, req.locale, scope)
+        if v: return master(req.role_id, v.base_version), v
+    return latest_master(req.role_id, req.locale), None</code></pre>
     </div>
     <div class="panel">
       <h4>Fingerprint: skip work that is already done</h4>
-<pre><code>fp = sha256("|".join([role_id, locale,
+<pre><code>fp = sha256("|".join([req.role_id, req.job_code, req.locale,
         str(master.version), variant_id or "-",
-        str(variant_version or 0), location,
-        salary_range, work_model]))
+        str(variant_version or 0), req.location_code,
+        str(req.salary_min), str(req.salary_max), req.work_model_code]))
 if link.fingerprint == fp:
     return  # nothing changed, no write, no loop</code></pre>
     </div>
@@ -1745,27 +1774,38 @@ def to_html(section: dict) -&gt; str:
 
 CREATE TABLE JD_VARIANT (
   VARIANT_ID NVARCHAR(36) PRIMARY KEY, ROLE_ID NVARCHAR(40), LOCALE NVARCHAR(10),
-  BASE_VERSION INTEGER, SCOPE_TYPE NVARCHAR(20), SCOPE_KEY NVARCHAR(200),
+  BASE_VERSION INTEGER,
+  SCOPE_TYPE NVARCHAR(20),     -- MANAGER_LOCATION | MANAGER | JOB_CODE | ORG | LOCATION
+  SCOPE_MANAGER_ID NVARCHAR(100), SCOPE_LOCATION_CODE NVARCHAR(40),
+  SCOPE_ORG_CODE NVARCHAR(40), SCOPE_JOB_CODE NVARCHAR(40),
   OPS NCLOB, INTENT NVARCHAR(2000), VARIANT_VERSION INTEGER,
   STATUS NVARCHAR(20),          -- DRAFT | PENDING_HR | APPROVED | NEEDS_REBASE | RETIRED
   DEVIATION DECIMAL(4,3), APPROVED_BY NVARCHAR(100), APPROVED_AT TIMESTAMP);
 
 CREATE TABLE REQ_JD_LINK (
-  JOB_REQ_ID BIGINT PRIMARY KEY, ROLE_ID NVARCHAR(40), LOCALE NVARCHAR(10),
+  JOB_REQ_ID BIGINT PRIMARY KEY, ROLE_ID NVARCHAR(40), JOB_CODE NVARCHAR(40), LOCALE NVARCHAR(10),
+  MANAGER_USER_ID NVARCHAR(100), LOCATION_CODE NVARCHAR(40), ORG_CODE NVARCHAR(40),
   MASTER_VERSION INTEGER, VARIANT_ID NVARCHAR(36), VARIANT_VERSION INTEGER,
   FINGERPRINT NVARCHAR(64), POSTED BOOLEAN,
   SYNC_STATUS NVARCHAR(20),     -- SYNCED | PENDING_RECRUITER | FAILED | OPTED_OUT
   LAST_SYNC TIMESTAMP);
 
 CREATE TABLE MARKET_BENCHMARK (
-  ROLE_ID NVARCHAR(40), LOCATION NVARCHAR(100), PERIOD NVARCHAR(7),
+  ROLE_ID NVARCHAR(40), COUNTRY NVARCHAR(2), LOCATION_CODE NVARCHAR(40), PERIOD NVARCHAR(7),
+  SEARCH_TERMS NCLOB,
   SAMPLE_SIZE INTEGER, SKILLS NCLOB, RESPONSIBILITIES NCLOB,
   SALARY_P25 DECIMAL(15,2), SALARY_P50 DECIMAL(15,2), SALARY_P75 DECIMAL(15,2),
-  CURRENCY NVARCHAR(3), SOURCES NCLOB, PRIMARY KEY (ROLE_ID, LOCATION, PERIOD));
+  CURRENCY NVARCHAR(3), SOURCES NCLOB, PRIMARY KEY (ROLE_ID, COUNTRY, LOCATION_CODE, PERIOD));
 
 CREATE TABLE HIRE_PROFILE (
   ROLE_ID NVARCHAR(40) PRIMARY KEY, PERIOD_FROM DATE, PERIOD_TO DATE,
   HIRE_COUNT INTEGER, PATTERNS NCLOB, REFRESHED_AT TIMESTAMP);
+
+CREATE TABLE ROLE_CACHE (            -- names are for display and search only
+  ROLE_ID NVARCHAR(40) PRIMARY KEY, FAMILY_CODE NVARCHAR(40), STATUS NVARCHAR(10),
+  JPB_PROFILE_CODE NVARCHAR(40),
+  NAMES NCLOB,                       -- {"en_US": "Senior ABAP Developer", "de_DE": "…"}
+  JOB_CODES NCLOB, REFRESHED_AT TIMESTAMP);
 
 CREATE TABLE AUDIT_LOG (
   EVENT_ID NVARCHAR(36) PRIMARY KEY, AT TIMESTAMP, USER_ID NVARCHAR(100),
@@ -1784,7 +1824,7 @@ CREATE TABLE AUDIT_LOG (
     <div class="req-head"><span class="n">1</span><div><h3>Create or enhance a JD with a prompt</h3></div></div>
     <div class="answer"><p>The manager talks to the Joule agent. The agent calls <code>draft_jd</code> with a mode (<b>create</b>, <b>enhance</b>, <b>refine</b>) and the manager's instruction. The service builds grounded context, calls AI Core orchestration once, validates the JSON and returns a draft. Refinements reuse the draft id, so each turn sends only the delta instruction.</p></div>
     <ol class="steps">
-      <li>Resolve the role: <code>find_role("Senior ABAP Developer")</code> searches <code>RoleEntity</code> names cached in HANA.</li>
+      <li>Resolve the role: <code>find_role("Senior ABAP Developer")</code> searches the names in <code>ROLE_CACHE</code> and returns role IDs. If two roles share the name, Joule shows each one's family and job code and asks which.</li>
       <li>Load context: active master (or the manager's variant), market benchmark for role + location, hire profile.</li>
       <li>Call orchestration with the template below, masking on, response format = JD JSON schema, temperature 0.3.</li>
       <li>Run <code>checks</code>: locked sections unchanged, mandatory skills present, inclusive-language scan, salary range present where the country requires it.</li>
@@ -1836,7 +1876,7 @@ MODE refine: change only what the instruction asks; leave the rest identical.</c
     <div class="req-head"><span class="n">2</span><div><h3>Market research for a best-in-class JD</h3></div></div>
     <div class="answer"><p>A monthly job per active role and location pulls 50–200 similar postings from a job-market API, extracts structured facts with the LLM, aggregates them and stores only the aggregate in <code>MARKET_BENCHMARK</code>. Drafts use it as evidence; the review screen shows gaps.</p></div>
     <ol class="steps">
-      <li><b>Search:</b> role name + synonyms (from the role's job codes) + location. Example with Adzuna's developer API: <code>GET /v1/api/jobs/in/search/1?what=sap+abap+developer&amp;where=pune&amp;results_per_page=50</code> through a BTP destination holding <code>app_id</code> and <code>app_key</code>. For enterprise use, Lightcast's licensed postings API gives deduplicated data with normalized skills.</li>
+      <li><b>Search:</b> search words come from the role's names and job code titles plus the location's city; results are stored against the role ID, country and location code. Example with Adzuna's developer API: <code>GET /v1/api/jobs/in/search/1?what=sap+abap+developer&amp;where=pune&amp;results_per_page=50</code> through a BTP destination holding <code>app_id</code> and <code>app_key</code>. For enterprise use, Lightcast's licensed postings API gives deduplicated data with normalized skills.</li>
       <li><b>Extract</b> each posting with a small JSON schema: <code>skills[]</code>, <code>responsibilities[]</code>, <code>years_experience</code>, <code>seniority</code>, <code>salary_min/max</code>, <code>work_model</code>.</li>
       <li><b>Normalize skills</b> against your Talent Intelligence Hub skill library (or Lightcast Open Skills), so “ABAP OO” and “Object-oriented ABAP” count once.</li>
       <li><b>Aggregate:</b> a skill in ≥ 30% of postings is <i>market standard</i>; 10–30% is a <i>differentiator</i>; salary P25 / P50 / P75 where posted.</li>
@@ -1866,7 +1906,7 @@ MODE refine: change only what the instruction asks; leave the rest identical.</c
     <h4>Event-driven sync</h4>
     <ol class="steps">
       <li>In Integration Center, create an event-triggered integration on Intelligent Services event <b>Update of Job Requisition</b> that calls <code>POST /events/requisition</code> through a destination (OAuth). Fallback: Job Scheduling Service calls <code>/jobs/poll-requisitions</code> every 10 minutes, querying requisitions changed since the last run.</li>
-      <li>The webhook loads the requisition: role (<code>jobRoleEntity/externalCode</code>), hiring manager (<code>hiringManager</code>), location, locale, posting status.</li>
+      <li>The webhook loads the requisition as IDs: role (<code>jobRoleEntity/externalCode</code>), job code, the hiring manager's user ID (<code>hiringManager</code>), location code, org codes, locale and posting status.</li>
       <li>Ignore it if the role has no managed master, or if <code>lastModifiedBy</code> is the assistant's technical user.</li>
       <li><code>resolve()</code> picks master + variant; compute the fingerprint; stop if unchanged.</li>
       <li><code>render()</code> fills placeholders from requisition facts and produces HTML per section.</li>
@@ -1939,7 +1979,7 @@ Show market and hire evidence when you use it.</code></pre>
       <div class="table-wrap">
         <table>
           <tbody>
-            <tr><td><code>find_role</code></td><td>name → role id</td></tr>
+            <tr><td><code>find_role</code></td><td>name → role ID (asks if several match)</td></tr>
             <tr><td><code>get_role_jd</code></td><td>master + caller's variant</td></tr>
             <tr><td><code>draft_jd</code></td><td>mode, instruction, draft id</td></tr>
             <tr><td><code>save_variant</code></td><td>runs checks, approval</td></tr>
@@ -1988,7 +2028,7 @@ Show market and hire evidence when you use it.</code></pre>
     <div class="phase"><div class="when"><b>Sprint 0</b><span>1 week · spikes</span></div><div class="what">
       <ul class="plain">
         <li><b>S1</b> GET a role's <code>JobProfile</code> with its description and skill links; UPSERT a change on a test role; check draft and activation behaviour, text-length limits, and whether editing a library item changes existing profiles.</li>
-        <li><b>S2</b> Create a requisition with <code>jobRoleEntity/externalCode</code>; find its <code>jobReqProfile</code> and write a description; check what the recruiter sees, and which HTML tags survive in the requisition and on the career site.</li>
+        <li><b>S2</b> Create a requisition with <code>jobRoleEntity/externalCode</code>; find its <code>jobReqProfile</code> and write a description; check what the recruiter sees, and which HTML tags survive in the requisition and on the career site; confirm the property names for the hiring manager's user ID and the location code.</li>
         <li><b>S3</b> Integration Center event integration for “Update of Job Requisition” → webhook; measure delay; confirm creation also fires it.</li>
         <li><b>S4</b> Query hired applications for one role; check resume access and anonymization.</li>
         <li><b>S5</b> Market API trial for 3 roles in 2 cities; check sample size and skill quality.</li>
