@@ -1170,7 +1170,31 @@ footer { font-size: 0.82rem; color: var(--muted); border-top: 1px solid var(--li
     </div>
   </div>
 
+  <div class="part">
+    <h3>Text format: formatted on screen, HTML underneath</h3>
+    <div class="two">
+      <div class="panel">
+        <span class="chip">What the user sees</span>
+        <ul class="plain">
+          <li>A rich-text editor with bold, italics and bullets. Users type formatted text, not HTML.</li>
+          <li>Inline images, CSS and HTML code are not supported in the job description field; the editor creates the HTML tags itself.</li>
+          <li>Text pasted straight from Word causes errors on the career site; SAP says to use <b>Paste as Plain Text</b>.</li>
+          <li>Job profile templates use the same rich-text editing.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <span class="chip">What is stored and sent by the API</span>
+        <ul class="plain">
+          <li><code>JobRequisitionLocale.jobDescription</code> and <code>externalJobDescription</code> hold HTML strings, for example <code>&lt;p&gt;…&lt;/p&gt;&lt;ul&gt;&lt;li&gt;…&lt;/li&gt;&lt;/ul&gt;</code>.</li>
+          <li>Job profile text (<code>longDescriptions</code> and similar) comes from the same editor, so expect HTML there too.</li>
+          <li>SAP's AI feature lists rich text (<code>rte</code>) among the field types it reads.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
   <div class="check">
+    <div><span class="pill unclear">Not confirmed</span><span>Which HTML tags the editor and career site keep. SAP does not list them; test it in Sprint 0 (B8, spike S2).</span></div>
     <div><span class="pill unclear">Not confirmed</span><span>Whether existing requisitions pick up later changes to the job profile. Re-selecting the role reloads it but overwrites edits.</span></div>
   </div>
 </section>
@@ -1596,6 +1620,26 @@ if link.fingerprint == fp:
     return  # nothing changed, no write, no loop</code></pre>
     </div>
   </div>
+
+  <div class="panel">
+    <h4>Text format: structured text in, safe HTML out</h4>
+    <ul class="plain">
+      <li>The AI returns plain structured text in the JD JSON (paragraph text and bullet items), never HTML.</li>
+      <li><code>render()</code> turns each section into simple HTML using only <code>&lt;p&gt;</code>, <code>&lt;ul&gt;</code>, <code>&lt;li&gt;</code>, <code>&lt;strong&gt;</code>, <code>&lt;em&gt;</code> and <code>&lt;br&gt;</code>.</li>
+      <li>No styles, scripts, images or links are written to SuccessFactors.</li>
+      <li>HTML read back from SuccessFactors is turned into plain text before it goes into a prompt.</li>
+    </ul>
+<pre><code>from html import escape
+
+def to_html(section: dict) -&gt; str:
+    paras = [p.strip() for p in section.get("text", "").split("\n\n") if p.strip()]
+    html = "".join(f"&lt;p&gt;{escape(p)}&lt;/p&gt;" for p in paras)
+    items = [i if isinstance(i, str) else i["name"] for i in section.get("items", [])]
+    if items:
+        html += "&lt;ul&gt;" + "".join(f"&lt;li&gt;{escape(i)}&lt;/li&gt;" for i in items) + "&lt;/ul&gt;"
+    return html   # escape(): text from the model can never add its own tags</code></pre>
+    <p class="caption">SAP does not list which tags the editor keeps; Sprint 0 spike S2 checks it on a real requisition and career site.</p>
+  </div>
 </section>
 
 <!-- B4 -->
@@ -1849,7 +1893,7 @@ Show market and hire evidence when you use it.</code></pre>
     <div class="phase"><div class="when"><b>Sprint 0</b><span>1 week · spikes</span></div><div class="what">
       <ul class="plain">
         <li><b>S1</b> GET a role's <code>JobProfile</code> with its description and skill links; UPSERT a change on a test role; check draft and activation behaviour.</li>
-        <li><b>S2</b> Create a requisition with <code>jobRoleEntity/externalCode</code>; find its <code>jobReqProfile</code> and write a description; check what the recruiter sees.</li>
+        <li><b>S2</b> Create a requisition with <code>jobRoleEntity/externalCode</code>; find its <code>jobReqProfile</code> and write a description; check what the recruiter sees, and which HTML tags survive in the requisition and on the career site.</li>
         <li><b>S3</b> Integration Center event integration for “Update of Job Requisition” → webhook; measure delay; confirm creation also fires it.</li>
         <li><b>S4</b> Query hired applications for one role; check resume access and anonymization.</li>
         <li><b>S5</b> Market API trial for 3 roles in 2 cities; check sample size and skill quality.</li>
