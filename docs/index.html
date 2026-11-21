@@ -1,0 +1,1175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Role-Based JD Assistant</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+/* Layout: one document in two parts. Part A = what SuccessFactors does today (research). Part B = the solution to build. One column; tables and code scroll inside their own boxes. */
+:root {
+  --bg: #f3f6f8;
+  --surface: #ffffff;
+  --ink: #15202a;
+  --muted: #586775;
+  --line: #d6dee5;
+  --accent: #0a6a85;
+  --accent-soft: #e0f0f4;
+  --sap: #46586a;
+  --sap-soft: #e8edf2;
+  --hr: #6a4c93;
+  --hr-soft: #efe8f7;
+  --req: #2b7a4b;
+  --req-soft: #e1f2e8;
+  --warn: #9a5800;
+  --warn-soft: #fbefdc;
+  --no: #b03636;
+  --no-soft: #f8e3e3;
+  --code-bg: #f7f9fb;
+  --font-display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f151b; --surface: #16202a; --ink: #e5ecf2; --muted: #9babb9; --line: #283541;
+    --accent: #52b9d6; --accent-soft: #11303b; --sap: #aab8c6; --sap-soft: #1e2a36;
+    --hr: #b99be3; --hr-soft: #2a2138; --req: #6cc391; --req-soft: #15301f;
+    --warn: #e3a84d; --warn-soft: #2e2313; --no: #e47f7f; --no-soft: #341a1a; --code-bg: #121a22;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f151b; --surface: #16202a; --ink: #e5ecf2; --muted: #9babb9; --line: #283541;
+  --accent: #52b9d6; --accent-soft: #11303b; --sap: #aab8c6; --sap-soft: #1e2a36;
+  --hr: #b99be3; --hr-soft: #2a2138; --req: #6cc391; --req-soft: #15301f;
+  --warn: #e3a84d; --warn-soft: #2e2313; --no: #e47f7f; --no-soft: #341a1a; --code-bg: #121a22;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 40px 64px;
+  overflow-wrap: anywhere;
+}
+pre, table { overflow-wrap: normal; }
+.wrap { max-width: 960px; margin: 0 auto; display: grid; gap: 60px; }
+.wrap, section, .part, .panel, .req-card, .summary, .chapter-head > div, .phase .what { grid-template-columns: minmax(0, 1fr); }
+.wrap > *, section > *, .part > *, .panel > *, .req-card > * { min-width: 0; }
+h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.2; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(2rem, 5vw, 2.8rem); font-weight: 700; letter-spacing: -0.01em; }
+h2 { font-size: 1.6rem; font-weight: 600; }
+h3 { font-size: 1.1rem; font-weight: 600; }
+h4 { font-size: 0.98rem; font-weight: 600; }
+p { margin: 0; max-width: 70ch; }
+a { color: var(--accent); text-underline-offset: 3px; }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+code { font-family: var(--font-mono); font-size: 0.85em; background: var(--code-bg); border: 1px solid var(--line); padding: 0 4px; border-radius: 4px; }
+pre { margin: 0; font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.55; background: var(--code-bg); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; overflow-x: auto; color: var(--ink); }
+pre code { background: none; border: 0; padding: 0; font-size: inherit; }
+.eyebrow { font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.muted { color: var(--muted); }
+.caption { font-size: 0.8rem; color: var(--muted); }
+section { display: grid; gap: 22px; }
+.part { display: grid; gap: 12px; }
+ul.plain { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+
+/* Header and contents */
+header { display: grid; gap: 16px; }
+.lede { font-size: 1.12rem; color: var(--muted); max-width: 66ch; }
+.toc { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.toc > div { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; display: grid; gap: 8px; align-content: start; }
+.toc b { font-family: var(--font-display); }
+.toc nav { display: flex; flex-wrap: wrap; gap: 6px; }
+.toc nav a { font-size: 0.82rem; text-decoration: none; color: var(--ink); border: 1px solid var(--line); background: var(--bg); padding: 2px 10px; border-radius: 999px; }
+.toc nav a:hover { border-color: var(--accent); color: var(--accent); }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 0.82rem; color: var(--muted); }
+.v, .c { font-weight: 700; }
+.v { color: var(--req); }
+.c { color: var(--warn); }
+
+/* Part bands */
+.band { border-radius: 14px; padding: 22px 24px; display: grid; gap: 8px; }
+.band.a { background: var(--sap-soft); }
+.band.b { background: var(--accent-soft); }
+.band .eyebrow { color: var(--ink); }
+.band h2 { font-size: 2rem; }
+
+/* Chapter heads */
+.chapter-head { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 14px; align-items: start; }
+.num { width: 56px; height: 52px; border-radius: 12px; display: grid; place-items: center; font-family: var(--font-display); font-weight: 700; font-size: 1.2rem; color: var(--surface); }
+.num.a { background: var(--sap); }
+.num.b { background: var(--accent); }
+.chapter-head > div { display: grid; gap: 6px; }
+
+.answer { background: var(--accent-soft); border-radius: 10px; padding: 14px 18px; font-size: 0.97rem; }
+.answer p { max-width: 76ch; }
+.summary { background: var(--accent-soft); border-radius: 12px; padding: 20px 22px; display: grid; gap: 10px; }
+.summary ol { margin: 0; padding-left: 22px; display: grid; gap: 8px; }
+
+/* Tables */
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+th, td { text-align: left; padding: 9px 13px; border-top: 1px solid var(--line); vertical-align: top; }
+thead th { border-top: 0; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); background: var(--bg); white-space: nowrap; }
+td code { white-space: nowrap; }
+td.y::before { content: "✓ "; color: var(--req); font-weight: 700; }
+td.n::before { content: "✗ "; color: var(--no); font-weight: 700; }
+.where { font-size: 0.78rem; color: var(--muted); display: block; }
+.pill { display: inline-block; font-size: 0.72rem; font-weight: 600; padding: 1px 9px; border-radius: 999px; white-space: nowrap; }
+.pill.no { background: var(--no-soft); color: var(--no); }
+.pill.part { background: var(--req-soft); color: var(--req); }
+.pill.unclear { background: var(--warn-soft); color: var(--warn); }
+
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.panel-sub { font-size: 0.92rem; color: var(--muted); }
+.two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.two.codes { grid-template-columns: minmax(0, 1fr); }
+.chip { display: inline-flex; align-items: center; justify-self: start; font-size: 0.78rem; font-weight: 600; padding: 2px 10px; border-radius: 999px; white-space: nowrap; color: var(--sap); background: var(--sap-soft); }
+.libs { display: flex; flex-wrap: wrap; gap: 6px; }
+.libs span { font-size: 0.8rem; border: 1px solid var(--line); border-radius: 6px; padding: 2px 8px; background: var(--bg); }
+
+/* Numbered steps */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; counter-reset: s; }
+.steps li { counter-increment: s; position: relative; padding-left: 38px; min-height: 26px; font-size: 0.94rem; }
+.steps li::before { content: counter(s); position: absolute; left: 0; top: 0; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: var(--sap-soft); color: var(--sap); font-family: var(--font-mono); font-size: 0.78rem; }
+
+/* Part A: job architecture chain */
+.jarch { overflow-x: auto; }
+.chain-row { display: flex; align-items: stretch; min-width: 640px; }
+.node { flex: 1 1 0; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px; display: grid; gap: 4px; align-content: start; min-width: 0; }
+.node b { font-family: var(--font-display); font-weight: 600; }
+.node span { font-size: 0.8rem; color: var(--muted); }
+.node.key { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.link { flex: 0 0 64px; display: grid; place-items: center; text-align: center; font-size: 0.7rem; color: var(--muted); font-family: var(--font-mono); line-height: 1.3; }
+.link::before { content: "→"; display: block; font-size: 1.1rem; color: var(--muted); font-family: var(--font-body); }
+
+/* Part A: profile copied to requisition */
+.form { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--surface); }
+.form-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; background: var(--sap-soft); padding: 8px 12px; font-size: 0.82rem; font-weight: 600; color: var(--sap); }
+.langs { display: flex; gap: 4px; }
+.langs span { font-family: var(--font-mono); font-size: 0.72rem; padding: 1px 6px; border-radius: 4px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); }
+.langs span.on { color: var(--ink); border-color: var(--sap); }
+.frow { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 9px 12px; border-top: 1px solid var(--line); font-size: 0.9rem; }
+.form .frow:first-of-type { border-top: 0; }
+.frow .tag { font-size: 0.72rem; color: var(--muted); white-space: nowrap; }
+.frow.copied { background: var(--accent-soft); }
+.handoff { display: grid; grid-template-columns: minmax(0, 1fr) 48px minmax(0, 1fr); align-items: center; }
+.handoff .arrow { text-align: center; color: var(--muted); font-size: 1.4rem; }
+
+/* Part A: Enhance JD screen illustration */
+.screen { border: 1px solid var(--line); border-radius: 10px; background: var(--surface); overflow: hidden; }
+.screen-bar { padding: 8px 14px; font-size: 0.82rem; font-weight: 600; border-bottom: 1px solid var(--line); background: var(--sap-soft); color: var(--sap); }
+.compare { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.compare > div { padding: 14px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.compare > div + div { border-left: 1px solid var(--line); }
+.compare .label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 600; }
+.lines { display: grid; gap: 6px; }
+.lines span { height: 8px; border-radius: 4px; background: var(--line); }
+.lines.gen span { background: var(--sap-soft); outline: 1px solid var(--line); }
+.screen-foot { display: flex; justify-content: flex-end; gap: 8px; padding: 10px 14px; border-top: 1px solid var(--line); }
+.fakebtn { font-size: 0.8rem; padding: 4px 14px; border-radius: 6px; border: 1px solid var(--line); color: var(--muted); }
+.fakebtn.primary { background: var(--sap); color: var(--surface); border-color: var(--sap); }
+
+.notfound { background: var(--warn-soft); border-radius: 10px; padding: 18px 20px; display: grid; gap: 10px; }
+.notfound h3 { color: var(--warn); }
+.check { display: grid; gap: 8px; }
+.check div { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: baseline; border: 1px dashed var(--line); border-radius: 8px; padding: 9px 14px; font-size: 0.9rem; background: var(--surface); }
+
+/* "See the real screen" links */
+.seeit { display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: center; font-size: 0.85rem; }
+.seeit .lbl { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); }
+.seeit a { text-decoration: none; border: 1px solid var(--line); background: var(--surface); padding: 3px 10px; border-radius: 6px; color: var(--ink); }
+.seeit a:hover { border-color: var(--accent); color: var(--accent); }
+.seeit a small { color: var(--muted); font-size: 0.74rem; margin-left: 4px; }
+
+/* Part B: architecture tiers */
+.arch { display: grid; gap: 10px; }
+.tier { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 14px; }
+.tier > .lbl { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); padding-top: 12px; }
+.tier .row { display: flex; flex-wrap: wrap; gap: 10px; }
+.comp { flex: 1 1 210px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 11px 13px; display: grid; gap: 3px; min-width: 0; }
+.comp b { font-family: var(--font-display); font-weight: 600; font-size: 0.95rem; }
+.comp span { font-size: 0.8rem; color: var(--muted); }
+.comp.core { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.comp.sap { background: var(--sap-soft); border-color: transparent; }
+.mods { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.mods code { font-size: 0.74rem; }
+
+/* Part B: three layers */
+.layers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: stretch; }
+.layer { padding: 14px 16px; display: grid; gap: 6px; align-content: start; }
+.layer:first-child { border-radius: 10px 0 0 10px; background: var(--hr-soft); }
+.layer:nth-child(2) { background: var(--accent-soft); }
+.layer:last-child { border-radius: 0 10px 10px 0; background: var(--req-soft); }
+.layer b { font-family: var(--font-display); }
+.layer span { font-size: 0.84rem; }
+
+.rule { border-left: 3px solid var(--warn); padding: 4px 0 4px 12px; font-size: 0.9rem; }
+.rule b { color: var(--warn); }
+.req-card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px 22px; display: grid; gap: 14px; }
+.req-head { display: grid; grid-template-columns: 38px minmax(0, 1fr); gap: 12px; align-items: start; }
+.req-head .n { width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center; background: var(--hr); color: var(--surface); font-family: var(--font-display); font-weight: 700; }
+
+.phases { display: grid; gap: 12px; }
+.phase { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 16px; }
+.phase .when { display: grid; gap: 4px; align-content: start; }
+.phase .when b { font-family: var(--font-display); color: var(--accent); }
+.phase .when span { font-size: 0.8rem; color: var(--muted); }
+.phase .what { display: grid; gap: 8px; min-width: 0; }
+.accept { font-size: 0.88rem; background: var(--req-soft); border-radius: 8px; padding: 8px 12px; }
+.accept b { color: var(--req); }
+
+footer { font-size: 0.82rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 16px; display: grid; gap: 18px; }
+.sources { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; font-size: 0.86rem; }
+.sources ul { margin: 6px 0 0; padding-left: 18px; display: grid; gap: 4px; }
+
+@media (max-width: 760px) {
+  .two, .toc, .sources { grid-template-columns: minmax(0, 1fr); }
+  .compare { grid-template-columns: minmax(0, 1fr); }
+  .compare > div + div { border-left: 0; border-top: 1px solid var(--line); }
+  .handoff { grid-template-columns: minmax(0, 1fr); }
+  .handoff .arrow { transform: rotate(90deg); padding: 4px 0; }
+  .tier, .phase { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .tier > .lbl { padding-top: 0; }
+  .layers { grid-template-columns: minmax(0, 1fr); }
+  .layer:first-child { border-radius: 10px 10px 0 0; }
+  .layer:last-child { border-radius: 0 0 10px 10px; }
+  .chapter-head { grid-template-columns: 46px minmax(0, 1fr); }
+  .num { width: 46px; height: 44px; font-size: 1.05rem; }
+  .band h2 { font-size: 1.6rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">SAP SuccessFactors research + solution design on SAP BTP</div>
+  <h1>Role-Based JD Assistant</h1>
+  <p class="lede">Part A explains how SuccessFactors defines job descriptions today and what its AI offers. Part B is the solution to build on SAP BTP: one master JD per job role, controlled variants for hiring managers, and automatic sync to every requisition, driven by prompts, market data and past hires.</p>
+  <div class="toc">
+    <div>
+      <b>Part A · SuccessFactors today</b>
+      <nav aria-label="Part A">
+        <a href="#a1">A1 How it is defined</a>
+        <a href="#a2">A2 How it is attached to the JD</a>
+        <a href="#a3">A3 SAP's AI solution</a>
+      </nav>
+    </div>
+    <div>
+      <b>Part B · Solution to build</b>
+      <nav aria-label="Part B">
+        <a href="#b0">B0 Requirements</a>
+        <a href="#b1">B1 SuccessFactors objects</a>
+        <a href="#b2">B2 Architecture</a>
+        <a href="#b3">B3 JD model</a>
+        <a href="#b4">B4 Database</a>
+        <a href="#b5">B5 Requirements</a>
+        <a href="#b6">B6 Joule agent</a>
+        <a href="#b7">B7 Security</a>
+        <a href="#b8">B8 Delivery plan</a>
+      </nav>
+    </div>
+  </div>
+  <p class="caption">“See the real screen” links open the screenshot itself in a new tab. Links marked with a year show an older version of the screen.</p>
+</header>
+
+<!-- ===================== PART A ===================== -->
+<div class="band a">
+  <span class="eyebrow">Part A</span>
+  <h2>SuccessFactors today</h2>
+  <p class="muted">Research from SAP Help Portal (SuccessFactors 2H 2026 documentation).</p>
+</div>
+
+<!-- A1 -->
+<section id="a1">
+  <div class="chapter-head"><span class="num a">A1</span><div><h2>How it is defined</h2><p class="muted">Job descriptions are defined in <b>Job Profile Builder</b>, part of SuccessFactors.</p></div></div>
+
+  <div class="answer"><p><b>A job description is defined against a job role.</b> It is part of a <b>job profile</b>, which is created for a family, a role or a position. Without Job Profile Builder there is no description per role; it exists only on each job requisition.</p></div>
+
+  <div class="part">
+    <h3>The job architecture</h3>
+    <div class="jarch" role="img" aria-label="Job architecture: a family contains sub-families and roles; one role can have many job codes; one job code can cover many employees">
+      <div class="chain-row">
+        <div class="node"><b>Family</b><span>e.g. Human Resources</span></div>
+        <div class="link">has many</div>
+        <div class="node"><b>Sub-family</b><span>e.g. HR Operations. Optional, can nest.</span></div>
+        <div class="link">has many</div>
+        <div class="node key"><b>Role</b><span>e.g. HR Professional. The job profile hangs here.</span></div>
+        <div class="link">has many</div>
+        <div class="node"><b>Job code</b><span>JOBCLASSIFICATION with Employee Central, JOBCODE without</span></div>
+        <div class="link">has many</div>
+        <div class="node"><b>Employees</b><span>who hold that job code</span></div>
+      </div>
+    </div>
+    <ul class="plain">
+      <li>One job code can also map to several roles, by pairing it with an Employee Profile custom field.</li>
+      <li>Skills, competencies and certificates are also mapped to the role (from Talent Intelligence Hub), each marked <b>mandatory</b> or <b>optional</b>. They sync to employees' Growth Portfolio.</li>
+    </ul>
+    <div class="seeit">
+      <span class="lbl">See the real screen</span>
+      <a href="https://help.sap.com/doc/6653514fe7d84eca8e9bc2d38e46666d/2611/en-US/loio1900ec4587fc4cab85aac99ec7c65234_LowRes.png" target="_blank" rel="noopener">Relationship diagram<small>SAP Help</small></a>
+      <a href="https://learning.sap.com/service/media/topic/f3ff419a-4c5a-4dbb-bc97-4f6e3b9e443e/THR103_2511_en-US_media/THR103_2511_en-US_images/U1L1_04MngeJPCnt_Scr.png" target="_blank" rel="noopener">Job Profile Content screen<small>SAP Learning</small></a>
+      <a href="https://learning.sap.com/service/media/topic/b6a2fed4-cb2b-4b2c-a624-a31d8e5a84cb/THR103_2511_en-US_media/THR103_2511_en-US_images/U1L1_05_CrtSklCmptTIH_Scr.png" target="_blank" rel="noopener">Attribute screen in Talent Intelligence Hub<small>SAP Learning</small></a>
+      <a href="https://community.sap.com/legacyfs/online/storage/blog_attachments/2018/01/02-Families-and-Roles.jpg" target="_blank" rel="noopener">Creating a family and role<small>SAP Community, 2018</small></a>
+      <a href="https://community.sap.com/legacyfs/online/storage/blog_attachments/2018/01/03-Role-and-Job-Code.jpg" target="_blank" rel="noopener">Assigning a job code to a role<small>SAP Community, 2018</small></a>
+    </div>
+  </div>
+
+  <div class="part">
+    <h3>What a job profile holds</h3>
+    <div class="two">
+      <div class="panel">
+        <span class="chip">Layout</span>
+        <h3>Job profile template</h3>
+        <p class="panel-sub">One per family, or shared. Sets which sections appear, their order, which are required, and who sees each one (admins, internal postings, external postings). It holds no content.</p>
+      </div>
+      <div class="panel">
+        <span class="chip">Content</span>
+        <h3>Text and library items</h3>
+        <div class="libs" aria-label="Content in a job profile">
+          <span>Header</span><span>Summary</span><span>Job description</span>
+          <span>Responsibilities</span><span>Skills</span><span>Competencies</span><span>Certifications</span>
+          <span>Education degree</span><span>Education major</span><span>Employment conditions</span>
+          <span>Physical requirements</span><span>Relevant industry</span><span>Interview questions</span>
+        </div>
+      </div>
+    </div>
+    <div class="seeit">
+      <span class="lbl">See the real screen</span>
+      <a href="https://learning.sap.com/service/media/topic/fafef635-4b67-4f90-8497-a8342185064a/THR103_2511_en-US_media/THR103_2511_en-US_images/U1L1_09JobDscTmplDsign_Scr.png" target="_blank" rel="noopener">Job profile template design<small>SAP Learning</small></a>
+      <a href="https://community.sap.com/legacyfs/online/storage/blog_attachments/2018/01/04-Job-profile-template.jpg" target="_blank" rel="noopener">Template sections<small>SAP Community, 2018</small></a>
+    </div>
+  </div>
+
+  <div class="part">
+    <h3>How a job profile is created</h3>
+    <div class="two">
+      <div class="panel">
+        <span class="chip">Admin, no approval</span>
+        <ol class="steps">
+          <li>Admin Center → <b>Manage Job Profiles</b> → Create.</li>
+          <li>Select the family, role or position.</li>
+          <li>Fill in name, header, job description, summary; add skills and competencies.</li>
+          <li>Review and create, then <b>Activate</b>.</li>
+        </ol>
+      </div>
+      <div class="panel">
+        <span class="chip">With approval (SAP recommends)</span>
+        <p class="panel-sub">Created from <b>Job Profiles in People Profile</b>, then sent through an approval workflow. Approvers see it on their To-Do list.</p>
+        <p class="panel-sub"><b>Job Analyzer</b> scans the summary and description for biased words while the profile is written. <b>Job Profile Acknowledgment</b> lets regulated companies prove employees have read their description.</p>
+      </div>
+    </div>
+    <div class="seeit">
+      <span class="lbl">See the real screen</span>
+      <a href="https://learning.sap.com/service/media/topic/d916e479-1e6d-41e9-bd45-cd7b88f7f854/THR103_2511_en-US_media/THR103_2511_en-US_images/U1L1_10JbProfCntCretion_Scr.png" target="_blank" rel="noopener">Create Job Profile page<small>SAP Learning</small></a>
+      <a href="https://learning.sap.com/service/media/topic/d916e479-1e6d-41e9-bd45-cd7b88f7f854/THR103_2511_en-US_media/THR103_2511_en-US_images/U1L1_11JbPrfActivtn_Scr.png" target="_blank" rel="noopener">Activating a job profile<small>SAP Learning</small></a>
+      <a href="https://community.sap.com/legacyfs/online/storage/blog_attachments/2017/10/JA-2.png" target="_blank" rel="noopener">Job Analyzer bias panel<small>SAP Community, 2017</small></a>
+    </div>
+  </div>
+
+  <div class="part">
+    <h3>Where each piece is maintained</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>What</th><th>Maintained in SuccessFactors at</th></tr></thead>
+        <tbody>
+          <tr><td>Families, sub-families, roles</td><td>Admin Center → Manage Job Profile Content</td></tr>
+          <tr><td>Job profile templates</td><td>Admin Center → Manage Job Profile Templates</td></tr>
+          <tr><td>Job profiles, including the job description</td><td>Admin Center → Manage Job Profiles, or Job Profiles in People Profile</td></tr>
+          <tr><td>Skills, competencies, certificates per role</td><td>Talent Intelligence Hub, mapped in Manage Job Profile Content</td></tr>
+          <tr><td>Job codes</td><td>Employee Central Job Classification, or the JOBCODE field without Employee Central</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="caption">All stored in SuccessFactors as Metadata Framework (MDF) objects. Job Profile Builder replaced the older Job Description Manager.</p>
+  </div>
+
+  <div class="check">
+    <div><span class="pill unclear">Not confirmed</span><span>When both a role and a position have a profile, SAP does not say which one a requisition uses.</span></div>
+  </div>
+</section>
+
+<!-- A2 -->
+<section id="a2">
+  <div class="chapter-head"><span class="num a">A2</span><div><h2>How it is attached to the JD</h2><p class="muted">How a role's job profile becomes the job description on a job requisition (the request to fill a job).</p></div></div>
+
+  <div class="answer"><p><b>The requisition gets a copy of the role's job profile.</b> Everyone hiring for the same role starts from the same copy. After that, each requisition can be edited on its own.</p></div>
+
+  <div class="part">
+    <h3>Three ways the profile is attached</h3>
+    <ol class="steps">
+      <li><b>Browse Families &amp; Roles:</b> the recruiter picks a family and role, previews its profile, and selects it.</li>
+      <li><b>From a position:</b> a requisition started from a to-be-hired position in the org chart gets that position's role and profile.</li>
+      <li><b>By import:</b> a requisition imported with a role and a blank description gets the role's profile filled in.</li>
+    </ol>
+    <div class="seeit">
+      <span class="lbl">See the real screen</span>
+      <a href="https://learning.sap.com/service/media/topic/f3ac9543-0b3c-4437-a975-faeb6fc57df8/THR103_2511_en-US_media/THR103_2511_en-US_images/U1L1_13JbRqCretFmRle_Scr.png" target="_blank" rel="noopener">New requisition via Browse Families and Roles<small>SAP Learning</small></a>
+      <a href="https://learning.sap.com/service/media/topic/cff47ce9-199d-4bad-8df4-93dc9de5924a/THR103_2511_en-US_media/THR103_2511_en-US_images/U1L1_02JPBEnblmntRcSet_Scr.png" target="_blank" rel="noopener">Setting: Use Job Profiles in Requisitions<small>SAP Learning</small></a>
+      <a href="https://community.sap.com/legacyfs/online/storage/blog_attachments/2018/01/07-Job-Profile-in-Rec-1.jpg" target="_blank" rel="noopener">Changing the role or job code<small>SAP Community, 2018</small></a>
+    </div>
+  </div>
+
+  <div class="handoff" role="img" aria-label="The role's job profile is copied into the Job Profile tab of the job requisition">
+    <div class="form">
+      <div class="form-top">Job profile · HR Professional</div>
+      <div class="frow"><span>Summary · Job description</span><span class="tag">text</span></div>
+      <div class="frow"><span>Responsibilities</span><span class="tag">library</span></div>
+      <div class="frow"><span>Skills · Competencies</span><span class="tag">library</span></div>
+      <div class="frow"><span>Education · Conditions</span><span class="tag">library</span></div>
+    </div>
+    <div class="arrow" aria-hidden="true">→</div>
+    <div class="form">
+      <div class="form-top">Job requisition · Job Profile tab <span class="langs"><span class="on">EN</span><span>DE</span></span></div>
+      <div class="frow copied"><span>Summary · Job description</span><span class="tag">copy, editable</span></div>
+      <div class="frow copied"><span>Responsibilities</span><span class="tag">copy, editable</span></div>
+      <div class="frow copied"><span>Skills · Competencies</span><span class="tag">copy, editable</span></div>
+      <div class="frow copied"><span>Education · Conditions</span><span class="tag">copy, editable</span></div>
+    </div>
+  </div>
+  <div class="seeit">
+    <span class="lbl">See the real screen</span>
+    <a href="https://learning.sap.com/service/media/topic/f3ac9543-0b3c-4437-a975-faeb6fc57df8/THR103_2511_en-US_media/THR103_2511_en-US_images/U1L1_14JbPrfTbJbRq_Scr.png" target="_blank" rel="noopener">Job Profile tab on a requisition<small>SAP Learning</small></a>
+    <a href="https://community.sap.com/legacyfs/online/storage/blog_attachments/2018/01/08-Job-Profile-tab-1.jpg" target="_blank" rel="noopener">Job Profile tab<small>SAP Community, 2018</small></a>
+    <a href="https://community.sap.com/legacyfs/online/storage/blog_attachments/2018/01/09-Competencies.jpg" target="_blank" rel="noopener">Editing a section on a requisition<small>SAP Community, 2018</small></a>
+  </div>
+
+  <div class="two">
+    <div class="panel">
+      <span class="chip">On the requisition</span>
+      <h3>What can change</h3>
+      <ul class="plain">
+        <li>Edit section text and title; add items from the library; add new sections.</li>
+        <li>Show each section on internal postings, external postings, or both.</li>
+        <li>Edits stay on that requisition and never change the library.</li>
+        <li>Picking a different role overwrites all edits, after a warning.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <span class="chip">Without Job Profile Builder</span>
+      <h3>Plain text fields instead</h3>
+      <ul class="plain">
+        <li>Internal and external job description, typed or pasted, per language.</li>
+        <li>Header and footer picked from admin templates.</li>
+        <li>Or copy an existing requisition.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="check">
+    <div><span class="pill unclear">Not confirmed</span><span>Whether existing requisitions pick up later changes to the job profile. Re-selecting the role reloads it but overwrites edits.</span></div>
+  </div>
+</section>
+
+<!-- A3 -->
+<section id="a3">
+  <div class="chapter-head"><span class="num a">A3</span><div><h2>SAP's AI solution</h2><p class="muted">Everything SAP documents for job descriptions, in SuccessFactors and in Joule.</p></div></div>
+
+  <div class="answer"><p><b>One AI feature writes job description text:</b> <i>Enhance Job Description</i>, and only on a job requisition. Nothing in SAP's documentation generates a job profile for a role, and Joule cannot write a job description.</p></div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Feature</th><th>What it does</th><th>Writes a JD?</th></tr></thead>
+      <tbody>
+        <tr><td><b>Enhance Job Description</b><span class="where">Recruiting · premium AI</span></td><td>Rewrites the description on one job requisition. Details below.</td><td><span class="pill part">Yes, on a requisition</span></td></tr>
+        <tr><td><b>Interview question generation</b><span class="where">Recruiting · premium AI</span></td><td>Creates interview questions from the description.</td><td><span class="pill no">No</span></td></tr>
+        <tr><td><b>Skills extraction and validation</b><span class="where">Recruiting · premium AI</span></td><td>Pulls skills from posted descriptions; recruiters mark them primary or secondary.</td><td><span class="pill no">No</span></td></tr>
+        <tr><td><b>Skills architecture creation</b><span class="where">Talent Intelligence Hub · premium AI</span></td><td>Builds a skills library from job profiles and requisitions.</td><td><span class="pill no">No</span></td></tr>
+        <tr><td><b>Job Analyzer</b><span class="where">Job Profile Builder</span></td><td>Scans summary and description for biased words.</td><td><span class="pill no">No</span></td></tr>
+        <tr><td><b>AI-assisted writing</b><span class="where">Platform · premium AI</span></td><td>Improves, translates or bias-checks text in Manage Data fields.</td><td><span class="pill unclear">Not stated for profiles</span></td></tr>
+        <tr><td><b>Joule</b><span class="where">Recruiting, Platform, Employee Central, Career</span></td><td>Views and approvals only: job requisition approvals, job profile approvals, position changes, current and target roles.</td><td><span class="pill no">No</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="part">
+    <h3>How Enhance Job Description works</h3>
+    <ol class="steps">
+      <li><b>Save</b> the requisition. The AI only reads saved data.</li>
+      <li>Click <b>Enhance Job Description</b> (on the Job Profile tab when Job Profile Builder is used).</li>
+      <li>Accept the <b>AI usage notice</b>. It returns after every sign-in.</li>
+      <li>Compare <b>current and generated</b> text side by side; with Job Profile Builder, section by section.</li>
+      <li><b>Accept or discard.</b> To try again, edit fields by hand and click again.</li>
+    </ol>
+    <div class="screen" role="img" aria-label="Illustration of the Enhance Job Description screen with current and generated versions side by side and Accept and Discard buttons">
+      <div class="screen-bar">Enhance Job Description</div>
+      <div class="compare">
+        <div><span class="label">Current</span><div class="lines"><span style="width:92%"></span><span style="width:80%"></span><span style="width:86%"></span><span style="width:40%"></span></div></div>
+        <div><span class="label">Generated</span><div class="lines gen"><span style="width:95%"></span><span style="width:88%"></span><span style="width:93%"></span><span style="width:84%"></span><span style="width:60%"></span></div></div>
+      </div>
+      <div class="screen-foot"><span class="fakebtn">Discard</span><span class="fakebtn primary">Accept</span></div>
+    </div>
+    <p class="caption">Illustration based on SAP's documentation, not a screenshot.</p>
+    <div class="seeit">
+      <span class="lbl">See the real screen</span>
+      <a href="https://www.vivicta.com/siteassets/01-images/05-blogs/digital-hr/image-2.jpg" target="_blank" rel="noopener">Enhance Job Description dialog: Original, Suggested by AI, Accept, Discard<small>partner blog, 2024</small></a>
+      <a href="https://community.sap.com/legacyfs/online/storage/blog_attachments/2023/11/genAIJob2.png" target="_blank" rel="noopener">Same dialog shown on a laptop<small>SAP Community, 2023</small></a>
+    </div>
+  </div>
+
+  <div class="two">
+    <div class="panel">
+      <h3>What it reads</h3>
+      <ul class="plain">
+        <li>Job title (always)</li>
+        <li>Internal job description (always)</li>
+        <li>Requisition fields the admin chooses: text, rich text, date, number, currency, picklist, competencies, object, skills</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>What it ignores</h3>
+      <ul class="plain">
+        <li>Header, footer and interview question sections</li>
+        <li>Placeholder tokens in the description</li>
+        <li>Field types enum, derived, attachment, job code, questions, operators</li>
+        <li>Known issue: German text can come back in English</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>The user can</th><th>The user cannot</th></tr></thead>
+      <tbody>
+        <tr><td class="y">Click Enhance Job Description</td><td class="n">Type their own prompt or instructions</td></tr>
+        <tr><td class="y">Keep current or generated text</td><td class="n">Ask for changes like “shorter” or “more senior”</td></tr>
+        <tr><td class="y">Accept or discard</td><td class="n">Set tone, length or style</td></tr>
+        <tr><td class="y">Edit the final text by hand</td><td class="n">Add material beyond the chosen fields</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="caption">Setup: AI Units licence, the <i>Assisted Job Descriptions</i> switch in AI Services Administration, a role permission under AI Access, and the list of fields the AI may read.</p>
+
+  <div class="notfound">
+    <h3>Not found in SAP's documentation</h3>
+    <ul class="plain">
+      <li>AI that generates a job profile for a role in Job Profile Builder</li>
+      <li>A Joule use case that creates a job requisition or writes a job description</li>
+    </ul>
+    <p class="caption">SAP marketing says Joule helps “create job descriptions” and mentions a Recruiting agent, but the Joule capabilities guide lists no such use case.</p>
+  </div>
+
+  <div class="check">
+    <div><span class="pill unclear">Not confirmed</span><span>Whether Enhance Job Description works on a completely blank description.</span></div>
+    <div><span class="pill unclear">Not confirmed</span><span>Whether AI-assisted writing works in job profile text fields.</span></div>
+  </div>
+</section>
+
+<!-- ===================== PART B ===================== -->
+<div class="band b">
+  <span class="eyebrow">Part B</span>
+  <h2>Solution to build</h2>
+  <p class="muted">A role-level job description service on SAP BTP for six requirements: prompt-based create or enhance, market research, learning from past hires, one JD for many requisitions, different JDs for different hiring managers, and HR updates against the job role.</p>
+  <div class="legend"><span><span class="v">✓</span> confirmed in SAP's API reference or help docs</span><span><span class="c">◐</span> to confirm in Sprint 0 on a real tenant</span></div>
+</div>
+
+<!-- B0 REQUIREMENTS -->
+<section id="b0">
+  <div class="chapter-head"><span class="num b">B0</span><div><h2>Requirements</h2><p class="muted">The original brief rewritten as requirements a team can build and test against.</p></div></div>
+
+  <div class="answer"><p><b>Is the brief realistic?</b> The problems are real: SAP's enhancement works one requisition at a time, hiring managers want their own versions, and HR needs control at role level. As written, though, it reads like a case study. It has no goal or measures, no scope, no acceptance criteria and no edge cases. Its riskiest line, learning from past hires, needs privacy and bias safeguards.</p></div>
+
+  <div class="part">
+    <h3>Goal and measures</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Measure</th><th>Example target</th></tr></thead>
+        <tbody>
+          <tr><td>Time to create a JD for a requisition</td><td>From about 2 hours to under 15 minutes</td></tr>
+          <tr><td>Requisitions using an approved role JD</td><td>80% within 6 months of go-live</td></tr>
+          <tr><td>AI generations per requisition</td><td>0 after the first approved version for that manager and role</td></tr>
+          <tr><td>JDs passing compliance checks before posting</td><td>100%</td></tr>
+          <tr><td>Hiring-manager satisfaction with drafts</td><td>4 out of 5 or higher in a quarterly survey</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="caption">Targets are examples to agree with the business before the project starts.</p>
+  </div>
+
+  <div class="two">
+    <div class="panel">
+      <h3>Scope and assumptions</h3>
+      <ul class="plain">
+        <li>SuccessFactors Recruiting with Job Profile Builder enabled; Talent Intelligence Hub for skills.</li>
+        <li>Countries and languages listed up front (for example India and Germany; English and German).</li>
+        <li>Volumes stated: number of job roles, hiring managers and requisitions per month.</li>
+        <li>Runs on SAP BTP with AI Core, HANA Cloud and Joule Studio.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>Out of scope</h3>
+      <ul class="plain">
+        <li>Posting to external job boards</li>
+        <li>Screening or ranking candidates</li>
+        <li>Setting salaries (the system only shows market ranges)</li>
+        <li>Creating or changing job roles and families (stay in SuccessFactors)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="part">
+    <h3>Users and what they may do</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>User</th><th>Can</th><th>Cannot</th></tr></thead>
+        <tbody>
+          <tr><td>Hiring manager</td><td>Create, refine and apply their own version for roles they hire for; see their own requisitions</td><td>Change locked sections; see other managers' requisitions</td></tr>
+          <tr><td>Recruiter</td><td>View versions; confirm updates to posted jobs; apply a version on a manager's behalf</td><td>Approve large deviations</td></tr>
+          <tr><td>HR Head / HR business partner</td><td>Edit role masters; approve large deviations; switch hire insights on or off per role</td><td>Bypass the approval step for master changes</td></tr>
+          <tr><td>Talent acquisition admin</td><td>Set locked sections, approval thresholds and market data sources</td><td>Edit JD content</td></tr>
+          <tr><td>Legal / data protection</td><td>Approve use of hire data; read the audit log</td><td>Edit JDs</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="part">
+    <h3>Functional requirements</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>ID</th><th>Requirement</th><th>Accepted when</th><th>Design</th></tr></thead>
+        <tbody>
+          <tr><td><code>FR-1</code></td><td>Hiring managers can create, enhance or refine a role JD by typing instructions.</td><td>A draft returns in under 20 seconds; HR-locked sections are unchanged; each refinement changes only what was asked.</td><td><a href="#r1">Req 1</a></td></tr>
+          <tr><td><code>FR-2</code></td><td>Each month the system compares every active role with similar postings from a licensed source, per country.</td><td>At least 50 postings per role and country; missing market-standard skills and salary ranges shown; no posting text stored or reused.</td><td><a href="#r2">Req 2</a></td></tr>
+          <tr><td><code>FR-3</code></td><td>With HR and legal approval, the system shows anonymous patterns from recent hires for a role.</td><td>Shown only with at least 5 hires in 24 months; no personal details or protected attributes; HR can switch it off per role.</td><td><a href="#r3">Req 3</a></td></tr>
+          <tr><td><code>FR-4</code></td><td>An approved JD is applied to every new requisition for that manager and role, and to existing open ones in one action.</td><td>Three requisitions for one role are updated after one draft; AI is not rerun per requisition; new requisitions get the JD within 15 minutes.</td><td><a href="#r4">Req 4</a></td></tr>
+          <tr><td><code>FR-5</code></td><td>Each manager, team or location can have one approved version of a role JD.</td><td>Only allowed sections differ; large differences go to HR; HR sees all versions of a role side by side.</td><td><a href="#r5">Req 5</a></td></tr>
+          <tr><td><code>FR-6</code></td><td>HR changes the role master through approval; the change reaches the role profile, managers' versions and open requisitions.</td><td>The new version is in the role's job profile; managers' changes are kept or flagged for review; unposted requisitions update automatically; posted ones wait for a recruiter.</td><td><a href="#r6">Req 6</a></td></tr>
+          <tr><td><code>FR-7</code></td><td>Every JD passes compliance checks before it can be saved or posted.</td><td>Salary range present where the country requires it; required legal text present; inclusive-language check passed.</td><td><a href="#b2">checks module</a></td></tr>
+          <tr><td><code>FR-8</code></td><td>JDs exist in every language the role is hired in.</td><td>Each language version follows the same master version; a missing translation is flagged, never silently skipped.</td><td><a href="#b3">JD model</a></td></tr>
+          <tr><td><code>FR-9</code></td><td>Every change can be explained and traced.</td><td>The audit log shows who changed what, the prompt, the model, the evidence used and who approved it.</td><td><a href="#b4">AUDIT_LOG</a></td></tr>
+          <tr><td><code>FR-10</code></td><td>HR sees adoption and quality reports.</td><td>Reports show requisitions per role using an approved JD, number of versions per role and deviation levels.</td><td>Phase 2</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="part">
+    <h3>Non-functional requirements</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Area</th><th>Requirement</th></tr></thead>
+        <tbody>
+          <tr><td>Performance</td><td>Draft in under 20 seconds; requisition sync within 15 minutes of the SuccessFactors event.</td></tr>
+          <tr><td>Reliability</td><td>Failed syncs retry automatically and alert the admin after 3 failures; no requisition is left half-updated.</td></tr>
+          <tr><td>Cost</td><td>One AI generation per approved version, not per requisition; cost per draft logged and reported monthly.</td></tr>
+          <tr><td>Security</td><td>Users act with their own SuccessFactors permissions; master changes need the HR role.</td></tr>
+          <tr><td>Privacy</td><td>Hire data masked and kept only as aggregates; data protection impact assessment before go-live; data stays in the agreed region.</td></tr>
+          <tr><td>AI governance</td><td>A person approves before anything is posted; a fixed test set of 20 JDs is rerun before any model or prompt change.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="part">
+    <h3>Edge cases and expected behaviour</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Situation</th><th>Expected behaviour</th></tr></thead>
+        <tbody>
+          <tr><td>HR changes the master while a job is already posted</td><td>The posted job is not changed; the recruiter gets a task to review and repost.</td></tr>
+          <tr><td>A hiring manager leaves or changes team</td><td>Their versions move to the new manager of that team, or fall back to the role master; HR is notified.</td></tr>
+          <tr><td>A role is split into two or merged</td><td>Old masters are retired; existing versions are flagged for HR to map to the new roles.</td></tr>
+          <tr><td>The role on a requisition is changed</td><td>The JD is resolved again for the new role; the recruiter sees what changed.</td></tr>
+          <tr><td>HR updates the master while a manager is drafting</td><td>The draft is moved onto the new master when saved, and the manager sees the differences.</td></tr>
+          <tr><td>Evergreen requisitions</td><td>Treated like posted jobs: updates need recruiter confirmation.</td></tr>
+          <tr><td>Requisitions created by import or integration</td><td>Picked up by the same event or 10-minute check as manual ones.</td></tr>
+          <tr><td>A language version is missing</td><td>Flagged for translation; the requisition keeps its current text until approved.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="notfound">
+    <h3>Decisions the business must make first</h3>
+    <ul class="plain">
+      <li>Who owns the role master: HR, Talent Acquisition or the compensation team?</li>
+      <li>Is a version per person, per team, per location or per position?</li>
+      <li>Keep or drop SAP's Enhance Job Description licence once this is live?</li>
+      <li>Which market data source and budget (for example Lightcast or Adzuna)?</li>
+      <li>Is using hire data approved, and in which countries?</li>
+      <li>Which countries' pay-transparency rules apply?</li>
+    </ul>
+  </div>
+</section>
+
+<section aria-label="Solution in brief">
+  <div class="summary">
+    <span class="eyebrow">The solution in five decisions</span>
+    <ol>
+      <li><b>Manage the JD at role level, not requisition level.</b> The role's Job Profile Builder profile is the HR-owned master. The assistant keeps versions of it.</li>
+      <li><b>Hiring managers get variants, stored as patches.</b> A variant holds only section-level changes on top of a master version. Locked sections cannot be patched.</li>
+      <li><b>Requisition JDs are rendered, not generated.</b> AI runs once per master or variant. Each requisition is filled deterministically from master + variant + requisition facts, so ten requisitions cost one AI call.</li>
+      <li><b>Sync is event-driven.</b> SuccessFactors' “Update of Job Requisition” event triggers the assistant, which writes the JD back through the OData API. A fingerprint stops repeat work and loops.</li>
+      <li><b>Drafting is grounded.</b> Every draft uses the master, a monthly market benchmark and an anonymous profile of recent hires, through AI Core orchestration with data masking and a JSON output schema.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- B1 -->
+<section id="b1">
+  <div class="chapter-head"><span class="num b">B1</span><div><h2>SuccessFactors objects the solution uses</h2><p class="muted">From the SuccessFactors OData V2 API reference and Intelligent Services documentation.</p></div></div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Object</th><th>Operations</th><th>Fields and links used</th><th>Used for</th></tr></thead>
+      <tbody>
+        <tr><td><code>RoleEntity</code> <span class="v">✓</span></td><td>Query only</td><td><code>externalCode</code>, <code>name</code>, <code>family</code>, <code>status</code>, job code mappings</td><td>List roles; roles are maintained in SuccessFactors, never written by the assistant</td></tr>
+        <tr><td><code>JobProfile</code> <span class="v">✓</span></td><td>GET, UPSERT / MERGE</td><td><code>externalCode</code>, <code>name</code>, <code>draft</code>, <code>position</code> (role or position profile), <code>subModule</code> (<code>jobReqProfile</code> = a requisition's own profile); links <code>jobProfileRoleMappings</code>, <code>shortDescriptions</code>, <code>longDescriptions</code>, <code>headers</code>, <code>footers</code> (per-locale <code>JobProfileLocalizedData</code>), <code>skillContents</code>, <code>competencyContents</code>, <code>jobResponsibilityContents</code>, <code>educationDegreeContents</code>, <code>employmentConditionContents</code>…</td><td>Read the role master; write HR's approved master back</td></tr>
+        <tr><td><code>JobRequisition</code> <span class="v">✓</span></td><td>Query, Insert, Upsert, Merge</td><td><code>jobReqId</code>, <code>templateId</code>, <code>jobRoleEntity/externalCode</code> (links the role and its profile), <code>hiringManager</code> (<code>JobRequisitionOperator</code>), <code>jobCode</code>, location, status fields, <code>jobReqLocale</code></td><td>Find the role and hiring manager of a requisition; write the JD</td></tr>
+        <tr><td><code>JobRequisitionLocale</code> <span class="v">✓</span></td><td>Query, Insert, Upsert</td><td><code>locale</code>, <code>jobTitle</code>, <code>externalTitle</code>, <code>jobDescription</code>, <code>externalJobDescription</code>, <code>intJobDesHeader</code>, <code>intJobDescFooter</code>, <code>extJobDescHeader</code>, <code>extJobDescFooter</code>, <code>status</code></td><td>Requisition JD text for templates without Job Profile Builder</td></tr>
+        <tr><td><code>JobApplication</code> <span class="v">✓</span></td><td>Query</td><td><code>jobReqId</code>, <code>candidateId</code>, <code>hiredOn</code>, <code>startDate</code>, <code>jobAppStatus</code>, <code>resume</code> / <code>jobApplicationResume</code>, anonymization flag</td><td>Find recent hires for a role; skip anonymized applications</td></tr>
+        <tr><td>Intelligent Services events <span class="v">✓</span></td><td>Publish</td><td><b>Update of Job Requisition</b>, <b>Update of Job Application Status</b>, <b>Initiate Job Posting</b></td><td>Trigger requisition sync and hire-profile refresh</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="rule"><b>Two facts that shape the design.</b> A requisition linked to a role gets its own profile copy (<code>JobProfile</code> with <code>subModule = jobReqProfile</code>), and SuccessFactors does not push later role changes into it (see A2). That is why the assistant syncs requisitions itself. How a <code>jobReqProfile</code> is keyed to its <code>jobReqId</code> is <span class="c">◐</span> Sprint 0 spike S2.</p>
+</section>
+
+<!-- B2 -->
+<section id="b2">
+  <div class="chapter-head"><span class="num b">B2</span><div><h2>Architecture</h2><p class="muted">Python on BTP Cloud Foundry, no CAP. Everything below runs in your institute's BTP setup except SuccessFactors itself.</p></div></div>
+
+  <div class="arch">
+    <div class="tier"><div class="lbl">Users</div><div class="row">
+      <div class="comp"><b>Hiring manager</b><span>Drafts, refines, applies variants</span></div>
+      <div class="comp"><b>HR Head / HR admin</b><span>Owns masters, approves big deviations</span></div>
+      <div class="comp"><b>Recruiter</b><span>Confirms changes to posted jobs</span></div>
+    </div></div>
+    <div class="tier"><div class="lbl">Front end</div><div class="row">
+      <div class="comp sap"><b>Joule Studio agent “JD Assistant”</b><span>Conversation, prompts, approvals. Tools via MCP server or Joule skills.</span></div>
+      <div class="comp sap"><b>SAP Build Apps review screen</b><span>Side-by-side master vs variant vs market gaps; HR approval inbox</span></div>
+    </div></div>
+    <div class="tier"><div class="lbl">Service</div><div class="row">
+      <div class="comp core"><b>jd-assistant (FastAPI) on Cloud Foundry</b><span>REST API for Build Apps, MCP endpoint for Joule, webhook for SuccessFactors events. Secured by XSUAA.</span>
+        <div class="mods"><code>api</code><code>mcp_tools</code><code>sf_client</code><code>drafting</code><code>variants</code><code>render</code><code>sync</code><code>research</code><code>hires</code><code>checks</code><code>store</code></div></div>
+    </div></div>
+    <div class="tier"><div class="lbl">Platform</div><div class="row">
+      <div class="comp sap"><b>SAP AI Core · Generative AI Hub</b><span>Orchestration: templating, data masking, content filtering, JSON schema output; LLM + embedding model</span></div>
+      <div class="comp sap"><b>SAP HANA Cloud</b><span>JD tables, audit log, <code>REAL_VECTOR</code> embeddings for similarity checks</span></div>
+      <div class="comp sap"><b>Destination · XSUAA · Job Scheduling</b><span>SuccessFactors and market API connections; scheduled refresh and poller</span></div>
+    </div></div>
+    <div class="tier"><div class="lbl">Systems</div><div class="row">
+      <div class="comp sap"><b>SuccessFactors</b><span>Job Profile Builder, Recruiting, Intelligent Services + Integration Center</span></div>
+      <div class="comp"><b>Job-market data API</b><span>Lightcast (licensed) or Adzuna (developer API)</span></div>
+      <div class="comp sap"><b>SAP Build Process Automation</b><span>HR approval for large deviations and master changes</span></div>
+    </div></div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Module</th><th>Responsibility</th></tr></thead>
+      <tbody>
+        <tr><td><code>sf_client</code></td><td>OData V2 calls through the BTP destination: user calls with principal propagation, batch jobs with a technical user; retries and paging</td></tr>
+        <tr><td><code>drafting</code></td><td>Builds prompts, calls AI Core orchestration, validates the JSON against the JD schema</td></tr>
+        <tr><td><code>variants</code></td><td>Patch validation, resolution rule, deviation score, rebase onto a new master</td></tr>
+        <tr><td><code>render</code></td><td>Deterministic: master + variant patch + requisition facts → HTML per section and locale. No AI.</td></tr>
+        <tr><td><code>sync</code></td><td>Event webhook and 10-minute poller; fingerprint check; writes JD to SuccessFactors; records <code>REQ_JD_LINK</code></td></tr>
+        <tr><td><code>research</code>, <code>hires</code></td><td>Monthly market benchmark and hire profile per role</td></tr>
+        <tr><td><code>checks</code></td><td>Locked-section guard, mandatory skills, inclusive language, pay-transparency rules per country</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- B3 -->
+<section id="b3">
+  <div class="chapter-head"><span class="num b">B3</span><div><h2>The JD model</h2><p class="muted">One canonical JSON shape for masters, drafts and rendered JDs. Section keys match Job Profile Builder content, so the JSON maps straight back to <code>JobProfile</code>.</p></div></div>
+
+  <div class="layers" role="img" aria-label="Master owned by HR, variant patch owned by hiring manager, rendered requisition JD">
+    <div class="layer"><b>Master (HR)</b><span>Full JD per role, locale and version. Some sections locked.</span></div>
+    <div class="layer"><b>Variant patch (manager)</b><span>List of section operations on one master version.</span></div>
+    <div class="layer"><b>Rendered JD (requisition)</b><span>Master + patch + requisition facts. Written to SuccessFactors.</span></div>
+  </div>
+
+  <div class="two codes">
+    <div class="part">
+      <h4>Master JD (stored as JSON)</h4>
+<pre><code>{
+  "role_id": "1000435",
+  "locale": "en_US",
+  "version": 3,
+  "sections": {
+    "summary":          {"text": "...", "locked": false},
+    "long_description": {"text": "...", "locked": false},
+    "responsibilities": {"items": ["..."], "locked": true},
+    "skills_required":  {"items": [{"name": "ABAP OO", "level": 4}], "locked": true},
+    "skills_nice":      {"items": ["SAP BTP"], "locked": false},
+    "education":        {"items": ["Bachelor's in CS or equivalent"], "locked": true},
+    "employment_conditions": {"items": ["..."], "locked": true},
+    "team_context":     {"text": "", "locked": false}
+  },
+  "placeholders": ["{location}", "{salary_range}", "{work_model}"]
+}</code></pre>
+    </div>
+    <div class="part">
+      <h4>Variant patch (stored as JSON)</h4>
+<pre><code>{
+  "variant_id": "b7f2…",
+  "role_id": "1000435",
+  "base_version": 3,
+  "scope": {"type": "MANAGER_LOCATION", "manager": "priya.k", "location": "Pune"},
+  "ops": [
+    {"section": "team_context", "op": "replace",
+     "text": "You'll join the S/4HANA migration squad…"},
+    {"section": "skills_nice", "op": "add_item", "item": "RAP / ABAP Cloud"},
+    {"section": "summary", "op": "replace", "text": "..."}
+  ],
+  "intent": "less corporate tone; stress clean core",
+  "status": "APPROVED",
+  "deviation": 0.91
+}</code></pre>
+    </div>
+  </div>
+
+  <div class="two codes">
+    <div class="panel">
+      <h4>Resolution rule: which JD a requisition gets</h4>
+<pre><code>def resolve(role_id, locale, manager, location, org):
+    for scope in [("MANAGER_LOCATION", manager, location),
+                  ("MANAGER", manager), ("ORG", org),
+                  ("LOCATION", location)]:
+        v = store.approved_variant(role_id, locale, scope)
+        if v: return master(role_id, v.base_version), v
+    return latest_master(role_id, locale), None</code></pre>
+    </div>
+    <div class="panel">
+      <h4>Fingerprint: skip work that is already done</h4>
+<pre><code>fp = sha256("|".join([role_id, locale,
+        str(master.version), variant_id or "-",
+        str(variant_version or 0), location,
+        salary_range, work_model]))
+if link.fingerprint == fp:
+    return  # nothing changed, no write, no loop</code></pre>
+    </div>
+  </div>
+</section>
+
+<!-- B4 -->
+<section id="b4">
+  <div class="chapter-head"><span class="num b">B4</span><div><h2>Database (HANA Cloud)</h2><p class="muted">JSON in <code>NCLOB</code> columns; embeddings in <code>REAL_VECTOR</code> (dimension depends on the embedding model you deploy).</p></div></div>
+<pre><code>CREATE TABLE JD_MASTER (
+  ROLE_ID NVARCHAR(40), LOCALE NVARCHAR(10), VERSION INTEGER,
+  JPB_PROFILE_CODE NVARCHAR(40), SECTIONS NCLOB, STATUS NVARCHAR(20),   -- DRAFT | IN_APPROVAL | ACTIVE | RETIRED
+  CHANGE_NOTE NVARCHAR(1000), CREATED_BY NVARCHAR(100), CREATED_AT TIMESTAMP,
+  EMBEDDING REAL_VECTOR(1536),
+  PRIMARY KEY (ROLE_ID, LOCALE, VERSION));
+
+CREATE TABLE JD_VARIANT (
+  VARIANT_ID NVARCHAR(36) PRIMARY KEY, ROLE_ID NVARCHAR(40), LOCALE NVARCHAR(10),
+  BASE_VERSION INTEGER, SCOPE_TYPE NVARCHAR(20), SCOPE_KEY NVARCHAR(200),
+  OPS NCLOB, INTENT NVARCHAR(2000), VARIANT_VERSION INTEGER,
+  STATUS NVARCHAR(20),          -- DRAFT | PENDING_HR | APPROVED | NEEDS_REBASE | RETIRED
+  DEVIATION DECIMAL(4,3), APPROVED_BY NVARCHAR(100), APPROVED_AT TIMESTAMP);
+
+CREATE TABLE REQ_JD_LINK (
+  JOB_REQ_ID BIGINT PRIMARY KEY, ROLE_ID NVARCHAR(40), LOCALE NVARCHAR(10),
+  MASTER_VERSION INTEGER, VARIANT_ID NVARCHAR(36), VARIANT_VERSION INTEGER,
+  FINGERPRINT NVARCHAR(64), POSTED BOOLEAN,
+  SYNC_STATUS NVARCHAR(20),     -- SYNCED | PENDING_RECRUITER | FAILED | OPTED_OUT
+  LAST_SYNC TIMESTAMP);
+
+CREATE TABLE MARKET_BENCHMARK (
+  ROLE_ID NVARCHAR(40), LOCATION NVARCHAR(100), PERIOD NVARCHAR(7),
+  SAMPLE_SIZE INTEGER, SKILLS NCLOB, RESPONSIBILITIES NCLOB,
+  SALARY_P25 DECIMAL(15,2), SALARY_P50 DECIMAL(15,2), SALARY_P75 DECIMAL(15,2),
+  CURRENCY NVARCHAR(3), SOURCES NCLOB, PRIMARY KEY (ROLE_ID, LOCATION, PERIOD));
+
+CREATE TABLE HIRE_PROFILE (
+  ROLE_ID NVARCHAR(40) PRIMARY KEY, PERIOD_FROM DATE, PERIOD_TO DATE,
+  HIRE_COUNT INTEGER, PATTERNS NCLOB, REFRESHED_AT TIMESTAMP);
+
+CREATE TABLE AUDIT_LOG (
+  EVENT_ID NVARCHAR(36) PRIMARY KEY, AT TIMESTAMP, USER_ID NVARCHAR(100),
+  ACTION NVARCHAR(40), OBJECT_TYPE NVARCHAR(30), OBJECT_ID NVARCHAR(100),
+  PROMPT NCLOB, MODEL NVARCHAR(60), BEFORE_JSON NCLOB, AFTER_JSON NCLOB);</code></pre>
+</section>
+
+<!-- B5 -->
+<section id="b5">
+  <div class="chapter-head"><span class="num b">B5</span><div><h2>How each requirement is implemented</h2></div></div>
+
+  <article class="req-card" id="r1">
+    <div class="req-head"><span class="n">1</span><div><h3>Create or enhance a JD with a prompt</h3></div></div>
+    <div class="answer"><p>The manager talks to the Joule agent. The agent calls <code>draft_jd</code> with a mode (<b>create</b>, <b>enhance</b>, <b>refine</b>) and the manager's instruction. The service builds grounded context, calls AI Core orchestration once, validates the JSON and returns a draft. Refinements reuse the draft id, so each turn sends only the delta instruction.</p></div>
+    <ol class="steps">
+      <li>Resolve the role: <code>find_role("Senior ABAP Developer")</code> searches <code>RoleEntity</code> names cached in HANA.</li>
+      <li>Load context: active master (or the manager's variant), market benchmark for role + location, hire profile.</li>
+      <li>Call orchestration with the template below, masking on, response format = JD JSON schema, temperature 0.3.</li>
+      <li>Run <code>checks</code>: locked sections unchanged, mandatory skills present, inclusive-language scan, salary range present where the country requires it.</li>
+      <li>Store as <code>JD_VARIANT</code> with status <code>DRAFT</code>; the agent shows a summary of changes and asks “Save and apply?”.</li>
+    </ol>
+    <h4>Orchestration call (SAP Cloud SDK for AI, Python, orchestration v1 module names)</h4>
+<pre><code>from gen_ai_hub.orchestration.service import OrchestrationService
+from gen_ai_hub.orchestration.models.config import OrchestrationConfig
+from gen_ai_hub.orchestration.models.llm import LLM
+from gen_ai_hub.orchestration.models.message import SystemMessage, UserMessage
+from gen_ai_hub.orchestration.models.template import Template, TemplateValue
+from gen_ai_hub.orchestration.models.data_masking import DataMasking
+from gen_ai_hub.orchestration.models.sap_data_privacy_integration import (
+    SAPDataPrivacyIntegration, MaskingMethod, ProfileEntity)
+
+template = Template(messages=[
+    SystemMessage(SYSTEM_PROMPT),
+    UserMessage(
+        "MODE: {{?mode}}\nMASTER JD (JSON):\n{{?master}}\n"
+        "LOCKED SECTIONS: {{?locked}}\nCURRENT DRAFT (JSON or empty):\n{{?draft}}\n"
+        "MARKET BENCHMARK:\n{{?market}}\nSUCCESSFUL-HIRE PATTERNS:\n{{?hires}}\n"
+        "INSTRUCTION FROM HIRING MANAGER:\n{{?instruction}}")])
+
+masking = DataMasking(providers=[SAPDataPrivacyIntegration(
+    method=MaskingMethod.ANONYMIZATION,
+    entities=[ProfileEntity.PERSON, ProfileEntity.EMAIL, ProfileEntity.PHONE])])
+
+config = OrchestrationConfig(template=template, data_masking=masking,
+    llm=LLM(name=DEPLOYED_MODEL, parameters={"temperature": 0.3}))
+
+result = OrchestrationService(config=config).run(template_values=[
+    TemplateValue("mode", mode), TemplateValue("master", master_json), ...])
+draft = JDSchema.model_validate_json(result.orchestration_result.choices[0].message.content)</code></pre>
+    <p class="caption">The SDK also ships an <code>orchestration_v2</code> package with the same concepts and a <code>ResponseFormatJsonSchema</code> class for strict JSON output. Pin one version in <code>requirements.txt</code> and align imports to it.</p>
+    <h4>System prompt (core rules)</h4>
+<pre><code>You write job descriptions for SAP SuccessFactors job roles.
+Return ONLY JSON matching the JD schema. Keep every section key.
+Never change sections listed in LOCKED SECTIONS; copy them exactly.
+Use MARKET BENCHMARK and SUCCESSFUL-HIRE PATTERNS as evidence; never copy
+sentences from them. Do not mention people, employers or schools by name.
+Use inclusive, gender-neutral language. No age, nationality or family terms.
+Keep {location}, {salary_range} and {work_model} as placeholders.
+MODE create: write all unlocked sections from the master and evidence.
+MODE enhance: improve unlocked sections, keep meaning and facts.
+MODE refine: change only what the instruction asks; leave the rest identical.</code></pre>
+  </article>
+
+  <article class="req-card" id="r2">
+    <div class="req-head"><span class="n">2</span><div><h3>Market research for a best-in-class JD</h3></div></div>
+    <div class="answer"><p>A monthly job per active role and location pulls 50–200 similar postings from a job-market API, extracts structured facts with the LLM, aggregates them and stores only the aggregate in <code>MARKET_BENCHMARK</code>. Drafts use it as evidence; the review screen shows gaps.</p></div>
+    <ol class="steps">
+      <li><b>Search:</b> role name + synonyms (from the role's job codes) + location. Example with Adzuna's developer API: <code>GET /v1/api/jobs/in/search/1?what=sap+abap+developer&amp;where=pune&amp;results_per_page=50</code> through a BTP destination holding <code>app_id</code> and <code>app_key</code>. For enterprise use, Lightcast's licensed postings API gives deduplicated data with normalized skills.</li>
+      <li><b>Extract</b> each posting with a small JSON schema: <code>skills[]</code>, <code>responsibilities[]</code>, <code>years_experience</code>, <code>seniority</code>, <code>salary_min/max</code>, <code>work_model</code>.</li>
+      <li><b>Normalize skills</b> against your Talent Intelligence Hub skill library (or Lightcast Open Skills), so “ABAP OO” and “Object-oriented ABAP” count once.</li>
+      <li><b>Aggregate:</b> a skill in ≥ 30% of postings is <i>market standard</i>; 10–30% is a <i>differentiator</i>; salary P25 / P50 / P75 where posted.</li>
+      <li><b>Store and discard:</b> keep counts, percentiles and source URLs; discard posting text after extraction.</li>
+      <li><b>Use:</b> passed to drafting as evidence; the review screen shows “Market standard skills missing from this JD: S/4HANA migration (64%)”.</li>
+    </ol>
+    <p class="rule"><b>Rule:</b> only sources whose terms allow this use. No scraping of LinkedIn or job boards that forbid it. Never reuse competitor wording.</p>
+  </article>
+
+  <article class="req-card" id="r3">
+    <div class="req-head"><span class="n">3</span><div><h3>Learn from the last hires for the role</h3></div></div>
+    <div class="answer"><p>A monthly job (and the “Update of Job Application Status” event) rebuilds an anonymous <code>HIRE_PROFILE</code> per role from the last 24 months of hires. Only aggregates are stored, and only when there are at least 5 hires.</p></div>
+    <ol class="steps">
+      <li>Find requisitions for the role: <code>JobRequisition</code> filtered on <code>jobRoleEntity/externalCode</code>; keep <code>jobReqId</code>s.</li>
+      <li>Find hires: <code>JobApplication</code> for those requisitions where <code>hiredOn</code> is set; skip anonymized applications.</li>
+      <li>Read the resume (<code>jobApplicationResume</code>) and candidate background; mask personal data in orchestration; extract <code>skills</code>, <code>years_experience</code>, <code>certifications</code>, <code>education_level</code>, <code>industries</code> as JSON.</li>
+      <li>Aggregate: report an attribute only if ≥ 3 hires share it; output frequencies and medians (“7 of 9 had SAP BTP; median 6 years ABAP”).</li>
+      <li>Delete per-person extractions after aggregation; keep <code>HIRE_PROFILE</code> and an audit entry.</li>
+      <li>Bias check: never extract gender, age, nationality or photos; warn HR if one pattern covers 100% of hires (a sign of narrow hiring, not a requirement).</li>
+    </ol>
+    <p class="rule"><b>Before go-live:</b> HR and legal sign-off for this purpose under India's DPDP Act 2023 (and GDPR for EU data); add it to the candidate privacy statement.</p>
+  </article>
+
+  <article class="req-card" id="r4">
+    <div class="req-head"><span class="n">4</span><div><h3>Same hiring manager, many requisitions for the role</h3></div></div>
+    <div class="answer"><p><b>No, it is not enhanced per requisition.</b> The manager's approved variant is rendered into each requisition without AI. A new requisition is synced automatically; existing ones are updated in one step.</p></div>
+    <h4>Event-driven sync</h4>
+    <ol class="steps">
+      <li>In Integration Center, create an event-triggered integration on Intelligent Services event <b>Update of Job Requisition</b> that calls <code>POST /events/requisition</code> through a destination (OAuth). Fallback: Job Scheduling Service calls <code>/jobs/poll-requisitions</code> every 10 minutes, querying requisitions changed since the last run.</li>
+      <li>The webhook loads the requisition: role (<code>jobRoleEntity/externalCode</code>), hiring manager (<code>hiringManager</code>), location, locale, posting status.</li>
+      <li>Ignore it if the role has no managed master, or if <code>lastModifiedBy</code> is the assistant's technical user.</li>
+      <li><code>resolve()</code> picks master + variant; compute the fingerprint; stop if unchanged.</li>
+      <li><code>render()</code> fills placeholders from requisition facts and produces HTML per section.</li>
+      <li>Write: templates without Job Profile Builder → <code>JobRequisitionLocale.jobDescription</code> and <code>externalJobDescription</code> (nested under <code>JobRequisition</code> upsert); templates with Job Profile Builder → the requisition's <code>JobProfile</code> (<code>subModule = jobReqProfile</code>) <span class="c">◐</span> S2.</li>
+      <li>Save <code>REQ_JD_LINK</code> and an audit entry.</li>
+    </ol>
+    <h4>Existing requisitions</h4>
+    <p>Joule: “Apply my Senior ABAP JD to all my open requisitions” → <code>list_my_requisitions(role)</code> → shows 3 open → manager confirms → <code>apply_jd(variant, [2041, 2042, 2050])</code>. One AI call happened when the variant was drafted; zero during apply.</p>
+  </article>
+
+  <article class="req-card" id="r5">
+    <div class="req-head"><span class="n">5</span><div><h3>Different hiring managers want different JDs</h3></div></div>
+    <div class="answer"><p>Each manager has their own variant (scope <code>MANAGER</code> or <code>MANAGER_LOCATION</code>) on the same master. Patches are validated against a section policy, scored for deviation, and auto-approved or routed to HR.</p></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Section</th><th>Manager may</th></tr></thead>
+        <tbody>
+          <tr><td>summary, long_description, team_context</td><td>replace</td></tr>
+          <tr><td>skills_nice</td><td>add_item, remove_item</td></tr>
+          <tr><td>responsibilities</td><td>add_item only (cannot remove HR's items)</td></tr>
+          <tr><td>skills_required, education, employment_conditions, legal header/footer</td><td>nothing (locked)</td></tr>
+        </tbody>
+      </table>
+    </div>
+<pre><code>def deviation_ok(master, variant_rendered):
+    if not locked_sections_equal(master, variant_rendered): return False, "locked changed"
+    if not set(master.required_skills) &lt;= set(variant_rendered.skills): return False, "skill removed"
+    sim = cosine(embed(master.text), embed(variant_rendered.text))   # HANA REAL_VECTOR
+    growth = len(variant_rendered.text) / len(master.text)
+    if sim &gt;= 0.85 and 0.7 &lt;= growth &lt;= 1.4: return True, "auto-approve"
+    return False, "HR review"          # → SAP Build Process Automation approval task</code></pre>
+    <p class="caption">Thresholds (0.85, ±30–40%) are starting values; tune them on real variants in Phase 1. Only one approved variant per role + scope; a new approval retires the old one.</p>
+  </article>
+
+  <article class="req-card" id="r6">
+    <div class="req-head"><span class="n">6</span><div><h3>HR Head updates the JD for the job role</h3></div></div>
+    <div class="answer"><p>HR edits the master (by prompt or directly). On approval the assistant writes it to the role's <code>JobProfile</code>, bumps the master version, rebases every variant and re-renders requisitions by policy.</p></div>
+    <ol class="steps">
+      <li>HR: “Add GenAI on BTP to Senior ABAP responsibilities.” → <code>update_master(role, instruction)</code> creates master v4 as <code>DRAFT</code> (only HR scope can call it).</li>
+      <li>Approval in Build Process Automation, or Job Profile Builder's own workflow if you prefer to keep approvals in SuccessFactors.</li>
+      <li>Write back: <code>JobProfile</code> UPSERT for the role profile: <code>longDescriptions</code>, <code>shortDescriptions</code>, <code>jobResponsibilityContents</code>, <code>skillContents</code> per locale. Status <code>ACTIVE</code>.</li>
+      <li>Rebase variants on v3: if none of a variant's patched sections changed in v4, set <code>base_version = 4</code> automatically. If a patched section changed, run a merge prompt (old master section, new master section, manager's version) and set <code>NEEDS_REBASE</code> for the manager to accept in Joule.</li>
+      <li>Re-render requisitions: open and unposted → write automatically; posted → <code>PENDING_RECRUITER</code> task, because changing a live ad needs a human; closed → leave alone.</li>
+      <li>New requisitions that pick the role in SuccessFactors get v4 natively, because the role's profile itself changed.</li>
+    </ol>
+<pre><code>MERGE PROMPT (per conflicted section)
+OLD MASTER: {{?old}}   NEW MASTER: {{?new}}   MANAGER VERSION: {{?mine}}
+Produce the manager version updated with every change between OLD and NEW.
+Keep the manager's own additions. If a change contradicts the manager's
+text, prefer NEW MASTER and list the conflict in "notes". Return JSON.</code></pre>
+  </article>
+</section>
+
+<!-- B6 -->
+<section id="b6">
+  <div class="chapter-head"><span class="num b">B6</span><div><h2>Joule Studio agent</h2><p class="muted">Joule agents take instructions plus tools. Tools can be Joule skills (which call SAP Build actions through a destination) or MCP servers.</p></div></div>
+  <div class="two">
+    <div class="panel">
+      <h4>Agent instructions</h4>
+<pre><code>You are JD Assistant for SuccessFactors job roles.
+Always identify the job role first (find_role).
+Hiring managers: draft, refine and apply THEIR variant.
+HR users: may also update the role master.
+Never edit locked sections; explain why if asked.
+Before saving or applying, show what changes and
+which requisitions are affected, then ask to confirm.
+Show market and hire evidence when you use it.</code></pre>
+    </div>
+    <div class="panel">
+      <h4>Tools exposed by jd-assistant</h4>
+      <div class="table-wrap">
+        <table>
+          <tbody>
+            <tr><td><code>find_role</code></td><td>name → role id</td></tr>
+            <tr><td><code>get_role_jd</code></td><td>master + caller's variant</td></tr>
+            <tr><td><code>draft_jd</code></td><td>mode, instruction, draft id</td></tr>
+            <tr><td><code>save_variant</code></td><td>runs checks, approval</td></tr>
+            <tr><td><code>list_my_requisitions</code></td><td>caller's open reqs for role</td></tr>
+            <tr><td><code>apply_jd</code></td><td>variant → requisitions</td></tr>
+            <tr><td><code>update_master</code></td><td>HR only</td></tr>
+            <tr><td><code>pending_reviews</code></td><td>rebases, HR approvals</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <p class="caption">Option A: run an MCP server inside jd-assistant and add it as an agent tool. Option B: publish the REST API as an SAP Build action project, wrap each call in a Joule skill, and add the skills as tools. Choose in Sprint 0 based on what your tenant supports.</p>
+</section>
+
+<!-- B7 -->
+<section id="b7">
+  <div class="chapter-head"><span class="num b">B7</span><div><h2>Security and permissions</h2></div></div>
+  <div class="two">
+    <div class="panel">
+      <h4>SuccessFactors API permissions</h4>
+      <ul class="plain">
+        <li>Recruiting: <b>OData API Requisition Export / Create / Update</b> <span class="v">✓</span></li>
+        <li>Job Profile Builder: view on <b>Manage Job Profile Content</b> (roles) and <b>Manage Job &amp; Skill Profile Visibility → Job Profile</b> (profiles) <span class="v">✓</span></li>
+        <li>Read access to applications, resumes and candidate background for the technical user only <span class="c">◐</span></li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h4>BTP</h4>
+      <ul class="plain">
+        <li>Destination <code>SFSF_USER</code>: OAuth2 SAML bearer with principal propagation, so a manager only sees their own requisitions.</li>
+        <li>Destination <code>SFSF_TECH</code>: technical user for events and batch jobs.</li>
+        <li>XSUAA scopes: <code>JD.Manager</code>, <code>JD.HR</code>, <code>JD.Admin</code>; <code>update_master</code> needs <code>JD.HR</code>.</li>
+        <li>AI Core and HANA credentials from service bindings, never in code.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- B8 -->
+<section id="b8">
+  <div class="chapter-head"><span class="num b">B8</span><div><h2>Delivery plan</h2><p class="muted">Sprint 0 removes the unknowns; each phase ends with a demo and acceptance test.</p></div></div>
+  <div class="phases">
+    <div class="phase"><div class="when"><b>Sprint 0</b><span>1 week · spikes</span></div><div class="what">
+      <ul class="plain">
+        <li><b>S1</b> GET a role's <code>JobProfile</code> with its description and skill links; UPSERT a change on a test role; check draft and activation behaviour.</li>
+        <li><b>S2</b> Create a requisition with <code>jobRoleEntity/externalCode</code>; find its <code>jobReqProfile</code> and write a description; check what the recruiter sees.</li>
+        <li><b>S3</b> Integration Center event integration for “Update of Job Requisition” → webhook; measure delay; confirm creation also fires it.</li>
+        <li><b>S4</b> Query hired applications for one role; check resume access and anonymization.</li>
+        <li><b>S5</b> Market API trial for 3 roles in 2 cities; check sample size and skill quality.</li>
+        <li><b>S6</b> AI Core: deploy orchestration and model, test masking and JSON output; choose MCP or skills for Joule.</li>
+      </ul>
+    </div></div>
+    <div class="phase"><div class="when"><b>Phase 1</b><span>4 weeks · requirements 1, 4, 5</span></div><div class="what">
+      <p>Import masters from Job Profile Builder; drafting with prompts; variants with policy, deviation and HR approval; render; event sync and bulk apply; Joule agent; review screen.</p>
+      <div class="accept"><b>Accept when:</b> a manager with 3 open requisitions for one role gets all 3 updated after one draft (1 AI call); a second manager's variant differs only in editable sections; an attempt to remove a required skill is blocked.</div>
+    </div></div>
+    <div class="phase"><div class="when"><b>Phase 2</b><span>3 weeks · requirement 6</span></div><div class="what">
+      <p>Master versioning, approval, write-back to <code>JobProfile</code>, variant rebase with merge prompt, requisition re-render policy and recruiter tasks.</p>
+      <div class="accept"><b>Accept when:</b> master v4 reaches the role profile; untouched variants rebase automatically; conflicted ones appear in Joule for review; unposted requisitions update within 15 minutes; posted ones create a recruiter task.</div>
+    </div></div>
+    <div class="phase"><div class="when"><b>Phase 3</b><span>2 weeks · requirement 3</span></div><div class="what">
+      <p>Hire-profile job, masking, aggregation thresholds, bias warnings, evidence in drafts.</p>
+      <div class="accept"><b>Accept when:</b> no profile is built below 5 hires; a scan of stored data finds no names, emails or employers; drafts cite hire patterns.</div>
+    </div></div>
+    <div class="phase"><div class="when"><b>Phase 4</b><span>3 weeks · requirement 2</span></div><div class="what">
+      <p>Market benchmark job, skill normalization, salary percentiles, gap hints in drafts and on the review screen.</p>
+      <div class="accept"><b>Accept when:</b> benchmarks exist for 10 roles; each draft lists missing market-standard skills; no posting text is stored.</div>
+    </div></div>
+  </div>
+</section>
+
+<footer>
+  <div class="sources">
+    <div>
+      <b>Job Profile Builder</b>
+      <ul>
+        <li><a href="https://help.sap.com/docs/successfactors-platform/implementing-and-managing-job-profile-builder/what-is-job-profile-builder" target="_blank" rel="noopener">What is Job Profile Builder?</a></li>
+        <li><a href="https://help.sap.com/docs/successfactors-platform/implementing-and-managing-job-profile-builder/relationship-between-family-roles-and-job-codes" target="_blank" rel="noopener">Family, Roles and Job Codes</a></li>
+        <li><a href="https://help.sap.com/docs/successfactors-platform/implementing-and-managing-job-profile-builder/creating-job-profiles-using-new-ui" target="_blank" rel="noopener">Creating Job Profiles</a></li>
+        <li><a href="https://help.sap.com/docs/successfactors-platform/implementing-and-managing-job-profile-builder/mapping-skills-and-other-attributes-to-job-roles" target="_blank" rel="noopener">Mapping Attributes to Roles</a></li>
+        <li><a href="https://help.sap.com/docs/successfactors-platform/implementing-and-managing-job-profile-builder/job-profile-builder-content-types" target="_blank" rel="noopener">Content Types</a></li>
+        <li><a href="https://help.sap.com/docs/successfactors-platform/implementing-and-managing-job-profile-builder/using-job-analyzer-for-job-profile-builder" target="_blank" rel="noopener">Job Analyzer</a></li>
+      </ul>
+    </div>
+    <div>
+      <b>Recruiting, AI and Joule</b>
+      <ul>
+        <li><a href="https://help.sap.com/docs/successfactors-recruiting/setting-up-and-maintaining-sap-successfactors-recruiting/use-job-profile-builder-with-job-requisitions" target="_blank" rel="noopener">Job Profile Builder with Requisitions</a></li>
+        <li><a href="https://help.sap.com/docs/successfactors-recruiting/setting-up-and-maintaining-sap-successfactors-recruiting/enhancing-job-description-with-ai" target="_blank" rel="noopener">Enhancing Job Description with AI</a></li>
+        <li><a href="https://help.sap.com/docs/successfactors-recruiting/setting-up-and-maintaining-sap-successfactors-recruiting/premium-ai-features-for-recruiting" target="_blank" rel="noopener">Premium AI Features</a></li>
+        <li><a href="https://help.sap.com/docs/joule/capabilities-guide/recruiting-use-cases" target="_blank" rel="noopener">Joule: Recruiting</a></li>
+        <li><a href="https://help.sap.com/docs/joule/capabilities-guide/platform-use-cases" target="_blank" rel="noopener">Joule: Platform</a></li>
+        <li><a href="https://help.sap.com/docs/successfactors-platform/implementing-and-managing-intelligent-services/recruiting-events-for-intelligent-services" target="_blank" rel="noopener">Recruiting Events for Intelligent Services</a></li>
+      </ul>
+    </div>
+    <div>
+      <b>API reference and screenshots</b>
+      <ul>
+        <li><a href="https://help.sap.com/docs/successfactors-platform/sap-successfactors-api-reference-guide-odata-v2/jobprofile" target="_blank" rel="noopener">OData: JobProfile</a></li>
+        <li><a href="https://help.sap.com/docs/successfactors-platform/sap-successfactors-api-reference-guide-odata-v2/jobrequisition" target="_blank" rel="noopener">OData: JobRequisition</a></li>
+        <li><a href="https://help.sap.com/docs/successfactors-platform/sap-successfactors-api-reference-guide-odata-v2/jobrequisitionlocale" target="_blank" rel="noopener">OData: JobRequisitionLocale</a></li>
+        <li><a href="https://help.sap.com/docs/successfactors-platform/sap-successfactors-api-reference-guide-odata-v2/jobapplication" target="_blank" rel="noopener">OData: JobApplication</a></li>
+        <li><a href="https://learning.sap.com/courses/sap-successfactors-recruiting-advanced-academy/using-job-profile-builder-with-sap-successfactors-recruiting" target="_blank" rel="noopener">SAP Learning: Job Profile Builder with Recruiting</a> (screenshots)</li>
+        <li><a href="https://community.sap.com/t5/human-capital-management-blog-posts-by-members/tips-and-experiences-of-integrating-job-profile-builder-with-requisition-in/ba-p/13385257" target="_blank" rel="noopener">SAP Community: JPB with Requisition</a> (2018)</li>
+      </ul>
+    </div>
+  </div>
+  <p>Prepared 21 November 2026 from SAP Help Portal (SuccessFactors 2H 2026) and the SuccessFactors OData V2 API reference. Example names, ids and thresholds are illustrative.</p>
+</footer>
+
+</div>
+</body>
+</html>
