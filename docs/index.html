@@ -605,7 +605,7 @@ footer { font-size: 0.82rem; color: var(--muted); border-top: 1px solid var(--li
     </div>
     <div class="seeit"><span class="lbl">See the real screen</span><a href="https://learning.sap.com/service/media/topic/fafef635-4b67-4f90-8497-a8342185064a/THR103_2511_en-US_media/THR103_2511_en-US_images/U1L1_09JobDscTmplDsign_Scr.png" target="_blank" rel="noopener">Job profile template design<small>SAP Learning</small></a></div>
 
-    <div class="smap">
+    <div class="smap" id="map-template-2018">
       <p class="smap-head"><b>Screen map: Edit Job Description Template, Add Section and posting options</b> <i>(my own sketch of the layout, not SAP's screenshot · older 2018 screen)</i></p>
       <div class="screenmap">
 <svg viewBox="0 0 760 380" role="img" aria-label="Screen map of the 2018 template editor: sections on the left, the Add Section list of content types open, and on the right the selected section's options including Show in Job Requisition for external and internal posting">
@@ -1014,7 +1014,7 @@ footer { font-size: 0.82rem; color: var(--muted); border-top: 1px solid var(--li
       <div class="frow copied"><span>Education · Conditions</span><span class="tag">copy, editable</span></div>
     </div>
   </div>
-  <div class="smap">
+  <div class="smap" id="map-jp-tab">
     <p class="smap-head"><b>Screen map: the Job Profile tab on a requisition</b> <i>(my own sketch of the layout, not SAP's screenshot)</i></p>
     <div class="screenmap">
 <svg viewBox="0 0 760 380" role="img" aria-label="Screen map of a job requisition's Job Profile tab: tabs at the top, posting preview buttons, Manage Skills, Enhance Job Description and Add Section, then editable sections marked as shown on internal and external postings">
@@ -1067,7 +1067,7 @@ footer { font-size: 0.82rem; color: var(--muted); border-top: 1px solid var(--li
   </div>
   <div class="seeit"><span class="lbl">See the real screen</span><a href="https://learning.sap.com/service/media/topic/f3ac9543-0b3c-4437-a975-faeb6fc57df8/THR103_2511_en-US_media/THR103_2511_en-US_images/U1L1_14JbPrfTbJbRq_Scr.png" target="_blank" rel="noopener">Job Profile tab on a requisition<small>SAP Learning</small></a></div>
 
-  <div class="smap">
+  <div class="smap" id="map-titles">
     <p class="smap-head"><b>Screen map: requisition tabs and job titles</b> <i>(my own sketch of the layout, not SAP's screenshot · older 2018 screen)</i></p>
     <div class="screenmap">
 <svg viewBox="0 0 760 240" role="img" aria-label="Screen map of an older requisition screen: tabs for details, job profile, candidates and job postings; requisition ID, internal and external job titles with Same as Internal, and status">
@@ -1101,7 +1101,7 @@ footer { font-size: 0.82rem; color: var(--muted); border-top: 1px solid var(--li
     <div class="seeit"><span class="lbl">See the real screen</span><a href="https://community.sap.com/legacyfs/online/storage/blog_attachments/2018/01/08-Job-Profile-tab-1.jpg" target="_blank" rel="noopener">Job Profile tab<small>SAP Community, 2018</small></a></div>
   </div>
 
-  <div class="smap">
+  <div class="smap" id="map-edit-section">
     <p class="smap-head"><b>Screen map: editing a section on a requisition</b> <i>(my own sketch of the layout, not SAP's screenshot · older 2018 screen)</i></p>
     <div class="screenmap">
 <svg viewBox="0 0 760 360" role="img" aria-label="Screen map of editing a job profile section on a requisition: sections with Edit and reorder arrows behind a dialog with title, show in external and internal posting, title style, and Cancel, Delete Section and Save">
@@ -1191,6 +1191,22 @@ footer { font-size: 0.82rem; color: var(--muted); border-top: 1px solid var(--li
         </ul>
       </div>
     </div>
+  </div>
+
+  <div class="part">
+    <h3>Internal and external postings</h3>
+    <p class="muted">SuccessFactors supports different job description content for internal and external candidates, in three ways.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>How</th><th>Where it is set</th><th>See it in this document</th></tr></thead>
+        <tbody>
+          <tr><td><b>Job Profile Builder: per section</b><span class="where">same text, choose where each section shows</span></td><td>Template: Edit Job Description Template → select a section → <i>Show in Job Requisition</i> → Show in external posting / Show in internal posting.<br>One requisition: Job Profile tab → <b>+Edit</b> on a section → Show in external / internal posting.<br>Check: each section says “Shown on internal and external posting”, plus Internal / External Posting Preview.</td><td><a href="#map-template-2018">A1 template map, key 3</a><br><a href="#map-edit-section">A2 editing map, key 3</a><br><a href="#map-jp-tab">A2 Job Profile tab map, keys 4 and 6</a></td></tr>
+          <tr><td><b>Without Job Profile Builder: two fields</b><span class="where">wording can differ completely</span></td><td>Internal Job Description and External Job Description on the requisition (API: <code>jobDescription</code>, <code>externalJobDescription</code>). Titles work the same way: Internal and External Job Title, with Same as Internal.</td><td><a href="#map-titles">A2 titles map</a><br>No public screenshot of the two description fields found; confirmed in SAP's docs and API reference.</td></tr>
+          <tr><td><b>Headers and footers</b><span class="where">either way</span></td><td>Admin Center → Recruiting → Manage Job Posting Header and Footer: Internal Header, External Header, Internal Footer, External Footer, each with Same as Internal.</td><td>SAP Help: Job Posting Header and Footer Templates</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="rule"><b>Limit:</b> with Job Profile Builder the two postings differ by section, not by wording. For different internal wording, add an internal-only section, for example “Career path and eligibility”.</p>
   </div>
 
   <div class="check">
@@ -1639,6 +1655,20 @@ def to_html(section: dict) -&gt; str:
         html += "&lt;ul&gt;" + "".join(f"&lt;li&gt;{escape(i)}&lt;/li&gt;" for i in items) + "&lt;/ul&gt;"
     return html   # escape(): text from the model can never add its own tags</code></pre>
     <p class="caption">SAP does not list which tags the editor keeps; Sprint 0 spike S2 checks it on a real requisition and career site.</p>
+  </div>
+
+  <div class="panel">
+    <h4>Internal and external audiences: one JD, two postings</h4>
+    <ul class="plain">
+      <li>Each section in the JD JSON gets an <code>audience</code>: <code>internal</code>, <code>external</code> or <code>both</code>, plus optional text for one audience.</li>
+      <li>The locked core (responsibilities, required skills) is always <code>both</code> and identical on both postings.</li>
+      <li>Internal-only sections: eligibility (for example 12 months in current role), grade or band, internal contact, career path. External-only: company intro, benefits, equal-opportunity statement.</li>
+      <li><code>render()</code> writes two outputs, to <code>jobDescription</code> and <code>externalJobDescription</code>. On Job Profile Builder templates it sets each section's posting visibility instead of duplicating text.</li>
+      <li>A drafting mode “external version” rewrites the tone for outside candidates without touching the locked core. Pay-transparency and legal-text checks run on both outputs.</li>
+    </ul>
+<pre><code>"benefits":        {"text": "...", "audience": "external", "locked": false},
+"career_path":     {"text": "...", "audience": "internal", "locked": false},
+"responsibilities":{"items": ["..."], "audience": "both", "locked": true}</code></pre>
   </div>
 </section>
 
