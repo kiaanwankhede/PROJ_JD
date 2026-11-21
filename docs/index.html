@@ -860,7 +860,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
         </tbody>
       </table>
     </div>
-    <p class="caption">All stored in SuccessFactors as Metadata Framework (MDF) objects. Job Profile Builder replaced the older Job Description Manager.</p>
+    <p class="caption">All stored in SuccessFactors as Metadata Framework (MDF) objects. Job Profile Builder replaced the older Job Description Manager, which reaches end of development on 15 May 2026 and is deleted on 12 November 2027 (per a partner's 2H 2026 release explorer).</p>
   </div>
 
   <div class="part">
@@ -1256,7 +1256,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 <section id="a3">
   <div class="chapter-head"><span class="num a">A3</span><div><h2>SAP's AI solution</h2><p class="muted">Everything SAP documents for job descriptions, in SuccessFactors and in Joule.</p></div></div>
 
-  <div class="answer"><p><b>One AI feature writes job description text:</b> <i>Enhance Job Description</i>, and only on a job requisition. Nothing in SAP's documentation generates a job profile for a role, and Joule cannot write a job description.</p></div>
+  <div class="answer"><p><b>One AI feature writes job description text:</b> <i>Enhance Job Description</i>, and only on a job requisition. Nothing in SAP's documentation generates a job profile for a role, and Joule cannot write a job description. Rechecked on 22 November 2026 against SAP's 2H 2026 documentation.</p></div>
 
   <div class="table-wrap">
     <table>
@@ -1268,7 +1268,10 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
         <tr><td><b>Skills architecture creation</b><span class="where">Talent Intelligence Hub · premium AI</span></td><td>Builds a skills library from job profiles and requisitions.</td><td><span class="pill no">No</span></td></tr>
         <tr><td><b>Job Analyzer</b><span class="where">Job Profile Builder</span></td><td>Scans summary and description for biased words.</td><td><span class="pill no">No</span></td></tr>
         <tr><td><b>AI-assisted writing</b><span class="where">Platform · premium AI</span></td><td>Improves, translates or bias-checks text in Manage Data fields.</td><td><span class="pill unclear">Not stated for profiles</span></td></tr>
-        <tr><td><b>Joule</b><span class="where">Recruiting, Platform, Employee Central, Career</span></td><td>Views and approvals only: job requisition approvals, job profile approvals, position changes, current and target roles.</td><td><span class="pill no">No</span></td></tr>
+        <tr><td><b>Joule</b><span class="where">SuccessFactors Joule documentation, 2H 2026</span></td><td>10 Recruiting use cases: view job requisitions, approve requisitions and offers, give interview feedback, and candidate views. Other modules: views and approvals (job profile approvals, position changes, current and target roles).</td><td><span class="pill no">No</span></td></tr>
+        <tr><td><b>Joule HR agents</b><span class="where">Recruiting, Performance &amp; Goals, Career &amp; Talent, HR Service</span></td><td>SAP describes the Recruiting agent as matching candidates and scheduling interviews.</td><td><span class="pill no">No</span></td></tr>
+        <tr><td><b>SmartRecruiters with Winston</b><span class="where">SAP-acquired recruiting product, 2026</span></td><td>Winston Match (candidate matching), Winston Companion (recruiter Q&amp;A), Winston Interview. SAP says Winston and Joule work as connected agents from 2026.</td><td><span class="pill unclear">Not stated</span></td></tr>
+        <tr><td><b>SAP Fieldglass</b><span class="where">separate product, contingent workforce</span></td><td>Its own AI job description feature, for contractor roles.</td><td><span class="pill part">Yes, for contractors</span></td></tr>
       </tbody>
     </table>
   </div>
@@ -1376,10 +1379,36 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
       <li>AI that generates a job profile for a role in Job Profile Builder</li>
       <li>A Joule use case that creates a job requisition or writes a job description</li>
     </ul>
-    <p class="caption">SAP marketing says Joule helps “create job descriptions” and mentions a Recruiting agent, but the Joule capabilities guide lists no such use case.</p>
+    <p class="caption">SAP marketing says Joule helps “create job descriptions” and mentions a Recruiting agent, but SAP's SuccessFactors Joule documentation (2H 2026) lists no such use case, and the 2H 2026 release adds no new job description feature.</p>
+  </div>
+
+  <div class="part">
+    <h3>What it costs</h3>
+    <ul class="plain">
+      <li>Sold only inside the <b>Joule Premium for Human Capital Management</b> package, not on its own. The price covers every premium AI feature in that package.</li>
+      <li>Charged per SuccessFactors user in AI Units, at a list rate of <b>EUR 7 per AI Unit</b>.</li>
+    </ul>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Users</th><th>AI Units per user</th><th>Cost per user</th></tr></thead>
+        <tbody>
+          <tr><td>Up to 5,000</td><td>0.5</td><td><b>EUR 3.50</b></td></tr>
+          <tr><td>Up to 25,000</td><td>0.3</td><td>EUR 2.10</td></tr>
+          <tr><td>Up to 75,000</td><td>0.2</td><td>EUR 1.40</td></tr>
+          <tr><td>Above 75,000</td><td>0.1</td><td>EUR 0.70</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <ul class="plain">
+      <li>Requests: the first 325 are included; each further block of 1,000 requests costs 2 AI Units (EUR 14).</li>
+      <li>Example: 2,000 users × 0.5 × EUR 7 = <b>EUR 7,000</b> per billing period.</li>
+    </ul>
+    <p class="caption">List prices from SAP Discovery Center, read 22 November 2026. Contracts are usually discounted; SAP's Business AI Estimator gives an estimate.</p>
+    <p class="rule"><b>For this project:</b> paying for the whole package to get one Enhance button is a cost argument for a custom solution on BTP. The custom solution has its own costs too: AI Core usage, BTP services and Joule Studio.</p>
   </div>
 
   <div class="check">
+    <div><span class="pill unclear">Not confirmed</span><span>The billing period for the AI Units price. SAP's HR AI page says AI Units are billed monthly; the Discovery Center table does not state the period.</span></div>
     <div><span class="pill unclear">Not confirmed</span><span>Whether Enhance Job Description works on a completely blank description.</span></div>
     <div><span class="pill unclear">Not confirmed</span><span>Whether AI-assisted writing works in job profile text fields.</span></div>
   </div>
@@ -2011,6 +2040,11 @@ Show market and hire evidence when you use it.</code></pre>
         <li><a href="https://help.sap.com/docs/joule/capabilities-guide/recruiting-use-cases" target="_blank" rel="noopener">Joule: Recruiting</a></li>
         <li><a href="https://help.sap.com/docs/joule/capabilities-guide/platform-use-cases" target="_blank" rel="noopener">Joule: Platform</a></li>
         <li><a href="https://help.sap.com/docs/successfactors-platform/implementing-and-managing-intelligent-services/recruiting-events-for-intelligent-services" target="_blank" rel="noopener">Recruiting Events for Intelligent Services</a></li>
+        <li><a href="https://help.sap.com/docs/AUTONOMOUS_HCM/setting-up-and-using-joule-in-sap-successfactors/a883fa6d716747b19fda8fde42ad1f98.html" target="_blank" rel="noopener">Joule in SuccessFactors: Recruiting Use Cases</a></li>
+        <li><a href="https://discovery-center.cloud.sap/ai-feature/1d925a29-4254-4fcc-9726-2ade8885d242" target="_blank" rel="noopener">Discovery Center: job description enhancement (pricing)</a></li>
+        <li><a href="https://news.sap.com/2026/03/smartrecruiters-for-sap-successfactors-ai-driven-hiring-connected-hcm/" target="_blank" rel="noopener">SAP News: SmartRecruiters for SAP SuccessFactors</a></li>
+        <li><a href="https://community.sap.com/t5/human-capital-management-blog-posts-by-sap/second-half-2026-release-what-s-new-in-sap-successfactors-hcm/ba-p/14509247" target="_blank" rel="noopener">SAP Community: 2H 2026 release</a></li>
+        <li><a href="https://www.vakeconsulting.com/resources/successfactors-2h-2026/" target="_blank" rel="noopener">Vake: 2H 2026 release explorer</a></li>
       </ul>
     </div>
     <div>
