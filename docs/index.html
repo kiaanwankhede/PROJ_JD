@@ -255,51 +255,68 @@ footer { font-size: 0.82rem; color: var(--muted); border-top: 1px solid var(--li
   .num { width: 46px; height: 44px; font-size: 1.05rem; }
   .band h2 { font-size: 1.6rem; }
 }
+
+/* Tabs and right-hand navigation */
+.wrap { max-width: 1220px; }
+[id] { scroll-margin-top: 84px; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.tabs { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); display: flex; gap: 6px; overflow-x: auto; padding-block: 10px; border-bottom: 1px solid var(--line); margin-bottom: -28px; }
+.tabs button { flex: 0 0 auto; font: inherit; font-size: 0.9rem; font-weight: 600; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; cursor: pointer; white-space: nowrap; }
+.tabs button:hover { border-color: var(--accent); }
+.tabs button .n { color: var(--accent); margin-right: 7px; font-family: var(--font-mono); font-size: 0.82rem; }
+.tabs button[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+.tabs button[aria-selected="true"] .n { color: var(--surface); }
+.tabs button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.layout { display: grid; grid-template-columns: minmax(0, 1fr) 240px; gap: 44px; align-items: start; }
+.content { display: grid; gap: 24px; min-width: 0; }
+.panel-tab { display: grid; gap: 60px; min-width: 0; }
+.panel-tab[hidden] { display: none !important; }
+.tab-intro { color: var(--muted); font-size: 1.02rem; margin-bottom: -24px; }
+.side { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 74px); max-height: calc(100vh - 100px); overflow-y: auto; font-size: 0.86rem; border-left: 1px solid var(--line); padding-left: 16px; display: grid; gap: 8px; }
+.side nav, .otp-mobile nav { display: grid; gap: 2px; }
+.side a, .otp-mobile a { color: var(--muted); text-decoration: none; display: block; padding: 3px 0; line-height: 1.35; }
+.side a.h2, .otp-mobile a.h2 { color: var(--ink); font-weight: 600; margin-top: 6px; }
+.side a.h3, .otp-mobile a.h3 { padding-left: 12px; font-size: 0.82rem; }
+.side a.active, .otp-mobile a.active { color: var(--accent); font-weight: 600; }
+.side a:hover, .otp-mobile a:hover { color: var(--accent); }
+.side a.top { margin-top: 10px; font-size: 0.8rem; }
+.otp-mobile { display: none; }
+@media (max-width: 1000px) {
+  .layout { grid-template-columns: minmax(0, 1fr); }
+  .side { display: none; }
+  .otp-mobile { display: block; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; }
+  .otp-mobile summary { cursor: pointer; font-weight: 600; }
+  .otp-mobile nav { margin-top: 8px; }
+}
 </style>
 </head>
 <body>
 
 <div class="wrap">
 
-<header>
+<header id="top">
   <div class="eyebrow">SAP SuccessFactors research + solution design on SAP BTP</div>
   <h1>Role-Based JD Assistant</h1>
-  <p class="lede">Part A explains how SuccessFactors defines job descriptions today and what its AI offers. Part B is the solution to build on SAP BTP: one master JD per job role, controlled variants for hiring managers, and automatic sync to every requisition, driven by prompts, market data and past hires.</p>
-  <div class="toc">
-    <div>
-      <b>Part A · SuccessFactors today</b>
-      <nav aria-label="Part A">
-        <a href="#a1">A1 How it is defined</a>
-        <a href="#a2">A2 How it is attached to the JD</a>
-        <a href="#a3">A3 SAP's AI solution</a>
-      </nav>
-    </div>
-    <div>
-      <b>Part B · Solution to build</b>
-      <nav aria-label="Part B">
-        <a href="#b0">B0 Requirements</a>
-        <a href="#b1">B1 SuccessFactors objects</a>
-        <a href="#b2">B2 Architecture</a>
-        <a href="#b3">B3 JD model</a>
-        <a href="#b4">B4 Database</a>
-        <a href="#b5">B5 Requirements</a>
-        <a href="#b6">B6 Joule agent</a>
-        <a href="#b7">B7 Security</a>
-        <a href="#b8">B8 Delivery plan</a>
-      </nav>
-    </div>
-  </div>
+  <p class="lede">Tabs 1 and 2 explain how SuccessFactors defines job descriptions today and what its AI offers. Tabs 3 to 6 cover the solution to build on SAP BTP: one master JD per job role, controlled variants for hiring managers, and automatic sync to every requisition, driven by prompts, market data and past hires.</p>
   <p class="caption">Screen maps are my own sketches of each SAP screen's layout, not SAP's screenshots. The numbered key explains each part, and the “See the real screen” links open SAP's real screenshots in a new tab. Links marked with a year show an older version of the screen.</p>
+  <div class="legend"><span><span class="v">✓</span> confirmed in SAP's API reference or help docs</span><span><span class="c">◐</span> to confirm in Sprint 0 on a real tenant</span></div>
 </header>
 
-<!-- ===================== PART A ===================== -->
-<div class="band a">
-  <span class="eyebrow">Part A</span>
-  <h2>SuccessFactors today</h2>
-  <p class="muted">Research from SAP Help Portal (SuccessFactors 2H 2026 documentation).</p>
+<div class="tabs" role="tablist" aria-label="Document parts">
+  <button type="button" role="tab" id="tab-sf" aria-controls="sf" data-tab="sf" aria-selected="true"><span class="n">1</span>JD in SuccessFactors</button>
+  <button type="button" role="tab" id="tab-ai" aria-controls="ai" data-tab="ai" aria-selected="false"><span class="n">2</span>SAP's AI</button>
+  <button type="button" role="tab" id="tab-requirements" aria-controls="requirements" data-tab="requirements" aria-selected="false"><span class="n">3</span>Requirements</button>
+  <button type="button" role="tab" id="tab-design" aria-controls="design" data-tab="design" aria-selected="false"><span class="n">4</span>Solution design</button>
+  <button type="button" role="tab" id="tab-implementation" aria-controls="implementation" data-tab="implementation" aria-selected="false"><span class="n">5</span>Implementation</button>
+  <button type="button" role="tab" id="tab-plan" aria-controls="plan" data-tab="plan" aria-selected="false"><span class="n">6</span>Delivery plan</button>
 </div>
 
-<!-- A1 -->
+<div class="layout">
+<main class="content">
+<details class="otp-mobile"><summary>On this page</summary><nav id="mob-links" aria-label="On this page"></nav></details>
+<div class="panel-tab" id="sf" role="tabpanel" aria-labelledby="tab-sf">
+<p class="tab-intro">How SuccessFactors defines a job description and attaches it to a requisition. Research from SAP Help Portal (SuccessFactors 2H 2026).</p>
+
 <section id="a1">
   <div class="chapter-head"><span class="num a">A1</span><div><h2>How it is defined</h2><p class="muted">Job descriptions are defined in <b>Job Profile Builder</b>, part of SuccessFactors.</p></div></div>
 
@@ -869,7 +886,6 @@ footer { font-size: 0.82rem; color: var(--muted); border-top: 1px solid var(--li
   </div>
 </section>
 
-<!-- A2 -->
 <section id="a2">
   <div class="chapter-head"><span class="num a">A2</span><div><h2>How it is attached to the JD</h2><p class="muted">How a role's job profile becomes the job description on a job requisition (the request to fill a job).</p></div></div>
 
@@ -1232,8 +1248,11 @@ footer { font-size: 0.82rem; color: var(--muted); border-top: 1px solid var(--li
     <div><span class="pill unclear">Not confirmed</span><span>Whether existing requisitions pick up later changes to the job profile. Re-selecting the role reloads it but overwrites edits.</span></div>
   </div>
 </section>
+</div>
 
-<!-- A3 -->
+<div class="panel-tab" id="ai" role="tabpanel" aria-labelledby="tab-ai" hidden>
+<p class="tab-intro">What SAP's own AI and Joule offer for job descriptions today.</p>
+
 <section id="a3">
   <div class="chapter-head"><span class="num a">A3</span><div><h2>SAP's AI solution</h2><p class="muted">Everything SAP documents for job descriptions, in SuccessFactors and in Joule.</p></div></div>
 
@@ -1365,16 +1384,11 @@ footer { font-size: 0.82rem; color: var(--muted); border-top: 1px solid var(--li
     <div><span class="pill unclear">Not confirmed</span><span>Whether AI-assisted writing works in job profile text fields.</span></div>
   </div>
 </section>
-
-<!-- ===================== PART B ===================== -->
-<div class="band b">
-  <span class="eyebrow">Part B</span>
-  <h2>Solution to build</h2>
-  <p class="muted">A role-level job description service on SAP BTP for six requirements: prompt-based create or enhance, market research, learning from past hires, one JD for many requisitions, different JDs for different hiring managers, and HR updates against the job role.</p>
-  <div class="legend"><span><span class="v">✓</span> confirmed in SAP's API reference or help docs</span><span><span class="c">◐</span> to confirm in Sprint 0 on a real tenant</span></div>
 </div>
 
-<!-- B0 REQUIREMENTS -->
+<div class="panel-tab" id="requirements" role="tabpanel" aria-labelledby="tab-requirements" hidden>
+<p class="tab-intro">The original brief rewritten as requirements a team can build and test against.</p>
+
 <section id="b0">
   <div class="chapter-head"><span class="num b">B0</span><div><h2>Requirements</h2><p class="muted">The original brief rewritten as requirements a team can build and test against.</p></div></div>
 
@@ -1503,8 +1517,12 @@ footer { font-size: 0.82rem; color: var(--muted); border-top: 1px solid var(--li
     </ul>
   </div>
 </section>
+</div>
 
-<section aria-label="Solution in brief">
+<div class="panel-tab" id="design" role="tabpanel" aria-labelledby="tab-design" hidden>
+<p class="tab-intro">How the solution is put together on SAP BTP: SuccessFactors objects, architecture, JD model and database.</p>
+
+<section id="decisions" aria-label="Solution in brief">
   <div class="summary">
     <span class="eyebrow">The solution in five decisions</span>
     <ol>
@@ -1517,7 +1535,6 @@ footer { font-size: 0.82rem; color: var(--muted); border-top: 1px solid var(--li
   </div>
 </section>
 
-<!-- B1 -->
 <section id="b1">
   <div class="chapter-head"><span class="num b">B1</span><div><h2>SuccessFactors objects the solution uses</h2><p class="muted">From the SuccessFactors OData V2 API reference and Intelligent Services documentation.</p></div></div>
 
@@ -1537,7 +1554,6 @@ footer { font-size: 0.82rem; color: var(--muted); border-top: 1px solid var(--li
   <p class="rule"><b>Two facts that shape the design.</b> A requisition linked to a role gets its own profile copy (<code>JobProfile</code> with <code>subModule = jobReqProfile</code>), and SuccessFactors does not push later role changes into it (see A2). That is why the assistant syncs requisitions itself. How a <code>jobReqProfile</code> is keyed to its <code>jobReqId</code> is <span class="c">◐</span> Sprint 0 spike S2.</p>
 </section>
 
-<!-- B2 -->
 <section id="b2">
   <div class="chapter-head"><span class="num b">B2</span><div><h2>Architecture</h2><p class="muted">Python on BTP Cloud Foundry, no CAP. Everything below runs in your institute's BTP setup except SuccessFactors itself.</p></div></div>
 
@@ -1583,7 +1599,6 @@ footer { font-size: 0.82rem; color: var(--muted); border-top: 1px solid var(--li
   </div>
 </section>
 
-<!-- B3 -->
 <section id="b3">
   <div class="chapter-head"><span class="num b">B3</span><div><h2>The JD model</h2><p class="muted">One canonical JSON shape for masters, drafts and rendered JDs. Section keys match Job Profile Builder content, so the JSON maps straight back to <code>JobProfile</code>.</p></div></div>
 
@@ -1690,7 +1705,6 @@ def to_html(section: dict) -&gt; str:
   </div>
 </section>
 
-<!-- B4 -->
 <section id="b4">
   <div class="chapter-head"><span class="num b">B4</span><div><h2>Database (HANA Cloud)</h2><p class="muted">JSON in <code>NCLOB</code> columns; embeddings in <code>REAL_VECTOR</code> (dimension depends on the embedding model you deploy).</p></div></div>
 <pre><code>CREATE TABLE JD_MASTER (
@@ -1729,8 +1743,11 @@ CREATE TABLE AUDIT_LOG (
   ACTION NVARCHAR(40), OBJECT_TYPE NVARCHAR(30), OBJECT_ID NVARCHAR(100),
   PROMPT NCLOB, MODEL NVARCHAR(60), BEFORE_JSON NCLOB, AFTER_JSON NCLOB);</code></pre>
 </section>
+</div>
 
-<!-- B5 -->
+<div class="panel-tab" id="implementation" role="tabpanel" aria-labelledby="tab-implementation" hidden>
+<p class="tab-intro">How each requirement is built, the Joule agent, and security.</p>
+
 <section id="b5">
   <div class="chapter-head"><span class="num b">B5</span><div><h2>How each requirement is implemented</h2></div></div>
 
@@ -1874,7 +1891,6 @@ text, prefer NEW MASTER and list the conflict in "notes". Return JSON.</code></p
   </article>
 </section>
 
-<!-- B6 -->
 <section id="b6">
   <div class="chapter-head"><span class="num b">B6</span><div><h2>Joule Studio agent</h2><p class="muted">Joule agents take instructions plus tools. Tools can be Joule skills (which call SAP Build actions through a destination) or MCP servers.</p></div></div>
   <div class="two">
@@ -1910,7 +1926,6 @@ Show market and hire evidence when you use it.</code></pre>
   <p class="caption">Option A: run an MCP server inside jd-assistant and add it as an agent tool. Option B: publish the REST API as an SAP Build action project, wrap each call in a Joule skill, and add the skills as tools. Choose in Sprint 0 based on what your tenant supports.</p>
 </section>
 
-<!-- B7 -->
 <section id="b7">
   <div class="chapter-head"><span class="num b">B7</span><div><h2>Security and permissions</h2></div></div>
   <div class="two">
@@ -1933,8 +1948,11 @@ Show market and hire evidence when you use it.</code></pre>
     </div>
   </div>
 </section>
+</div>
 
-<!-- B8 -->
+<div class="panel-tab" id="plan" role="tabpanel" aria-labelledby="tab-plan" hidden>
+<p class="tab-intro">Sprint 0 to remove the unknowns, then four phases with acceptance tests.</p>
+
 <section id="b8">
   <div class="chapter-head"><span class="num b">B8</span><div><h2>Delivery plan</h2><p class="muted">Sprint 0 removes the unknowns; each phase ends with a demo and acceptance test.</p></div></div>
   <div class="phases">
@@ -1966,6 +1984,10 @@ Show market and hire evidence when you use it.</code></pre>
     </div></div>
   </div>
 </section>
+</div>
+</main>
+<aside class="side" aria-label="On this page"><span class="eyebrow">On this page</span><nav id="side-links"></nav><a class="top" href="#top">&#8593; Back to top</a></aside>
+</div>
 
 <footer>
   <div class="sources">
@@ -2007,5 +2029,109 @@ Show market and hire evidence when you use it.</code></pre>
 </footer>
 
 </div>
+<script>
+(function () {
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tabs [role="tab"]'));
+  var panels = Array.prototype.slice.call(document.querySelectorAll('.panel-tab'));
+  var side = document.getElementById('side-links');
+  var mob = document.getElementById('mob-links');
+  var observer = null;
+
+  function slug(t) { return t.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 50); }
+  function esc(s) { return s.replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+  function setActive(id) {
+    document.querySelectorAll('.side nav a, .otp-mobile a').forEach(function (a) {
+      a.classList.toggle('active', a.getAttribute('data-id') === id);
+    });
+  }
+
+  function buildToc(panel) {
+    var items = [];
+    panel.querySelectorAll('section[id]').forEach(function (sec) {
+      var h = sec.querySelector('h2') || sec.querySelector('.eyebrow');
+      if (h) items.push({ id: sec.id, text: h.textContent.trim(), cls: 'h2', el: sec });
+      sec.querySelectorAll(':scope > .part > h3, :scope > .req-card').forEach(function (el) {
+        var h3 = el.matches('h3') ? el : el.querySelector('h3');
+        if (!h3) return;
+        if (!el.id) el.id = sec.id + '-' + slug(h3.textContent);
+        items.push({ id: el.id, text: h3.textContent.trim(), cls: 'h3', el: el });
+      });
+    });
+    var html = items.map(function (i) {
+      return '<a href="#' + i.id + '" class="' + i.cls + '" data-id="' + i.id + '">' + esc(i.text) + '</a>';
+    }).join('');
+    side.innerHTML = html;
+    mob.innerHTML = html;
+    if (observer) observer.disconnect();
+    if ('IntersectionObserver' in window) {
+      observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { if (e.isIntersecting) setActive(e.target.id); });
+      }, { rootMargin: '-12% 0px -78% 0px' });
+      items.forEach(function (i) { observer.observe(i.el); });
+    }
+    if (items.length) setActive(items[0].id);
+  }
+
+  function show(tabId, scrollTo, keepHash) {
+    tabs.forEach(function (t) {
+      var on = t.getAttribute('data-tab') === tabId;
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      t.tabIndex = on ? 0 : -1;
+    });
+    panels.forEach(function (p) { p.hidden = p.id !== tabId; });
+    buildToc(document.getElementById(tabId));
+    if (!keepHash) { try { history.replaceState(null, '', '#' + (scrollTo || tabId)); } catch (e) { /* hash not available */ } }
+    if (scrollTo) {
+      var el = document.getElementById(scrollTo);
+      if (el) { el.scrollIntoView({ block: 'start' }); setActive(scrollTo); }
+    } else {
+      var bar = document.querySelector('.tabs');
+      var stickyTop = document.getElementById('top').getBoundingClientRect().bottom + window.pageYOffset;
+      if (window.pageYOffset > stickyTop) window.scrollTo(0, stickyTop);
+    }
+  }
+
+  function go(id) {
+    if (!id) return false;
+    for (var i = 0; i < panels.length; i++) { if (panels[i].id === id) { show(id); return true; } }
+    if (id === 'top') { window.scrollTo(0, 0); return true; }
+    var el = document.getElementById(id);
+    if (!el) return false;
+    var panel = el.closest('.panel-tab');
+    if (!panel) { el.scrollIntoView({ block: 'start' }); return true; }
+    show(panel.id, id);
+    return true;
+  }
+
+  tabs.forEach(function (t, i) {
+    t.addEventListener('click', function () { show(t.getAttribute('data-tab')); });
+    t.addEventListener('keydown', function (e) {
+      var n = null;
+      if (e.key === 'ArrowRight') n = tabs[(i + 1) % tabs.length];
+      if (e.key === 'ArrowLeft') n = tabs[(i - 1 + tabs.length) % tabs.length];
+      if (e.key === 'Home') n = tabs[0];
+      if (e.key === 'End') n = tabs[tabs.length - 1];
+      if (n) { e.preventDefault(); n.focus(); show(n.getAttribute('data-tab')); }
+    });
+  });
+
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest ? e.target.closest('a[href^="#"]') : null;
+    if (!a) return;
+    var id = decodeURIComponent(a.getAttribute('href').slice(1));
+    if (go(id)) {
+      e.preventDefault();
+      var d = a.closest('details');
+      if (d) d.open = false;
+    }
+  });
+
+  window.addEventListener('hashchange', function () { go(location.hash.slice(1)); });
+  var start = location.hash.slice(1);
+  if (!start || !go(start)) show(panels[0].id, null, true);
+})();
+
+</script>
 </body>
 </html>
