@@ -846,8 +846,26 @@ footer { font-size: 0.82rem; color: var(--muted); border-top: 1px solid var(--li
     <p class="caption">All stored in SuccessFactors as Metadata Framework (MDF) objects. Job Profile Builder replaced the older Job Description Manager.</p>
   </div>
 
+  <div class="part">
+    <h3>Must know as the GenAI developer</h3>
+    <p class="muted">The SuccessFactors rules that change your code, prompts or data.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Rule</th><th>What SuccessFactors does</th><th>What your code must do</th></tr></thead>
+        <tbody>
+          <tr><td><b>Everything is per language</b></td><td>Profiles store descriptions per locale (<code>JobProfileLocalizedData</code>); requisitions keep one text set per locale (<code>JobRequisitionLocale</code>); the profile list has a language switch. SAP's own AI can return German text in English.</td><td>Generate, check and write once per language the role is hired in. Never write one language into another's field, and flag missing translations.</td></tr>
+          <tr><td><b>Who can edit is controlled</b></td><td>Role-based permissions for Job Profile Builder and Recruiting. The requisition template sets field permissions per user role and requisition status, so a hiring manager may lose edit rights after approval.</td><td>Call SuccessFactors with the user's own identity (principal propagation), check field permissions before offering an edit, and use the technical user only for background sync.</td></tr>
+          <tr><td><b>Library content may be shared</b></td><td>Responsibilities, skills and similar items come from a central library and are picked into profiles.</td><td>Write changes to the profile, never to the shared library item.</td></tr>
+          <tr><td><b>Text has length limits</b></td><td>SAP documents “Text Limitation Errors When Creating Job Profile Content”.</td><td>Check the length of every generated section before writing; shorten it or reject it with a clear message.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
   <div class="check">
     <div><span class="pill unclear">Not confirmed</span><span>When both a role and a position have a profile, SAP does not say which one a requisition uses.</span></div>
+    <div><span class="pill unclear">Not confirmed</span><span>Whether editing a library item changes every profile that uses it, or only new ones. Checked in Sprint 0 (B8, spike S1).</span></div>
+    <div><span class="pill unclear">Not confirmed</span><span>The exact text-length limit for each job profile and requisition field. Checked in Sprint 0 (B8, spike S1).</span></div>
   </div>
 </section>
 
@@ -1922,7 +1940,7 @@ Show market and hire evidence when you use it.</code></pre>
   <div class="phases">
     <div class="phase"><div class="when"><b>Sprint 0</b><span>1 week · spikes</span></div><div class="what">
       <ul class="plain">
-        <li><b>S1</b> GET a role's <code>JobProfile</code> with its description and skill links; UPSERT a change on a test role; check draft and activation behaviour.</li>
+        <li><b>S1</b> GET a role's <code>JobProfile</code> with its description and skill links; UPSERT a change on a test role; check draft and activation behaviour, text-length limits, and whether editing a library item changes existing profiles.</li>
         <li><b>S2</b> Create a requisition with <code>jobRoleEntity/externalCode</code>; find its <code>jobReqProfile</code> and write a description; check what the recruiter sees, and which HTML tags survive in the requisition and on the career site.</li>
         <li><b>S3</b> Integration Center event integration for “Update of Job Requisition” → webhook; measure delay; confirm creation also fires it.</li>
         <li><b>S4</b> Query hired applications for one role; check resume access and anonymization.</li>
