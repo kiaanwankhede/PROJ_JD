@@ -300,12 +300,12 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 <div class="wrap">
 
 <header id="top">
-  <div class="eyebrow">SAP SuccessFactors research + solution design on SAP BTP</div>
+  <div class="eyebrow">SAP SuccessFactors research + three solution designs</div>
   <h1>Role-Based JD Assistant</h1>
-  <p class="lede">Tabs 1 and 2 explain how SuccessFactors defines job descriptions today and what SAP's AI offers. Tab 3 reviews the first design. Tabs 4 to 7 are the solution to build on SAP BTP: one master JD per job role, controlled variants for hiring managers, and requisitions filled without running AI again, shown end to end in tab 5.</p>
+  <p class="lede">Tabs 1 and 2 explain how SuccessFactors defines job descriptions today and what SAP's AI offers. Tab 3 reviews the first design and tab 4 sets the requirements. Tab 5 compares three ways to meet them: with Joule, on SAP BTP without Joule, and outside SAP. Tabs 6 to 8 detail the Joule solution end to end, and most of that design is shared by all three: one master JD per job role, controlled variants for hiring managers, and requisitions filled without running AI again.</p>
   <p class="caption">Screen maps are my own sketches of each SAP screen's layout, not SAP's screenshots. The numbered key explains each part, and the “See the real screen” links open SAP's real screenshots in a new tab. Links marked with a year show an older version of the screen.</p>
-  <p class="caption"><b>Version 2, 22 November 2026:</b> the design was reviewed and re-proposed. Tab 3 lists what changed and why.</p>
-  <div class="legend"><span><span class="v">✓</span> confirmed in SAP's API reference or help docs</span><span><span class="c">◐</span> to confirm on a real tenant (checks S1 to S6 in the delivery plan)</span></div>
+  <p class="caption"><b>Version 3, 22 November 2026:</b> three solutions, compared in tab 5. Version 2, the same day, reviewed and re-proposed the design; tab 3 lists what changed and why.</p>
+  <div class="legend"><span><span class="v">✓</span> confirmed in SAP's API reference or help docs</span><span><span class="c">◐</span> to confirm on a real tenant (checks S1 to S9 in the delivery plan)</span></div>
 </header>
 
 <div class="tabs" role="tablist" aria-label="Document parts">
@@ -313,9 +313,10 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
   <button type="button" role="tab" id="tab-ai" aria-controls="ai" data-tab="ai" aria-selected="false"><span class="n">2</span>SAP&#x27;s AI</button>
   <button type="button" role="tab" id="tab-review" aria-controls="review" data-tab="review" aria-selected="false"><span class="n">3</span>Review</button>
   <button type="button" role="tab" id="tab-requirements" aria-controls="requirements" data-tab="requirements" aria-selected="false"><span class="n">4</span>Requirements</button>
-  <button type="button" role="tab" id="tab-how" aria-controls="how" data-tab="how" aria-selected="false"><span class="n">5</span>How it works</button>
-  <button type="button" role="tab" id="tab-details" aria-controls="details" data-tab="details" aria-selected="false"><span class="n">6</span>Design details</button>
-  <button type="button" role="tab" id="tab-plan" aria-controls="plan" data-tab="plan" aria-selected="false"><span class="n">7</span>Delivery plan</button>
+  <button type="button" role="tab" id="tab-options" aria-controls="options" data-tab="options" aria-selected="false"><span class="n">5</span>Three solutions</button>
+  <button type="button" role="tab" id="tab-how" aria-controls="how" data-tab="how" aria-selected="false"><span class="n">6</span>How it works</button>
+  <button type="button" role="tab" id="tab-details" aria-controls="details" data-tab="details" aria-selected="false"><span class="n">7</span>Design details</button>
+  <button type="button" role="tab" id="tab-plan" aria-controls="plan" data-tab="plan" aria-selected="false"><span class="n">8</span>Delivery plan</button>
 </div>
 
 <div class="layout">
@@ -1618,8 +1619,1012 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 </section>
 </div>
 
+<div class="panel-tab" id="options" role="tabpanel" aria-labelledby="tab-options" hidden>
+<p class="tab-intro">Three ways to meet the same requirements: with Joule, on SAP BTP without Joule, and outside SAP. All three keep SuccessFactors as the system of record and share one core. They differ in where people work, how the user is known, which AI writes and where the service runs.</p>
+
+<section id="c1">
+  <div class="chapter-head"><span class="num b">C1</span><div><h2>Three solutions at a glance</h2><p class="muted">The same requirements (tab 4), the same JD model and write rules, three different front ends and platforms.</p></div></div>
+
+  <div class="answer"><p><b>In short:</b> Solution 1 puts the assistant in Joule. Solution 2 is the same build without Joule: the review page grows into a <b>JD Workbench</b> where people draft and approve, signed in from the first click. Solution 3 builds the same core outside SAP, on Azure with Claude and a Microsoft Teams bot, and gets its own SuccessFactors tokens. Solution 2 is Solution 1 minus the Joule front door, which makes it the safest first step.</p></div>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th></th><th>Solution 1 · with Joule</th><th>Solution 2 · without Joule</th><th>Solution 3 · outside SAP</th></tr></thead>
+      <tbody>
+        <tr><td><b>Where people draft</b></td><td>Joule chat, inside SuccessFactors</td><td>JD Workbench: an instruction box with quick asks</td><td>Microsoft Teams chat</td></tr>
+        <tr><td><b>Where people approve and apply</b></td><td>Review page (IAS sign-in)</td><td>The same JD Workbench</td><td>JD Workbench, as a Teams tab or in a browser</td></tr>
+        <tr><td><b>Who the service knows while drafting</b></td><td>A technical user; the person's name is only a claim (<a href="#d3">D3</a>)</td><td>The signed-in user</td><td>The signed-in user (Teams single sign-on)</td></tr>
+        <tr><td><b>How SuccessFactors is called as the user</b></td><td>BTP destination with principal propagation</td><td>The same</td><td>The service signs a SAML assertion and gets a SuccessFactors OAuth token</td></tr>
+        <tr><td><b>AI that writes</b></td><td>SAP AI Core, Generative AI Hub</td><td>SAP AI Core, Generative AI Hub</td><td>Claude (Claude API, or Claude in Microsoft Foundry)</td></tr>
+        <tr><td><b>Database</b></td><td>HANA Cloud</td><td>HANA Cloud</td><td>PostgreSQL with pgvector</td></tr>
+        <tr><td><b>Runs on</b></td><td>SAP BTP, Cloud Foundry</td><td>SAP BTP, Cloud Foundry</td><td>Azure Container Apps (AWS and Google Cloud equivalents in <a href="#c4">C4</a>)</td></tr>
+        <tr><td><b>Needs beyond SuccessFactors</b></td><td>Joule with Joule Studio; AI Core (extended), HANA Cloud, Cloud Foundry</td><td>AI Core (extended), HANA Cloud, Cloud Foundry</td><td>An Azure subscription, Claude API access, Microsoft 365 with Teams</td></tr>
+        <tr><td><b>You build</b></td><td>MCP tools, review page, core</td><td>JD Workbench, core</td><td>Teams bot, JD Workbench, SAML signing, core</td></tr>
+        <tr><td><b>Where JD data is processed</b></td><td>SAP BTP</td><td>SAP BTP</td><td>Azure and Anthropic: data processing agreements needed</td></tr>
+        <tr><td><b>Build effort</b> (relative)</td><td>Medium</td><td>Lowest</td><td>Highest</td></tr>
+        <tr><td><b>Biggest risk</b></td><td>Joule Studio entitlement, and MCP destinations in two subaccounts</td><td>Adoption: one more app to open</td><td>The service can get a token for any SuccessFactors user; data leaves SAP's cloud</td></tr>
+        <tr><td><b>Choose it when</b></td><td>The customer has Joule with Joule Studio, and managers already use Joule</td><td>There is no Joule, or you want the simplest build SAP supports</td><td>The company standard is Microsoft 365 and Azure, there is no SAP BTP, or IT wants to choose the model</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="part">
+    <h3>What all three share</h3>
+    <p>The core is the same Python package in all three solutions. Only five edges change, each behind an interface, so moving between solutions means swapping adapters, not rewriting logic.</p>
+    <ul class="plain">
+      <li>Requirements FR-1 to FR-14 (<a href="#requirements">tab 4</a>): every solution meets all of them.</li>
+      <li>The JD model, patch policy, resolution rule, fingerprint and write decision (<a href="#d4">D4</a>).</li>
+      <li>SuccessFactors objects and the ID rule (<a href="#d2">D2</a>), and the ATS adapter (<a href="#d8">D8</a>).</li>
+      <li>Flows F0, F2 and F4 step for step. F1 and F3 differ only in where people draft and approve.</li>
+      <li>Checks, evaluation set, system prompt and merge prompt (<a href="#d6">D6</a>), evidence rules (<a href="#d7">D7</a>), and the tables (<a href="#d5">D5</a>; types are mapped for PostgreSQL in Solution 3).</li>
+      <li>Mock-first delivery: the mock SuccessFactors and the core are built once.</li>
+    </ul>
+  </div>
+
+  <div class="part">
+    <h3>The five edges that change</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Edge (interface in the core)</th><th>Solution 1</th><th>Solution 2</th><th>Solution 3</th></tr></thead>
+        <tbody>
+          <tr><td><code>Conversation</code>: where people ask</td><td>Joule Studio agent calling MCP tools</td><td>JD Workbench pages</td><td>Teams bot + JD Workbench</td></tr>
+          <tr><td><code>Identity</code>: who is signed in</td><td>IAS, in the review page only</td><td>IAS, in the whole app</td><td>Microsoft Entra ID</td></tr>
+          <tr><td><code>SFSession</code>: SuccessFactors as a user or as the technical user</td><td>BTP destinations</td><td>BTP destinations</td><td><code>sf_auth</code>: signed SAML assertion → OAuth token</td></tr>
+          <tr><td><code>LLM</code>: draft, merge, extract, embed</td><td>AI Core orchestration</td><td>AI Core orchestration</td><td>Claude API, Presidio masking, an embedding model</td></tr>
+          <tr><td><code>Store</code>, <code>Scheduler</code>, <code>Notifier</code></td><td>HANA Cloud · Job Scheduling · Joule <code>pending_reviews</code></td><td>HANA Cloud · Job Scheduling · email and a SuccessFactors to-do</td><td>PostgreSQL · Container Apps jobs · Teams message</td></tr>
+        </tbody>
+      </table>
+    </div>
+<pre><code># core/ports.py: the only interfaces that differ between the three solutions
+class LLM(Protocol):
+    def draft(self, req: DraftRequest) -> JDDraft: ...          # JSON that matches the JD schema (D4)
+    def merge(self, old: Section, new: Section, mine: Section) -> MergeResult: ...
+    def extract_postings(self, postings: list[Posting]) -> list[PostingFacts]: ...
+    def embed(self, text: str) -> list[float]: ...
+
+class SFSession(Protocol):
+    def as_user(self, sf_user_id: str) -> ODataClient: ...      # SuccessFactors permissions apply
+    def technical(self) -> ODataClient: ...                     # sync, events, re-render after approval
+
+class Notifier(Protocol):
+    def notify(self, sf_user_id: str, item: ReviewItem) -> None: ...
+
+# Store (D5 tables) and Scheduler follow the same pattern.
+# JD_PROFILE = joule | btp | azure picks one adapter per interface at start-up.</code></pre>
+  </div>
+
+  <div class="notfound">
+    <h3>Found while checking these solutions: affects all three</h3>
+    <ul class="plain">
+      <li><b>Intelligent Services reached end of development on 13 November 2026</b> (end of maintenance 19 November 2027, deletion 15 November 2030). It keeps working, but no new events will be added, and SAP recommends SAP Cloud Application Event Hub for new event-driven integrations. Flow F2 keeps its 10-minute poll as the safety net; whether Event Hub publishes requisition events is new check S7 <span class="c">◐</span></li>
+      <li><b>“Update of Job Requisition” fires when an approved or closed requisition is updated</b>, per SAP's event list. A brand-new requisition may therefore arrive through the 10-minute poll until it is approved (check S3).</li>
+      <li><b>Basic authentication for SuccessFactors APIs is deleted on 12 November 2027</b> (off by default from the 1H 2027 release). Every solution here uses OAuth.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="c2">
+  <div class="chapter-head"><span class="num b">C2</span><div><h2>Solution 1: with Joule</h2><p class="muted">The design in tabs 6 to 8, summarised here so the three can be compared.</p></div></div>
+
+  <div class="answer"><p>Managers and HR talk to a Joule Studio agent inside SuccessFactors. Joule tools only read and draft, because Joule calls MCP servers as a technical user. Approving and applying happen in the review page, where the user signs in through IAS.</p></div>
+
+  <div class="two">
+    <div class="panel">
+      <h3>Strengths</h3>
+      <ul class="plain">
+        <li>The assistant sits where SAP is taking its users: Joule, inside SuccessFactors.</li>
+        <li>Drafting and refining in plain language, with no new screen to learn.</li>
+        <li>All data stays on SAP BTP, with SAP-managed masking and content filtering.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>Weaknesses</h3>
+      <ul class="plain">
+        <li>Two places to work: the chat to draft, the review page to approve.</li>
+        <li>Needs Joule with Joule Studio, and MCP destinations in two subaccounts (<a href="#d3">D3</a>).</li>
+        <li>Joule agent actions cost AI Units once the free period ends on 31 December 2026 (<a href="#p2">P2</a>).</li>
+      </ul>
+    </div>
+  </div>
+  <p>Read it end to end: <a href="#how">How it works</a> (flows F0 to F4), <a href="#details">Design details</a> (D1 to D9) and <a href="#plan">Delivery plan</a> (P1 to P3).</p>
+</section>
+
+<section id="c3">
+  <div class="chapter-head"><span class="num b">C3</span><div><h2>Solution 2: SAP BTP without Joule</h2><p class="muted">The same service and core on SAP BTP. The review page becomes the JD Workbench, where people both draft and approve.</p></div></div>
+
+  <div class="answer"><p><b>Without Joule, only the chat is lost.</b> The workbench has an instruction box that runs the same drafting logic (create, enhance, refine). Because the user is signed in from the first click, every draft records the real user, not a claim. Remove <code>mcp_tools</code>, grow <code>web</code>, add <code>notify</code>; everything else is unchanged.</p></div>
+
+  <div class="part">
+    <h3>Big picture</h3>
+    <div class="screenmap">
+<svg viewBox="0 0 760 456" role="img" aria-label="Big picture of Solution 2: hiring managers and HR use the JD Workbench, signed in through IAS. The workbench calls the jd-assistant service as the signed-in user. The service uses SAP AI Core, HANA Cloud, Job Scheduling and a market data API, and connects to SuccessFactors Job Profile Builder, Recruiting and Intelligent Services events. There is no Joule and no MCP.">
+<defs><marker id="ah-big2" viewBox="0 0 8 8" refX="8" refY="4" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" style="fill:var(--accent)"/></marker><marker id="ahm-big2" viewBox="0 0 8 8" refX="8" refY="4" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" style="fill:var(--muted)"/></marker></defs>
+<rect x="1.0" y="1.0" width="758.0" height="454.0" rx="10" style="fill:var(--surface);stroke:var(--line);stroke-width:1.5"/>
+<rect x="16.0" y="16.0" width="424.0" height="46.0" rx="8" style="fill:var(--hr-soft);stroke:var(--hr);stroke-width:1.2"/>
+<text x="228.0" y="37.0" text-anchor="middle" style="fill:var(--ink);font-size:12.5px;font-weight:600">Hiring manager · HR Head</text>
+<text x="228.0" y="52.0" text-anchor="middle" style="fill:var(--muted);font-size:10px">draft, refine, approve and apply in the JD Workbench</text>
+<rect x="572.0" y="16.0" width="172.0" height="46.0" rx="8" style="fill:var(--hr-soft);stroke:var(--hr);stroke-width:1.2"/>
+<text x="658.0" y="37.0" text-anchor="middle" style="fill:var(--ink);font-size:12.5px;font-weight:600">Recruiter</text>
+<text x="658.0" y="52.0" text-anchor="middle" style="fill:var(--muted);font-size:10px">works in SuccessFactors</text>
+<rect x="16.0" y="104.0" width="424.0" height="50.0" rx="8" style="fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.2"/>
+<text x="228.0" y="127.0" text-anchor="middle" style="fill:var(--ink);font-size:12px;font-weight:600">JD Workbench</text>
+<text x="228.0" y="142.0" text-anchor="middle" style="fill:var(--muted);font-size:10px">IAS sign-in · instruction box · compare · approve · apply</text>
+<rect x="16.0" y="196.0" width="424.0" height="146.0" rx="10" style="fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.6"/>
+<text x="228.0" y="220.0" text-anchor="middle" style="fill:var(--ink);font-size:14px;font-weight:700">jd-assistant service</text>
+<text x="228.0" y="238.0" text-anchor="middle" style="fill:var(--muted);font-size:10.5px">Python · FastAPI · Cloud Foundry · no Joule, no MCP</text>
+<rect x="69.9" y="252.0" width="32.9" height="20.0" rx="5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1"/>
+<text x="86.4" y="266" text-anchor="middle" style="fill:var(--ink);font-size:10.5px;font-family:var(--font-mono)">web</text>
+<rect x="110.8" y="252.0" width="51.8" height="20.0" rx="5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1"/>
+<text x="136.7" y="266" text-anchor="middle" style="fill:var(--ink);font-size:10.5px;font-family:var(--font-mono)">notify</text>
+<rect x="170.6" y="252.0" width="39.2" height="20.0" rx="5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1"/>
+<text x="190.2" y="266" text-anchor="middle" style="fill:var(--ink);font-size:10.5px;font-family:var(--font-mono)">sync</text>
+<rect x="217.8" y="252.0" width="77.0" height="20.0" rx="5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1"/>
+<text x="256.3" y="266" text-anchor="middle" style="fill:var(--ink);font-size:10.5px;font-family:var(--font-mono)">sf_adapter</text>
+<rect x="302.8" y="252.0" width="83.3" height="20.0" rx="5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1"/>
+<text x="344.4" y="266" text-anchor="middle" style="fill:var(--ink);font-size:10.5px;font-family:var(--font-mono)">ats_adapter</text>
+<rect x="76.2" y="280.0" width="64.4" height="20.0" rx="5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1"/>
+<text x="108.4" y="294" text-anchor="middle" style="fill:var(--ink);font-size:10.5px;font-family:var(--font-mono)">drafting</text>
+<rect x="148.6" y="280.0" width="64.4" height="20.0" rx="5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1"/>
+<text x="180.8" y="294" text-anchor="middle" style="fill:var(--ink);font-size:10.5px;font-family:var(--font-mono)">variants</text>
+<rect x="221.0" y="280.0" width="51.8" height="20.0" rx="5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1"/>
+<text x="246.9" y="294" text-anchor="middle" style="fill:var(--ink);font-size:10.5px;font-family:var(--font-mono)">render</text>
+<rect x="280.8" y="280.0" width="51.8" height="20.0" rx="5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1"/>
+<text x="306.7" y="294" text-anchor="middle" style="fill:var(--ink);font-size:10.5px;font-family:var(--font-mono)">checks</text>
+<rect x="340.6" y="280.0" width="39.2" height="20.0" rx="5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1"/>
+<text x="360.2" y="294" text-anchor="middle" style="fill:var(--ink);font-size:10.5px;font-family:var(--font-mono)">eval</text>
+<rect x="142.3" y="308.0" width="64.4" height="20.0" rx="5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1"/>
+<text x="174.5" y="322" text-anchor="middle" style="fill:var(--ink);font-size:10.5px;font-family:var(--font-mono)">research</text>
+<rect x="214.7" y="308.0" width="45.5" height="20.0" rx="5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1"/>
+<text x="237.5" y="322" text-anchor="middle" style="fill:var(--ink);font-size:10.5px;font-family:var(--font-mono)">hires</text>
+<rect x="268.2" y="308.0" width="45.5" height="20.0" rx="5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1"/>
+<text x="291.0" y="322" text-anchor="middle" style="fill:var(--ink);font-size:10.5px;font-family:var(--font-mono)">store</text>
+<line x1="228.0" y1="63.0" x2="228.0" y2="103.0" marker-end="url(#ah-big2)" style="stroke:var(--accent);stroke-width:1.5"/>
+<text x="236.0" y="87.0" text-anchor="start" style="fill:var(--ink);font-size:10.5px"><tspan style="fill:var(--accent);font-weight:700">F1</tspan> <tspan style="fill:var(--accent);font-weight:700">F3</tspan> · opened from a SuccessFactors quick link, a to-do or an email</text>
+<line x1="228.0" y1="155.0" x2="228.0" y2="195.0" marker-end="url(#ah-big2)" style="stroke:var(--accent);stroke-width:1.5"/>
+<text x="236.0" y="179.0" text-anchor="start" style="fill:var(--ink);font-size:10.5px">REST · the signed-in user, from the first click</text>
+<text x="650.0" y="372.0" text-anchor="middle" style="fill:var(--muted);font-size:9.5px">Calls as the user: BTP destination</text>
+<text x="650.0" y="385.0" text-anchor="middle" style="fill:var(--muted);font-size:9.5px">with principal propagation (as in D9)</text>
+<rect x="556.0" y="150.0" width="188.0" height="202.0" rx="10" style="fill:var(--sap-soft);stroke:var(--line);stroke-width:1.2"/>
+<text x="650.0" y="170.0" text-anchor="middle" style="fill:var(--ink);font-size:12.5px;font-weight:700">SAP SuccessFactors</text>
+<rect x="568.0" y="180.0" width="164.0" height="42.0" rx="8" style="fill:var(--surface);stroke:var(--line);stroke-width:1.2"/>
+<text x="650.0" y="199.0" text-anchor="middle" style="fill:var(--ink);font-size:11.5px;font-weight:600">Job Profile Builder</text>
+<text x="650.0" y="214.0" text-anchor="middle" style="fill:var(--muted);font-size:10px">roles · job profiles</text>
+<rect x="568.0" y="240.0" width="164.0" height="42.0" rx="8" style="fill:var(--surface);stroke:var(--line);stroke-width:1.2"/>
+<text x="650.0" y="259.0" text-anchor="middle" style="fill:var(--ink);font-size:11.5px;font-weight:600">Recruiting</text>
+<text x="650.0" y="274.0" text-anchor="middle" style="fill:var(--muted);font-size:10px">requisitions · postings</text>
+<rect x="568.0" y="300.0" width="164.0" height="42.0" rx="8" style="fill:var(--surface);stroke:var(--line);stroke-width:1.2"/>
+<text x="650.0" y="319.0" text-anchor="middle" style="fill:var(--ink);font-size:11.5px;font-weight:600">Intelligent Services</text>
+<text x="650.0" y="334.0" text-anchor="middle" style="fill:var(--muted);font-size:10px">events via Integration Center</text>
+<line x1="596.0" y1="223.0" x2="596.0" y2="239.0" marker-end="url(#ahm-big2)" style="stroke:var(--muted);stroke-width:1.5"/>
+<text x="604.0" y="235.0" text-anchor="start" style="fill:var(--muted);font-size:9.5px">copies profile</text>
+<line x1="596.0" y1="283.0" x2="596.0" y2="299.0" marker-end="url(#ahm-big2)" style="stroke:var(--muted);stroke-width:1.5"/>
+<text x="604.0" y="295.0" text-anchor="start" style="fill:var(--muted);font-size:9.5px">raises event</text>
+<line x1="441.0" y1="201.0" x2="567.0" y2="201.0" marker-start="url(#ah-big2)" marker-end="url(#ah-big2)" style="stroke:var(--accent);stroke-width:1.5"/>
+<text x="504.0" y="194.0" text-anchor="middle" style="fill:var(--ink);font-size:10.5px"><tspan style="fill:var(--accent);font-weight:700">F0</tspan> read · <tspan style="fill:var(--accent);font-weight:700">F3</tspan> write</text>
+<line x1="441.0" y1="261.0" x2="567.0" y2="261.0" marker-end="url(#ah-big2)" style="stroke:var(--accent);stroke-width:1.5"/>
+<text x="504.0" y="254.0" text-anchor="middle" style="fill:var(--ink);font-size:10.5px"><tspan style="fill:var(--accent);font-weight:700">F1</tspan> <tspan style="fill:var(--accent);font-weight:700">F2</tspan> <tspan style="fill:var(--accent);font-weight:700">F3</tspan> write JD</text>
+<line x1="567.0" y1="321.0" x2="441.0" y2="321.0" marker-end="url(#ah-big2)" style="stroke:var(--accent);stroke-width:1.5"/>
+<text x="504.0" y="314.0" text-anchor="middle" style="fill:var(--ink);font-size:10.5px"><tspan style="fill:var(--accent);font-weight:700">F2</tspan> event</text>
+<line x1="658.0" y1="63.0" x2="658.0" y2="149.0" marker-end="url(#ah-big2)" style="stroke:var(--accent);stroke-width:1.5"/>
+<text x="650.0" y="110.0" text-anchor="end" style="fill:var(--ink);font-size:10.5px"><tspan style="fill:var(--accent);font-weight:700">F2</tspan> · creates requisitions</text>
+<rect x="16.0" y="390.0" width="98.0" height="50.0" rx="8" style="fill:var(--sap-soft);stroke:var(--line);stroke-width:1.2"/>
+<text x="65.0" y="413.0" text-anchor="middle" style="fill:var(--ink);font-size:11px;font-weight:600">SAP AI Core</text>
+<text x="65.0" y="428.0" text-anchor="middle" style="fill:var(--muted);font-size:10px">Gen AI Hub</text>
+<line x1="65.0" y1="343.0" x2="65.0" y2="389.0" marker-end="url(#ah-big2)" style="stroke:var(--accent);stroke-width:1.5"/>
+<text x="73.0" y="370.0" text-anchor="start" style="fill:var(--ink);font-size:10.5px"><tspan style="fill:var(--accent);font-weight:700">F1</tspan> <tspan style="fill:var(--accent);font-weight:700">F3</tspan> <tspan style="fill:var(--accent);font-weight:700">F4</tspan></text>
+<rect x="124.0" y="390.0" width="98.0" height="50.0" rx="8" style="fill:var(--sap-soft);stroke:var(--line);stroke-width:1.2"/>
+<text x="173.0" y="413.0" text-anchor="middle" style="fill:var(--ink);font-size:11px;font-weight:600">HANA Cloud</text>
+<text x="173.0" y="428.0" text-anchor="middle" style="fill:var(--muted);font-size:10px">tables · vectors</text>
+<line x1="173.0" y1="343.0" x2="173.0" y2="389.0" marker-start="url(#ah-big2)" marker-end="url(#ah-big2)" style="stroke:var(--accent);stroke-width:1.5"/>
+<text x="181.0" y="370.0" text-anchor="start" style="fill:var(--ink);font-size:10.5px">all flows</text>
+<rect x="232.0" y="390.0" width="98.0" height="50.0" rx="8" style="fill:var(--sap-soft);stroke:var(--line);stroke-width:1.2"/>
+<text x="281.0" y="413.0" text-anchor="middle" style="fill:var(--ink);font-size:11px;font-weight:600">Job Scheduling</text>
+<text x="281.0" y="428.0" text-anchor="middle" style="fill:var(--muted);font-size:10px">nightly · quarterly</text>
+<line x1="281.0" y1="389.0" x2="281.0" y2="343.0" marker-end="url(#ah-big2)" style="stroke:var(--accent);stroke-width:1.5"/>
+<text x="289.0" y="370.0" text-anchor="start" style="fill:var(--ink);font-size:10.5px"><tspan style="fill:var(--accent);font-weight:700">F0</tspan> <tspan style="fill:var(--accent);font-weight:700">F4</tspan></text>
+<rect x="340.0" y="390.0" width="100.0" height="50.0" rx="8" style="fill:var(--surface);stroke:var(--line);stroke-width:1.2"/>
+<text x="390.0" y="413.0" text-anchor="middle" style="fill:var(--ink);font-size:11px;font-weight:600">Market data</text>
+<text x="390.0" y="428.0" text-anchor="middle" style="fill:var(--muted);font-size:10px">licensed API</text>
+<line x1="390.0" y1="343.0" x2="390.0" y2="389.0" marker-end="url(#ah-big2)" style="stroke:var(--accent);stroke-width:1.5"/>
+<text x="398.0" y="370.0" text-anchor="start" style="fill:var(--ink);font-size:10.5px"><tspan style="fill:var(--accent);font-weight:700">F4</tspan></text>
+</svg>
+    </div>
+    <p class="caption scroll-hint">Scroll sideways to see the whole diagram.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Part</th><th>Role in this solution</th><th>Compared with Solution 1</th></tr></thead>
+        <tbody>
+          <tr><td><b>JD Workbench</b></td><td>Pages for my roles, draft and refine, compare and apply; HR approvals and master drafts; a recruiter queue for posted jobs and manual edits. Served by the service behind the SAP Application Router with IAS sign-in.</td><td>Replaces Joule and the review page</td></tr>
+          <tr><td><code>web</code></td><td>Workbench pages and REST API; checks XSUAA scopes; calls SuccessFactors as the signed-in user.</td><td>Grows</td></tr>
+          <tr><td><code>notify</code></td><td>When something waits (an HR approval, a rebase, a recruiter decision): an email with a deep link, and a SuccessFactors to-do item through <code>TodoEntryV2</code>, category 41 “Complete Task for External Integration”, status 2 so it is visible. The technical user needs the permission “OData API To-Do External Categories Import”. <span class="v">✓</span></td><td>New; replaces Joule's <code>pending_reviews</code></td></tr>
+          <tr><td><code>mcp_tools</code></td><td>Not needed.</td><td>Removed</td></tr>
+          <tr><td><b>Entry point</b></td><td>A custom quick link on the SuccessFactors home page (Admin Center → Manage Home Page → Quick Links) that opens the workbench URL, or a UI Integration Card, which SAP recommends for apps on BTP. The old home-page tiles are discontinued, and SAP Build Work Zone is not needed for a link. <span class="v">✓</span></td><td>New</td></tr>
+          <tr><td><b>Connection to SuccessFactors</b></td><td>The SAP SuccessFactors Extensibility service on BTP creates the OAuth 2.0 SAML bearer destination (<code>api-access</code> plan) and the single sign-on between the subaccount and SuccessFactors through IAS (<code>sso-configuration</code> plan). <span class="v">✓</span></td><td>The same as Solution 1, set up by one service</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="part">
+    <h3>The JD Workbench</h3>
+    <div class="smap">
+      <p class="smap-head"><b>Screen map: the proposed JD Workbench</b> <i>(my design for this solution, not an SAP screen)</i></p>
+      <div class="screenmap">
+<svg viewBox="0 0 760 426" role="img" aria-label="Screen map of the proposed JD Workbench: the role and the manager&#x27;s own requisitions on the left, an instruction box with quick asks and draft versions in the middle, a comparison of the master and the manager&#x27;s version with evidence on the right, and checks with Approve and apply at the bottom.">
+<defs><marker id="ah-wb" viewBox="0 0 8 8" refX="8" refY="4" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" style="fill:var(--accent)"/></marker><marker id="ahm-wb" viewBox="0 0 8 8" refX="8" refY="4" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" style="fill:var(--muted)"/></marker></defs>
+<rect x="1.0" y="1.0" width="758.0" height="424.0" rx="10" style="fill:var(--surface);stroke:var(--line);stroke-width:1.5"/>
+<rect x="12.0" y="12.0" width="736.0" height="34.0" rx="8" style="fill:var(--sap-soft)"/>
+<text x="26.0" y="34.0" text-anchor="start" style="fill:var(--ink);font-size:13px;font-weight:700">JD Workbench</text>
+<text x="132.0" y="34.0" text-anchor="start" style="fill:var(--muted);font-size:11px">My roles · Drafts · HR approvals · Recruiter queue</text>
+<text x="734.0" y="34.0" text-anchor="end" style="fill:var(--muted);font-size:11px">PKUMAR01 · Hiring manager</text>
+<rect x="12.0" y="58.0" width="200.0" height="300.0" rx="8" style="fill:var(--surface);stroke:var(--line);stroke-width:1.2"/>
+<text x="24.0" y="80.0" text-anchor="start" style="fill:var(--ink);font-size:12px;font-weight:600">Senior ABAP Developer</text>
+<text x="24.0" y="96.0" text-anchor="start" style="fill:var(--muted);font-size:10px">Technology · role 1000435</text>
+<text x="24.0" y="124.0" text-anchor="start" style="fill:var(--muted);font-size:9.5px;font-weight:600">MY OPEN REQUISITIONS</text>
+<rect x="22.0" y="136.0" width="180.0" height="38.0" rx="6" style="fill:var(--bg);stroke:var(--line);stroke-width:1"/>
+<text x="32.0" y="152.0" text-anchor="start" style="fill:var(--ink);font-size:11px">☑ 2041 · Pune</text>
+<text x="32.0" y="166.0" text-anchor="start" style="fill:var(--muted);font-size:9.5px">not posted</text>
+<rect x="22.0" y="182.0" width="180.0" height="38.0" rx="6" style="fill:var(--bg);stroke:var(--line);stroke-width:1"/>
+<text x="32.0" y="198.0" text-anchor="start" style="fill:var(--ink);font-size:11px">☑ 2057 · Pune</text>
+<text x="32.0" y="212.0" text-anchor="start" style="fill:var(--muted);font-size:9.5px">not posted</text>
+<rect x="22.0" y="228.0" width="180.0" height="38.0" rx="6" style="fill:var(--bg);stroke:var(--line);stroke-width:1"/>
+<text x="32.0" y="244.0" text-anchor="start" style="fill:var(--ink);font-size:11px">☐ 2063 · Berlin</text>
+<text x="32.0" y="258.0" text-anchor="start" style="fill:var(--muted);font-size:9.5px">posted: recruiter</text>
+<text x="24.0" y="298.0" text-anchor="start" style="fill:var(--muted);font-size:10px">Only requisitions you may</text>
+<text x="24.0" y="312.0" text-anchor="start" style="fill:var(--muted);font-size:10px">edit in SuccessFactors</text>
+<rect x="224.0" y="58.0" width="236.0" height="300.0" rx="8" style="fill:var(--surface);stroke:var(--line);stroke-width:1.2"/>
+<text x="236.0" y="80.0" text-anchor="start" style="fill:var(--muted);font-size:9.5px;font-weight:600">WHAT SHOULD CHANGE?</text>
+<rect x="236.0" y="90.0" width="212.0" height="64.0" rx="6" style="fill:var(--bg);stroke:var(--accent);stroke-width:1.2"/>
+<text x="246.0" y="110.0" text-anchor="start" style="fill:var(--ink);font-size:11px">Focus on clean core and</text>
+<text x="246.0" y="126.0" text-anchor="start" style="fill:var(--ink);font-size:11px">RAP; less corporate tone.</text>
+<rect x="236.0" y="164.0" width="61.4" height="20.0" rx="10" style="fill:var(--accent-soft)"/>
+<text x="266.7" y="178.0" text-anchor="middle" style="fill:var(--ink);font-size:10px">Shorter</text>
+<rect x="303.4" y="164.0" width="86.2" height="20.0" rx="10" style="fill:var(--accent-soft)"/>
+<text x="346.5" y="178.0" text-anchor="middle" style="fill:var(--ink);font-size:10px">More senior</text>
+<rect x="236.0" y="190.0" width="117.2" height="20.0" rx="10" style="fill:var(--accent-soft)"/>
+<text x="294.6" y="204.0" text-anchor="middle" style="fill:var(--ink);font-size:10px">Add team context</text>
+<rect x="359.2" y="190.0" width="55.2" height="20.0" rx="10" style="fill:var(--accent-soft)"/>
+<text x="386.8" y="204.0" text-anchor="middle" style="fill:var(--ink);font-size:10px">German</text>
+<rect x="236.0" y="222.0" width="212.0" height="26.0" rx="6" style="fill:var(--accent)"/>
+<text x="342.0" y="239.0" text-anchor="middle" style="fill:var(--surface);font-size:11.5px;font-weight:600">Draft</text>
+<text x="236.0" y="274.0" text-anchor="start" style="fill:var(--muted);font-size:9.5px;font-weight:600">VERSIONS OF THIS DRAFT</text>
+<text x="236.0" y="294.0" text-anchor="start" style="fill:var(--ink);font-size:10.5px">v1 · create from master v3</text>
+<text x="236.0" y="312.0" text-anchor="start" style="fill:var(--ink);font-size:10.5px">v2 · refine: “shorter summary”</text>
+<text x="236.0" y="330.0" text-anchor="start" style="fill:var(--ink);font-size:10.5px;font-weight:600">v3 · refine: “clean core, RAP”</text>
+<rect x="472.0" y="58.0" width="276.0" height="300.0" rx="8" style="fill:var(--surface);stroke:var(--line);stroke-width:1.2"/>
+<text x="484.0" y="80.0" text-anchor="start" style="fill:var(--muted);font-size:9.5px;font-weight:600">MASTER v3</text>
+<text x="616.0" y="80.0" text-anchor="start" style="fill:var(--muted);font-size:9.5px;font-weight:600">YOUR VERSION</text>
+<rect x="484.0" y="90.0" width="120.0" height="32.0" rx="5" style="fill:var(--bg);stroke:var(--line);stroke-width:1"/>
+<text x="492.0" y="110.0" text-anchor="start" style="fill:var(--ink);font-size:10.5px">Summary</text>
+<rect x="616.0" y="90.0" width="120.0" height="32.0" rx="5" style="fill:var(--accent-soft);stroke:var(--line);stroke-width:1"/>
+<text x="624.0" y="110.0" text-anchor="start" style="fill:var(--ink);font-size:10.5px">changed</text>
+<rect x="484.0" y="130.0" width="120.0" height="32.0" rx="5" style="fill:var(--bg);stroke:var(--line);stroke-width:1"/>
+<text x="492.0" y="150.0" text-anchor="start" style="fill:var(--ink);font-size:10.5px">Team context</text>
+<rect x="616.0" y="130.0" width="120.0" height="32.0" rx="5" style="fill:var(--accent-soft);stroke:var(--line);stroke-width:1"/>
+<text x="624.0" y="150.0" text-anchor="start" style="fill:var(--ink);font-size:10.5px">new</text>
+<rect x="484.0" y="170.0" width="120.0" height="32.0" rx="5" style="fill:var(--bg);stroke:var(--line);stroke-width:1"/>
+<text x="492.0" y="190.0" text-anchor="start" style="fill:var(--ink);font-size:10.5px">Responsibilities</text>
+<rect x="616.0" y="170.0" width="120.0" height="32.0" rx="5" style="fill:var(--bg);stroke:var(--line);stroke-width:1"/>
+<text x="624.0" y="190.0" text-anchor="start" style="fill:var(--muted);font-size:10.5px">locked 🔒</text>
+<rect x="484.0" y="210.0" width="120.0" height="32.0" rx="5" style="fill:var(--bg);stroke:var(--line);stroke-width:1"/>
+<text x="492.0" y="230.0" text-anchor="start" style="fill:var(--ink);font-size:10.5px">Skills: required</text>
+<rect x="616.0" y="210.0" width="120.0" height="32.0" rx="5" style="fill:var(--bg);stroke:var(--line);stroke-width:1"/>
+<text x="624.0" y="230.0" text-anchor="start" style="fill:var(--muted);font-size:10.5px">locked 🔒</text>
+<rect x="484.0" y="250.0" width="120.0" height="32.0" rx="5" style="fill:var(--bg);stroke:var(--line);stroke-width:1"/>
+<text x="492.0" y="270.0" text-anchor="start" style="fill:var(--ink);font-size:10.5px">Skills: nice to have</text>
+<rect x="616.0" y="250.0" width="120.0" height="32.0" rx="5" style="fill:var(--accent-soft);stroke:var(--line);stroke-width:1"/>
+<text x="624.0" y="270.0" text-anchor="start" style="fill:var(--ink);font-size:10.5px">+ RAP / ABAP Cloud</text>
+<rect x="484.0" y="296.0" width="252.0" height="50.0" rx="6" style="fill:var(--warn-soft)"/>
+<text x="494.0" y="316.0" text-anchor="start" style="fill:var(--ink);font-size:10.5px;font-weight:600">Market, Pune: 64 postings</text>
+<text x="494.0" y="332.0" text-anchor="start" style="fill:var(--ink);font-size:10.5px">RAP in 41% · salary P50 shown</text>
+<rect x="12.0" y="370.0" width="736.0" height="44.0" rx="8" style="fill:var(--surface);stroke:var(--line);stroke-width:1.2"/>
+<text x="24.0" y="397.0" text-anchor="start" style="fill:var(--req);font-size:11px">✓ locked  ✓ required skills  ✓ inclusive  ✓ pay range  ✓ length</text>
+<rect x="482.0" y="380.0" width="70.0" height="24.0" rx="6" style="fill:var(--surface);stroke:var(--line);stroke-width:1"/>
+<text x="517.0" y="396.0" text-anchor="middle" style="fill:var(--ink);font-size:11px">Discard</text>
+<rect x="560.0" y="380.0" width="178.0" height="24.0" rx="6" style="fill:var(--sap)"/>
+<text x="649.0" y="396.0" text-anchor="middle" style="fill:var(--surface);font-size:11px;font-weight:600">Approve and apply (2)</text>
+<circle cx="200" cy="70" r="9" style="fill:var(--accent)"/>
+<text x="200" y="73.5" text-anchor="middle" style="fill:var(--surface);font-size:10px;font-weight:700">1</text>
+<circle cx="448" cy="70" r="9" style="fill:var(--accent)"/>
+<text x="448" y="73.5" text-anchor="middle" style="fill:var(--surface);font-size:10px;font-weight:700">2</text>
+<circle cx="448" cy="286" r="9" style="fill:var(--accent)"/>
+<text x="448" y="289.5" text-anchor="middle" style="fill:var(--surface);font-size:10px;font-weight:700">3</text>
+<circle cx="736" cy="70" r="9" style="fill:var(--accent)"/>
+<text x="736" y="73.5" text-anchor="middle" style="fill:var(--surface);font-size:10px;font-weight:700">4</text>
+<circle cx="736" cy="308" r="9" style="fill:var(--accent)"/>
+<text x="736" y="311.5" text-anchor="middle" style="fill:var(--surface);font-size:10px;font-weight:700">5</text>
+<circle cx="336" cy="372" r="9" style="fill:var(--accent)"/>
+<text x="336" y="375.5" text-anchor="middle" style="fill:var(--surface);font-size:10px;font-weight:700">6</text>
+<circle cx="726" cy="372" r="9" style="fill:var(--accent)"/>
+<text x="726" y="375.5" text-anchor="middle" style="fill:var(--surface);font-size:10px;font-weight:700">7</text>
+</svg>
+      </div>
+      <ol class="smap-key">
+        <li><b>1</b>The role and the manager's own open requisitions, read from SuccessFactors as the manager, so only requisitions they may edit appear. Posted ones go to the recruiter.</li>
+        <li><b>2</b>The instruction box replaces the Joule chat. Quick asks fill in common instructions. Each <i>Draft</i> is one AI call.</li>
+        <li><b>3</b>Each refinement is a version of the draft, so the manager can go back.</li>
+        <li><b>4</b>The master and the manager's version side by side: changed and new sections highlighted, locked sections greyed and not editable.</li>
+        <li><b>5</b>The evidence the draft used: the market benchmark for the role and city.</li>
+        <li><b>6</b>Checks on every draft: locked sections, required skills, inclusive language, pay range, length.</li>
+        <li><b>7</b>Approve and apply: small changes are written at once as the manager; large ones wait for HR in the same workbench.</li>
+      </ol>
+    </div>
+    <p>The pages use <b>UI5 Web Components</b> (version 2): SAP's Fiori controls as standard web components, so the workbench looks like SuccessFactors without a UI5 app or CAP. They have no CDN, so bundle them once with Vite and let FastAPI serve the built files. <span class="v">✓</span></p>
+  </div>
+
+  <div class="part">
+    <h3>Flow F1 in the workbench</h3>
+    <div class="screenmap">
+<svg class="seq" viewBox="0 0 760 638" role="img" aria-label="Sequence diagram of flow F1 in Solution 2: a manager drafts, refines, approves and applies a JD in the JD Workbench, signed in the whole time">
+<defs><marker id="ah-s2f1" viewBox="0 0 8 8" refX="8" refY="4" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" style="fill:var(--accent)"/></marker><marker id="ahm-s2f1" viewBox="0 0 8 8" refX="8" refY="4" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" style="fill:var(--muted)"/></marker></defs>
+<rect x="1.0" y="1.0" width="758.0" height="636.0" rx="10" style="fill:var(--surface);stroke:var(--line);stroke-width:1.5"/>
+<rect x="5" y="62" width="750" height="363" rx="8" style="fill:var(--req-soft)"/>
+<rect x="5" y="434" width="750" height="153" rx="8" style="fill:var(--req-soft)"/>
+<line x1="70.0" y1="50" x2="70.0" y2="596" style="stroke:var(--muted);stroke-width:1.3;stroke-dasharray:4 4;opacity:0.45"/>
+<line x1="194.0" y1="50" x2="194.0" y2="596" style="stroke:var(--accent);stroke-width:1.3;stroke-dasharray:4 4;opacity:0.6"/>
+<line x1="318.0" y1="50" x2="318.0" y2="596" style="stroke:var(--accent);stroke-width:1.3;stroke-dasharray:4 4;opacity:0.6"/>
+<line x1="442.0" y1="50" x2="442.0" y2="596" style="stroke:var(--muted);stroke-width:1.3;stroke-dasharray:4 4;opacity:0.45"/>
+<line x1="566.0" y1="50" x2="566.0" y2="596" style="stroke:var(--muted);stroke-width:1.3;stroke-dasharray:4 4;opacity:0.45"/>
+<line x1="690.0" y1="50" x2="690.0" y2="596" style="stroke:var(--muted);stroke-width:1.3;stroke-dasharray:4 4;opacity:0.45"/>
+<rect x="12.0" y="10.0" width="116.0" height="40.0" rx="7" style="fill:var(--hr-soft);stroke:var(--hr);stroke-width:1.2"/>
+<text x="70.0" y="34.0" text-anchor="middle" style="fill:var(--ink);font-size:11.5px;font-weight:600">Hiring manager</text>
+<rect x="136.0" y="10.0" width="116.0" height="40.0" rx="7" style="fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.2"/>
+<text x="194.0" y="27.0" text-anchor="middle" style="fill:var(--ink);font-size:11.5px;font-weight:600">JD Workbench</text>
+<text x="194.0" y="41.0" text-anchor="middle" style="fill:var(--muted);font-size:9.5px">IAS sign-in</text>
+<rect x="260.0" y="10.0" width="116.0" height="40.0" rx="7" style="fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.2"/>
+<text x="318.0" y="27.0" text-anchor="middle" style="fill:var(--ink);font-size:11.5px;font-weight:600">jd-assistant</text>
+<text x="318.0" y="41.0" text-anchor="middle" style="fill:var(--muted);font-size:9.5px">service</text>
+<rect x="384.0" y="10.0" width="116.0" height="40.0" rx="7" style="fill:var(--sap-soft);stroke:var(--line);stroke-width:1.2"/>
+<text x="442.0" y="27.0" text-anchor="middle" style="fill:var(--ink);font-size:11.5px;font-weight:600">HANA Cloud</text>
+<text x="442.0" y="41.0" text-anchor="middle" style="fill:var(--muted);font-size:9.5px">tables</text>
+<rect x="508.0" y="10.0" width="116.0" height="40.0" rx="7" style="fill:var(--sap-soft);stroke:var(--line);stroke-width:1.2"/>
+<text x="566.0" y="27.0" text-anchor="middle" style="fill:var(--ink);font-size:11.5px;font-weight:600">AI Core</text>
+<text x="566.0" y="41.0" text-anchor="middle" style="fill:var(--muted);font-size:9.5px">Gen AI Hub</text>
+<rect x="632.0" y="10.0" width="116.0" height="40.0" rx="7" style="fill:var(--sap-soft);stroke:var(--line);stroke-width:1.2"/>
+<text x="690.0" y="27.0" text-anchor="middle" style="fill:var(--ink);font-size:11.5px;font-weight:600">SuccessFactors</text>
+<text x="690.0" y="41.0" text-anchor="middle" style="fill:var(--muted);font-size:9.5px">OData API</text>
+<line x1="79.0" y1="104.0" x2="192.5" y2="104.0" marker-end="url(#ah-s2f1)" style="stroke:var(--accent);stroke-width:1.5"/>
+<line x1="203.0" y1="134.0" x2="316.5" y2="134.0" marker-end="url(#ah-s2f1)" style="stroke:var(--accent);stroke-width:1.5"/>
+<line x1="327.0" y1="164.0" x2="688.5" y2="164.0" marker-end="url(#ah-s2f1)" style="stroke:var(--accent);stroke-width:1.5"/>
+<circle cx="442.0" cy="164" r="3.5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1.5"/>
+<circle cx="566.0" cy="164" r="3.5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1.5"/>
+<line x1="681.0" y1="194.0" x2="319.5" y2="194.0" marker-end="url(#ahm-s2f1)" style="stroke:var(--muted);stroke-width:1.5;stroke-dasharray:5 4"/>
+<circle cx="442.0" cy="194" r="3.5" style="fill:var(--surface);stroke:var(--muted);stroke-width:1.5"/>
+<circle cx="566.0" cy="194" r="3.5" style="fill:var(--surface);stroke:var(--muted);stroke-width:1.5"/>
+<line x1="79.0" y1="224.0" x2="316.5" y2="224.0" marker-end="url(#ah-s2f1)" style="stroke:var(--accent);stroke-width:1.5"/>
+<circle cx="194.0" cy="224" r="3.5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1.5"/>
+<line x1="327.0" y1="254.0" x2="440.5" y2="254.0" marker-end="url(#ah-s2f1)" style="stroke:var(--accent);stroke-width:1.5"/>
+<line x1="327.0" y1="284.0" x2="564.5" y2="284.0" marker-end="url(#ah-s2f1)" style="stroke:var(--accent);stroke-width:1.5"/>
+<circle cx="442.0" cy="284" r="3.5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1.5"/>
+<line x1="557.0" y1="314.0" x2="319.5" y2="314.0" marker-end="url(#ahm-s2f1)" style="stroke:var(--muted);stroke-width:1.5;stroke-dasharray:5 4"/>
+<circle cx="442.0" cy="314" r="3.5" style="fill:var(--surface);stroke:var(--muted);stroke-width:1.5"/>
+<rect x="332.0" y="334.0" width="228.8" height="20.0" rx="6" style="fill:var(--surface);stroke:var(--accent);stroke-width:1"/>
+<line x1="327.0" y1="380.0" x2="440.5" y2="380.0" marker-end="url(#ah-s2f1)" style="stroke:var(--accent);stroke-width:1.5"/>
+<line x1="309.0" y1="410.0" x2="71.5" y2="410.0" marker-end="url(#ahm-s2f1)" style="stroke:var(--muted);stroke-width:1.5;stroke-dasharray:5 4"/>
+<circle cx="194.0" cy="410" r="3.5" style="fill:var(--surface);stroke:var(--muted);stroke-width:1.5"/>
+<line x1="79.0" y1="476.0" x2="316.5" y2="476.0" marker-end="url(#ah-s2f1)" style="stroke:var(--accent);stroke-width:1.5"/>
+<circle cx="194.0" cy="476" r="3.5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1.5"/>
+<rect x="332.0" y="496.0" width="205.8" height="20.0" rx="6" style="fill:var(--surface);stroke:var(--accent);stroke-width:1"/>
+<line x1="327.0" y1="542.0" x2="688.5" y2="542.0" marker-end="url(#ah-s2f1)" style="stroke:var(--accent);stroke-width:1.5"/>
+<circle cx="442.0" cy="542" r="3.5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1.5"/>
+<circle cx="566.0" cy="542" r="3.5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1.5"/>
+<line x1="327.0" y1="572.0" x2="440.5" y2="572.0" marker-end="url(#ah-s2f1)" style="stroke:var(--accent);stroke-width:1.5"/>
+<text x="65.8" y="94.0" text-anchor="start" style="fill:var(--ink);font-size:11px;paint-order:stroke;stroke:var(--req-soft);stroke-width:4px;stroke-linejoin:round">quick link, sign in (IAS)</text>
+<text x="189.8" y="124.0" text-anchor="start" style="fill:var(--ink);font-size:11px;paint-order:stroke;stroke:var(--req-soft);stroke-width:4px;stroke-linejoin:round">my roles and requisitions</text>
+<text x="415.4" y="154.0" text-anchor="start" style="fill:var(--ink);font-size:11px;paint-order:stroke;stroke:var(--req-soft);stroke-width:4px;stroke-linejoin:round">open requisitions, as the manager</text>
+<text x="407.9" y="184.0" text-anchor="start" style="fill:var(--ink);font-size:11px;paint-order:stroke;stroke:var(--req-soft);stroke-width:4px;stroke-linejoin:round">requisitions the manager may edit</text>
+<text x="138.9" y="214.0" text-anchor="start" style="fill:var(--ink);font-size:11px;paint-order:stroke;stroke:var(--req-soft);stroke-width:4px;stroke-linejoin:round">“focus on clean core”</text>
+<text x="310.9" y="244.0" text-anchor="start" style="fill:var(--ink);font-size:11px;paint-order:stroke;stroke:var(--req-soft);stroke-width:4px;stroke-linejoin:round">master, variant, benchmark</text>
+<text x="353.4" y="274.0" text-anchor="start" style="fill:var(--ink);font-size:11px;paint-order:stroke;stroke:var(--req-soft);stroke-width:4px;stroke-linejoin:round">orchestration: mask, filter, JSON</text>
+<text x="376.6" y="304.0" text-anchor="start" style="fill:var(--ink);font-size:11px;paint-order:stroke;stroke:var(--req-soft);stroke-width:4px;stroke-linejoin:round">draft as JSON sections</text>
+<text x="339.0" y="348.0" text-anchor="start" style="fill:var(--ink);font-size:11px"><tspan style="font-family:var(--font-mono);font-size:10px">checks</tspan>: locked, skills, language, pay</text>
+<text x="296.9" y="370.0" text-anchor="start" style="fill:var(--ink);font-size:11px;paint-order:stroke;stroke:var(--req-soft);stroke-width:4px;stroke-linejoin:round"><tspan style="font-family:var(--font-mono);font-size:10px">JD_VARIANT</tspan> = DRAFT, by the user</text>
+<text x="125.9" y="400.0" text-anchor="start" style="fill:var(--ink);font-size:11px;paint-order:stroke;stroke:var(--req-soft);stroke-width:4px;stroke-linejoin:round">compare and change list</text>
+<text x="125.0" y="466.0" text-anchor="start" style="fill:var(--ink);font-size:11px;paint-order:stroke;stroke:var(--req-soft);stroke-width:4px;stroke-linejoin:round">pick requisitions, approve</text>
+<text x="339.0" y="510.0" text-anchor="start" style="fill:var(--ink);font-size:11px">deviation: APPROVED or PENDING_HR</text>
+<text x="412.6" y="532.0" text-anchor="start" style="fill:var(--ink);font-size:11px;paint-order:stroke;stroke:var(--req-soft);stroke-width:4px;stroke-linejoin:round">write HTML per language, read back</text>
+<text x="302.6" y="562.0" text-anchor="start" style="fill:var(--ink);font-size:11px;paint-order:stroke;stroke:var(--req-soft);stroke-width:4px;stroke-linejoin:round"><tspan style="font-family:var(--font-mono);font-size:10px">REQ_JD_LINK</tspan> + hash, <tspan style="font-family:var(--font-mono);font-size:10px">AUDIT_LOG</tspan></text>
+<circle cx="70.0" cy="104" r="8" style="fill:var(--accent)"/>
+<text x="70.0" y="107.4" text-anchor="middle" style="fill:var(--surface);font-size:9.5px;font-weight:700">1</text>
+<circle cx="194.0" cy="134" r="8" style="fill:var(--accent)"/>
+<text x="194.0" y="137.4" text-anchor="middle" style="fill:var(--surface);font-size:9.5px;font-weight:700">2</text>
+<circle cx="318.0" cy="164" r="8" style="fill:var(--accent)"/>
+<text x="318.0" y="167.4" text-anchor="middle" style="fill:var(--surface);font-size:9.5px;font-weight:700">3</text>
+<circle cx="690.0" cy="194" r="8" style="fill:var(--accent)"/>
+<text x="690.0" y="197.4" text-anchor="middle" style="fill:var(--surface);font-size:9.5px;font-weight:700">4</text>
+<circle cx="70.0" cy="224" r="8" style="fill:var(--accent)"/>
+<text x="70.0" y="227.4" text-anchor="middle" style="fill:var(--surface);font-size:9.5px;font-weight:700">5</text>
+<circle cx="318.0" cy="254" r="8" style="fill:var(--accent)"/>
+<text x="318.0" y="257.4" text-anchor="middle" style="fill:var(--surface);font-size:9.5px;font-weight:700">6</text>
+<circle cx="318.0" cy="284" r="8" style="fill:var(--accent)"/>
+<text x="318.0" y="287.4" text-anchor="middle" style="fill:var(--surface);font-size:9.5px;font-weight:700">7</text>
+<circle cx="566.0" cy="314" r="8" style="fill:var(--accent)"/>
+<text x="566.0" y="317.4" text-anchor="middle" style="fill:var(--surface);font-size:9.5px;font-weight:700">8</text>
+<circle cx="318.0" cy="344" r="8" style="fill:var(--accent)"/>
+<text x="318.0" y="347.4" text-anchor="middle" style="fill:var(--surface);font-size:9.5px;font-weight:700">9</text>
+<circle cx="318.0" cy="380" r="8" style="fill:var(--accent)"/>
+<text x="318.0" y="383.4" text-anchor="middle" style="fill:var(--surface);font-size:9.5px;font-weight:700">10</text>
+<circle cx="318.0" cy="410" r="8" style="fill:var(--accent)"/>
+<text x="318.0" y="413.4" text-anchor="middle" style="fill:var(--surface);font-size:9.5px;font-weight:700">11</text>
+<circle cx="70.0" cy="476" r="8" style="fill:var(--accent)"/>
+<text x="70.0" y="479.4" text-anchor="middle" style="fill:var(--surface);font-size:9.5px;font-weight:700">12</text>
+<circle cx="318.0" cy="506" r="8" style="fill:var(--accent)"/>
+<text x="318.0" y="509.4" text-anchor="middle" style="fill:var(--surface);font-size:9.5px;font-weight:700">13</text>
+<circle cx="318.0" cy="542" r="8" style="fill:var(--accent)"/>
+<text x="318.0" y="545.4" text-anchor="middle" style="fill:var(--surface);font-size:9.5px;font-weight:700">14</text>
+<circle cx="318.0" cy="572" r="8" style="fill:var(--accent)"/>
+<text x="318.0" y="575.4" text-anchor="middle" style="fill:var(--surface);font-size:9.5px;font-weight:700">15</text>
+<text x="14.0" y="76.0" text-anchor="start" style="fill:var(--req);font-size:10.5px;font-weight:600">In the JD Workbench · the signed-in manager · draft and refine (repeat 5 to 11)</text>
+<text x="14.0" y="448.0" text-anchor="start" style="fill:var(--req);font-size:10.5px;font-weight:600">Same session · the signed-in manager · approve and apply</text>
+<line x1="16.0" y1="616.0" x2="44.0" y2="616.0" marker-end="url(#ah-s2f1)" style="stroke:var(--accent);stroke-width:1.5"/>
+<text x="50.0" y="620.0" text-anchor="start" style="fill:var(--muted);font-size:10.5px">call</text>
+<line x1="90.0" y1="616.0" x2="118.0" y2="616.0" marker-end="url(#ahm-s2f1)" style="stroke:var(--muted);stroke-width:1.5;stroke-dasharray:5 4"/>
+<text x="124.0" y="620.0" text-anchor="start" style="fill:var(--muted);font-size:10.5px">reply</text>
+<circle cx="172" cy="616" r="3.5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1.5"/>
+<text x="181.0" y="620.0" text-anchor="start" style="fill:var(--muted);font-size:10.5px">passes through</text>
+<circle cx="280" cy="616" r="8" style="fill:var(--accent)"/>
+<text x="280.0" y="619.4" text-anchor="middle" style="fill:var(--surface);font-size:9.5px;font-weight:700">n</text>
+<text x="293.0" y="620.0" text-anchor="start" style="fill:var(--muted);font-size:10.5px">step number in the list below</text>
+<rect x="460.0" y="607.0" width="22.0" height="18.0" rx="5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1"/>
+<text x="488.0" y="620.0" text-anchor="start" style="fill:var(--muted);font-size:10.5px">work done inside one part</text>
+</svg>
+    </div>
+    <p class="caption scroll-hint">Scroll sideways to see the whole diagram.</p>
+    <ol class="steps">
+      <li>The manager opens the JD Workbench from the quick link on the SuccessFactors home page, a to-do item or an email, and signs in through IAS. With the same IAS as SuccessFactors, this is single sign-on.</li>
+      <li>The workbench asks the service for the manager's roles and requisitions.</li>
+      <li>The service reads the manager's open requisitions from SuccessFactors as the manager (principal propagation).</li>
+      <li>SuccessFactors returns only the requisitions the manager may see; the workbench groups them by role ID.</li>
+      <li>The manager types an instruction, or clicks a quick ask, and chooses <b>Draft</b>. A role can also be searched by name in <code>ROLE_CACHE</code>, as <code>find_role</code> does in Solution 1.</li>
+      <li><code>drafting</code> loads the active master, the manager's current variant and the market benchmark.</li>
+      <li>It calls AI Core orchestration exactly as in Solution 1: template, masking, content filter, JSON schema.</li>
+      <li>AI Core returns the draft as JSON sections with audiences.</li>
+      <li><code>checks</code> runs: locked sections, required skills, inclusive language, pay range, length.</li>
+      <li><code>store</code> saves the <code>JD_VARIANT</code> as DRAFT, with <code>REQUESTED_BY</code> taken from the sign-in: a fact, not Joule's claim.</li>
+      <li>The workbench shows the comparison and a change list. Each refinement repeats steps 5 to 11.</li>
+      <li>The manager picks requisitions and chooses <b>Approve and apply</b>.</li>
+      <li><code>variants</code> scores the deviation: <code>APPROVED</code>, or <code>PENDING_HR</code> for HR to decide in the workbench.</li>
+      <li><code>render</code> builds the HTML per language and audience; the adapter writes it to each requisition as the manager and reads it back.</li>
+      <li><code>store</code> records <code>REQ_JD_LINK</code> with the read-back hash, and <code>AUDIT_LOG</code> with channel <code>WEB</code>.</li>
+    </ol>
+<pre><code># web/drafts.py: the draft is created by the signed-in user, so no claim is needed
+@app.post("/api/drafts")
+def create_draft(body: DraftIn, user: User = Depends(signed_in)):   # JWT from the App Router (XSUAA)
+    require_scope(user, "JD.Manager")
+    variant = drafting.draft_variant(
+        role_id=body.role_id, mode=body.mode, instruction=body.instruction,
+        draft_id=body.draft_id,                   # refinements continue the same draft
+        requested_by=user.sf_user_id)             # from the sign-in, not from a chat message
+    return DraftOut.from_variant(variant)</code></pre>
+  </div>
+
+  <div class="part">
+    <h3>How each flow changes</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Flow</th><th>In Solution 2</th></tr></thead>
+        <tbody>
+          <tr><td><a href="#f0">F0</a> Nightly sync</td><td>No change.</td></tr>
+          <tr><td><a href="#f1">F1</a> A manager drafts</td><td>In the workbench, as above: 15 steps instead of 17, in one signed-in session.</td></tr>
+          <tr><td><a href="#f2">F2</a> A new requisition</td><td>No change.</td></tr>
+          <tr><td><a href="#f3">F3</a> HR changes the master</td><td>HR types the change in the workbench's master editor (mode <code>master</code>). Draft, approval and the write to Job Profile Builder happen in one session as the HR Head; steps 9 to 13 of F3 are unchanged.</td></tr>
+          <tr><td><a href="#f4">F4</a> Evidence</td><td>No change.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="two">
+    <div class="panel">
+      <h3>Strengths</h3>
+      <ul class="plain">
+        <li>The simplest identity: every call is the signed-in user, so FR-14 holds by construction.</li>
+        <li>The fewest services: no Joule, no Joule Studio, no MCP destinations, and one place to draft and approve.</li>
+        <li>The lowest running cost on SAP: AI Core, HANA Cloud and Cloud Foundry only.</li>
+        <li>The easiest to demo and test end to end against the mock SuccessFactors.</li>
+        <li>Adding Joule later only adds parts: put <code>mcp_tools</code> back, and the workbench becomes Solution 1's review page.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>Weaknesses</h3>
+      <ul class="plain">
+        <li>No chat inside SuccessFactors; managers open one more app.</li>
+        <li>You build and maintain the UI (four pages) instead of using Joule's.</li>
+        <li>Refining by typed instructions is less conversational than Joule.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="check">
+    <div><span class="pill unclear">Not confirmed</span><span>Whether a quick link or a to-do item can open one requisition's draft directly (a deep link with the requisition ID). Checked on a real tenant (check S8).</span></div>
+    <div><span class="pill unclear">Not confirmed</span><span>Where category 41 to-do items appear: SAP's category table says not on the home page, while the To-Do panel shows every item (check S8).</span></div>
+  </div>
+</section>
+
+<section id="c4">
+  <div class="chapter-head"><span class="num b">C4</span><div><h2>Solution 3: outside SAP</h2><p class="muted">The same core built outside SAP. Reference stack: Microsoft Azure, Claude and a Microsoft Teams bot, with AWS and Google Cloud equivalents below. SuccessFactors stays the system of record.</p></div></div>
+
+  <div class="answer"><p><b>What changes is everything SAP's platform did for you.</b> BTP destinations got SuccessFactors tokens for the user; here the service signs the SAML assertion itself. AI Core masked and filtered; here Presidio masks and Claude's structured outputs return the JD schema. HANA Cloud becomes PostgreSQL with pgvector. In return, the assistant knows the user from the first chat message (Teams single sign-on), and nothing depends on SAP BTP or Joule.</p></div>
+
+  <div class="part">
+    <h3>Big picture</h3>
+    <div class="screenmap">
+<svg viewBox="0 0 760 456" role="img" aria-label="Big picture of Solution 3: hiring managers and HR chat with a Microsoft Teams bot and approve in the JD Workbench, both signed in with Microsoft Entra ID. The jd-assistant service runs on Azure Container Apps and uses the Claude API, PostgreSQL with pgvector, scheduled jobs and a market data API. It calls SuccessFactors with OAuth tokens obtained from SAML assertions it signs.">
+<defs><marker id="ah-big3" viewBox="0 0 8 8" refX="8" refY="4" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" style="fill:var(--accent)"/></marker><marker id="ahm-big3" viewBox="0 0 8 8" refX="8" refY="4" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" style="fill:var(--muted)"/></marker></defs>
+<rect x="1.0" y="1.0" width="758.0" height="454.0" rx="10" style="fill:var(--surface);stroke:var(--line);stroke-width:1.5"/>
+<rect x="16.0" y="16.0" width="424.0" height="46.0" rx="8" style="fill:var(--hr-soft);stroke:var(--hr);stroke-width:1.2"/>
+<text x="228.0" y="37.0" text-anchor="middle" style="fill:var(--ink);font-size:12.5px;font-weight:600">Hiring manager · HR Head</text>
+<text x="228.0" y="52.0" text-anchor="middle" style="fill:var(--muted);font-size:10px">chat in Microsoft Teams · approve in the JD Workbench</text>
+<rect x="572.0" y="16.0" width="172.0" height="46.0" rx="8" style="fill:var(--hr-soft);stroke:var(--hr);stroke-width:1.2"/>
+<text x="658.0" y="37.0" text-anchor="middle" style="fill:var(--ink);font-size:12.5px;font-weight:600">Recruiter</text>
+<text x="658.0" y="52.0" text-anchor="middle" style="fill:var(--muted);font-size:10px">works in SuccessFactors</text>
+<rect x="16.0" y="104.0" width="200.0" height="50.0" rx="8" style="fill:var(--bg);stroke:var(--line);stroke-width:1.2"/>
+<text x="116.0" y="127.0" text-anchor="middle" style="fill:var(--ink);font-size:12px;font-weight:600">Microsoft Teams bot</text>
+<text x="116.0" y="142.0" text-anchor="middle" style="fill:var(--muted);font-size:10px">Azure AI Bot Service</text>
+<rect x="240.0" y="104.0" width="200.0" height="50.0" rx="8" style="fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.2"/>
+<text x="340.0" y="127.0" text-anchor="middle" style="fill:var(--ink);font-size:12px;font-weight:600">JD Workbench</text>
+<text x="340.0" y="142.0" text-anchor="middle" style="fill:var(--muted);font-size:10px">Teams tab or browser</text>
+<rect x="16.0" y="196.0" width="424.0" height="146.0" rx="10" style="fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.6"/>
+<text x="228.0" y="220.0" text-anchor="middle" style="fill:var(--ink);font-size:14px;font-weight:700">jd-assistant service</text>
+<text x="228.0" y="238.0" text-anchor="middle" style="fill:var(--muted);font-size:10.5px">Python · FastAPI · Azure Container Apps · Key Vault</text>
+<rect x="46.3" y="252.0" width="32.9" height="20.0" rx="5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1"/>
+<text x="62.8" y="266" text-anchor="middle" style="fill:var(--ink);font-size:10.5px;font-family:var(--font-mono)">bot</text>
+<rect x="87.2" y="252.0" width="32.9" height="20.0" rx="5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1"/>
+<text x="103.7" y="266" text-anchor="middle" style="fill:var(--ink);font-size:10.5px;font-family:var(--font-mono)">web</text>
+<rect x="128.1" y="252.0" width="39.2" height="20.0" rx="5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1"/>
+<text x="147.7" y="266" text-anchor="middle" style="fill:var(--ink);font-size:10.5px;font-family:var(--font-mono)">sync</text>
+<rect x="175.3" y="252.0" width="58.1" height="20.0" rx="5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1"/>
+<text x="204.4" y="266" text-anchor="middle" style="fill:var(--ink);font-size:10.5px;font-family:var(--font-mono)">sf_auth</text>
+<rect x="241.4" y="252.0" width="77.0" height="20.0" rx="5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1"/>
+<text x="279.9" y="266" text-anchor="middle" style="fill:var(--ink);font-size:10.5px;font-family:var(--font-mono)">sf_adapter</text>
+<rect x="326.4" y="252.0" width="83.3" height="20.0" rx="5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1"/>
+<text x="368.0" y="266" text-anchor="middle" style="fill:var(--ink);font-size:10.5px;font-family:var(--font-mono)">ats_adapter</text>
+<rect x="52.6" y="280.0" width="64.4" height="20.0" rx="5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1"/>
+<text x="84.8" y="294" text-anchor="middle" style="fill:var(--ink);font-size:10.5px;font-family:var(--font-mono)">drafting</text>
+<rect x="125.0" y="280.0" width="39.2" height="20.0" rx="5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1"/>
+<text x="144.6" y="294" text-anchor="middle" style="fill:var(--ink);font-size:10.5px;font-family:var(--font-mono)">mask</text>
+<rect x="172.2" y="280.0" width="64.4" height="20.0" rx="5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1"/>
+<text x="204.4" y="294" text-anchor="middle" style="fill:var(--ink);font-size:10.5px;font-family:var(--font-mono)">variants</text>
+<rect x="244.6" y="280.0" width="51.8" height="20.0" rx="5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1"/>
+<text x="270.5" y="294" text-anchor="middle" style="fill:var(--ink);font-size:10.5px;font-family:var(--font-mono)">render</text>
+<rect x="304.4" y="280.0" width="51.8" height="20.0" rx="5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1"/>
+<text x="330.3" y="294" text-anchor="middle" style="fill:var(--ink);font-size:10.5px;font-family:var(--font-mono)">checks</text>
+<rect x="364.2" y="280.0" width="39.2" height="20.0" rx="5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1"/>
+<text x="383.8" y="294" text-anchor="middle" style="fill:var(--ink);font-size:10.5px;font-family:var(--font-mono)">eval</text>
+<rect x="142.3" y="308.0" width="64.4" height="20.0" rx="5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1"/>
+<text x="174.5" y="322" text-anchor="middle" style="fill:var(--ink);font-size:10.5px;font-family:var(--font-mono)">research</text>
+<rect x="214.7" y="308.0" width="45.5" height="20.0" rx="5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1"/>
+<text x="237.5" y="322" text-anchor="middle" style="fill:var(--ink);font-size:10.5px;font-family:var(--font-mono)">hires</text>
+<rect x="268.2" y="308.0" width="45.5" height="20.0" rx="5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1"/>
+<text x="291.0" y="322" text-anchor="middle" style="fill:var(--ink);font-size:10.5px;font-family:var(--font-mono)">store</text>
+<line x1="116.0" y1="63.0" x2="116.0" y2="103.0" marker-end="url(#ah-big3)" style="stroke:var(--accent);stroke-width:1.5"/>
+<text x="124.0" y="87.0" text-anchor="start" style="fill:var(--ink);font-size:10.5px"><tspan style="fill:var(--accent);font-weight:700">F1</tspan> <tspan style="fill:var(--accent);font-weight:700">F3</tspan> · chat</text>
+<line x1="340.0" y1="63.0" x2="340.0" y2="103.0" marker-end="url(#ah-big3)" style="stroke:var(--accent);stroke-width:1.5"/>
+<text x="348.0" y="87.0" text-anchor="start" style="fill:var(--ink);font-size:10.5px"><tspan style="fill:var(--accent);font-weight:700">F1</tspan> <tspan style="fill:var(--accent);font-weight:700">F3</tspan> · approve</text>
+<line x1="116.0" y1="155.0" x2="116.0" y2="195.0" marker-end="url(#ah-big3)" style="stroke:var(--accent);stroke-width:1.5"/>
+<text x="124.0" y="179.0" text-anchor="start" style="fill:var(--ink);font-size:10.5px">Teams SSO · user known</text>
+<line x1="340.0" y1="155.0" x2="340.0" y2="195.0" marker-end="url(#ah-big3)" style="stroke:var(--accent);stroke-width:1.5"/>
+<text x="348.0" y="179.0" text-anchor="start" style="fill:var(--ink);font-size:10.5px">REST · Entra sign-in</text>
+<text x="650.0" y="372.0" text-anchor="middle" style="fill:var(--muted);font-size:9.5px">Every call: OAuth token from a SAML</text>
+<text x="650.0" y="385.0" text-anchor="middle" style="fill:var(--muted);font-size:9.5px">assertion the service signs (user or technical)</text>
+<rect x="556.0" y="150.0" width="188.0" height="202.0" rx="10" style="fill:var(--sap-soft);stroke:var(--line);stroke-width:1.2"/>
+<text x="650.0" y="170.0" text-anchor="middle" style="fill:var(--ink);font-size:12.5px;font-weight:700">SAP SuccessFactors</text>
+<rect x="568.0" y="180.0" width="164.0" height="42.0" rx="8" style="fill:var(--surface);stroke:var(--line);stroke-width:1.2"/>
+<text x="650.0" y="199.0" text-anchor="middle" style="fill:var(--ink);font-size:11.5px;font-weight:600">Job Profile Builder</text>
+<text x="650.0" y="214.0" text-anchor="middle" style="fill:var(--muted);font-size:10px">roles · job profiles</text>
+<rect x="568.0" y="240.0" width="164.0" height="42.0" rx="8" style="fill:var(--surface);stroke:var(--line);stroke-width:1.2"/>
+<text x="650.0" y="259.0" text-anchor="middle" style="fill:var(--ink);font-size:11.5px;font-weight:600">Recruiting</text>
+<text x="650.0" y="274.0" text-anchor="middle" style="fill:var(--muted);font-size:10px">requisitions · postings</text>
+<rect x="568.0" y="300.0" width="164.0" height="42.0" rx="8" style="fill:var(--surface);stroke:var(--line);stroke-width:1.2"/>
+<text x="650.0" y="319.0" text-anchor="middle" style="fill:var(--ink);font-size:11.5px;font-weight:600">Intelligent Services</text>
+<text x="650.0" y="334.0" text-anchor="middle" style="fill:var(--muted);font-size:10px">events via Integration Center</text>
+<line x1="596.0" y1="223.0" x2="596.0" y2="239.0" marker-end="url(#ahm-big3)" style="stroke:var(--muted);stroke-width:1.5"/>
+<text x="604.0" y="235.0" text-anchor="start" style="fill:var(--muted);font-size:9.5px">copies profile</text>
+<line x1="596.0" y1="283.0" x2="596.0" y2="299.0" marker-end="url(#ahm-big3)" style="stroke:var(--muted);stroke-width:1.5"/>
+<text x="604.0" y="295.0" text-anchor="start" style="fill:var(--muted);font-size:9.5px">raises event</text>
+<line x1="441.0" y1="201.0" x2="567.0" y2="201.0" marker-start="url(#ah-big3)" marker-end="url(#ah-big3)" style="stroke:var(--accent);stroke-width:1.5"/>
+<text x="504.0" y="194.0" text-anchor="middle" style="fill:var(--ink);font-size:10.5px"><tspan style="fill:var(--accent);font-weight:700">F0</tspan> read · <tspan style="fill:var(--accent);font-weight:700">F3</tspan> write</text>
+<line x1="441.0" y1="261.0" x2="567.0" y2="261.0" marker-end="url(#ah-big3)" style="stroke:var(--accent);stroke-width:1.5"/>
+<text x="504.0" y="254.0" text-anchor="middle" style="fill:var(--ink);font-size:10.5px"><tspan style="fill:var(--accent);font-weight:700">F1</tspan> <tspan style="fill:var(--accent);font-weight:700">F2</tspan> <tspan style="fill:var(--accent);font-weight:700">F3</tspan> write JD</text>
+<line x1="567.0" y1="321.0" x2="441.0" y2="321.0" marker-end="url(#ah-big3)" style="stroke:var(--accent);stroke-width:1.5"/>
+<text x="504.0" y="314.0" text-anchor="middle" style="fill:var(--ink);font-size:10.5px"><tspan style="fill:var(--accent);font-weight:700">F2</tspan> event</text>
+<line x1="658.0" y1="63.0" x2="658.0" y2="149.0" marker-end="url(#ah-big3)" style="stroke:var(--accent);stroke-width:1.5"/>
+<text x="650.0" y="110.0" text-anchor="end" style="fill:var(--ink);font-size:10.5px"><tspan style="fill:var(--accent);font-weight:700">F2</tspan> · creates requisitions</text>
+<rect x="16.0" y="390.0" width="98.0" height="50.0" rx="8" style="fill:var(--bg);stroke:var(--line);stroke-width:1.2"/>
+<text x="65.0" y="413.0" text-anchor="middle" style="fill:var(--ink);font-size:11px;font-weight:600">Claude API</text>
+<text x="65.0" y="428.0" text-anchor="middle" style="fill:var(--muted);font-size:10px">or Microsoft Foundry</text>
+<line x1="65.0" y1="343.0" x2="65.0" y2="389.0" marker-end="url(#ah-big3)" style="stroke:var(--accent);stroke-width:1.5"/>
+<text x="73.0" y="370.0" text-anchor="start" style="fill:var(--ink);font-size:10.5px"><tspan style="fill:var(--accent);font-weight:700">F1</tspan> <tspan style="fill:var(--accent);font-weight:700">F3</tspan> <tspan style="fill:var(--accent);font-weight:700">F4</tspan></text>
+<rect x="124.0" y="390.0" width="98.0" height="50.0" rx="8" style="fill:var(--bg);stroke:var(--line);stroke-width:1.2"/>
+<text x="173.0" y="413.0" text-anchor="middle" style="fill:var(--ink);font-size:11px;font-weight:600">PostgreSQL</text>
+<text x="173.0" y="428.0" text-anchor="middle" style="fill:var(--muted);font-size:10px">tables · pgvector</text>
+<line x1="173.0" y1="343.0" x2="173.0" y2="389.0" marker-start="url(#ah-big3)" marker-end="url(#ah-big3)" style="stroke:var(--accent);stroke-width:1.5"/>
+<text x="181.0" y="370.0" text-anchor="start" style="fill:var(--ink);font-size:10.5px">all flows</text>
+<rect x="232.0" y="390.0" width="98.0" height="50.0" rx="8" style="fill:var(--bg);stroke:var(--line);stroke-width:1.2"/>
+<text x="281.0" y="413.0" text-anchor="middle" style="fill:var(--ink);font-size:11px;font-weight:600">Scheduled jobs</text>
+<text x="281.0" y="428.0" text-anchor="middle" style="fill:var(--muted);font-size:10px">Container Apps</text>
+<line x1="281.0" y1="389.0" x2="281.0" y2="343.0" marker-end="url(#ah-big3)" style="stroke:var(--accent);stroke-width:1.5"/>
+<text x="289.0" y="370.0" text-anchor="start" style="fill:var(--ink);font-size:10.5px"><tspan style="fill:var(--accent);font-weight:700">F0</tspan> <tspan style="fill:var(--accent);font-weight:700">F4</tspan></text>
+<rect x="340.0" y="390.0" width="100.0" height="50.0" rx="8" style="fill:var(--surface);stroke:var(--line);stroke-width:1.2"/>
+<text x="390.0" y="413.0" text-anchor="middle" style="fill:var(--ink);font-size:11px;font-weight:600">Market data</text>
+<text x="390.0" y="428.0" text-anchor="middle" style="fill:var(--muted);font-size:10px">licensed API</text>
+<line x1="390.0" y1="343.0" x2="390.0" y2="389.0" marker-end="url(#ah-big3)" style="stroke:var(--accent);stroke-width:1.5"/>
+<text x="398.0" y="370.0" text-anchor="start" style="fill:var(--ink);font-size:10.5px"><tspan style="fill:var(--accent);font-weight:700">F4</tspan></text>
+</svg>
+    </div>
+    <p class="caption scroll-hint">Scroll sideways to see the whole diagram.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Part</th><th>Role in this solution</th><th>Replaces</th></tr></thead>
+        <tbody>
+          <tr><td><b>Microsoft Teams bot</b></td><td>Chat: find the role, draft and refine, explain changes, notify. Azure AI Bot Service; Teams single sign-on gives the bot the user's Entra identity in personal and group chats (not in channels).</td><td>Joule Studio agent</td></tr>
+          <tr><td><b>JD Workbench</b></td><td>The same pages as Solution 2, pinned as a Teams tab or opened in a browser; Microsoft Entra ID sign-in.</td><td>Review page</td></tr>
+          <tr><td><b>jd-assistant service</b></td><td>The same Python (FastAPI) service, in a container on Azure Container Apps. Secrets in Azure Key Vault, read through a managed identity.</td><td>Cloud Foundry app</td></tr>
+          <tr><td><code>sf_auth</code></td><td>Signs a SAML assertion for one SuccessFactors user and exchanges it for an OAuth token (below).</td><td>BTP destinations</td></tr>
+          <tr><td><code>mask</code></td><td>Presidio, an open-source PII tool, removes names, emails and phone numbers before any text reaches the model.</td><td>Orchestration data masking</td></tr>
+          <tr><td><b>Claude API</b></td><td>Drafting, refinement, merges and evidence extraction; structured outputs return the JD schema. Or Claude in Microsoft Foundry, billed through Azure.</td><td>SAP AI Core</td></tr>
+          <tr><td><b>PostgreSQL + pgvector</b></td><td>The D5 tables with types mapped; embeddings in a <code>vector</code> column. Azure Database for PostgreSQL flexible server.</td><td>HANA Cloud</td></tr>
+          <tr><td><b>Scheduled jobs</b></td><td>Azure Container Apps jobs with cron schedules (UTC) for the nightly sync and the quarterly evidence refresh.</td><td>Job Scheduling Service</td></tr>
+          <tr><td><b>Integration Center</b></td><td>Unchanged: the event integration posts to the Container Apps URL, with Basic or OAuth authentication.</td><td>–</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="part">
+    <h3>Flow F1 with Teams and the workbench</h3>
+    <div class="screenmap">
+<svg class="seq" viewBox="0 0 760 728" role="img" aria-label="Sequence diagram of flow F1 in Solution 3: a manager drafts in a Microsoft Teams chat, then approves and applies in the JD Workbench; the service calls SuccessFactors as that user">
+<defs><marker id="ah-s3f1" viewBox="0 0 8 8" refX="8" refY="4" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" style="fill:var(--accent)"/></marker><marker id="ahm-s3f1" viewBox="0 0 8 8" refX="8" refY="4" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" style="fill:var(--muted)"/></marker></defs>
+<rect x="1.0" y="1.0" width="758.0" height="726.0" rx="10" style="fill:var(--surface);stroke:var(--line);stroke-width:1.5"/>
+<rect x="5" y="62" width="750" height="333" rx="8" style="fill:var(--req-soft)"/>
+<rect x="5" y="404" width="750" height="273" rx="8" style="fill:var(--req-soft)"/>
+<line x1="61.1" y1="50" x2="61.1" y2="686" style="stroke:var(--muted);stroke-width:1.3;stroke-dasharray:4 4;opacity:0.45"/>
+<line x1="167.4" y1="50" x2="167.4" y2="686" style="stroke:var(--muted);stroke-width:1.3;stroke-dasharray:4 4;opacity:0.45"/>
+<line x1="273.7" y1="50" x2="273.7" y2="686" style="stroke:var(--accent);stroke-width:1.3;stroke-dasharray:4 4;opacity:0.6"/>
+<line x1="380.0" y1="50" x2="380.0" y2="686" style="stroke:var(--accent);stroke-width:1.3;stroke-dasharray:4 4;opacity:0.6"/>
+<line x1="486.3" y1="50" x2="486.3" y2="686" style="stroke:var(--muted);stroke-width:1.3;stroke-dasharray:4 4;opacity:0.45"/>
+<line x1="592.6" y1="50" x2="592.6" y2="686" style="stroke:var(--muted);stroke-width:1.3;stroke-dasharray:4 4;opacity:0.45"/>
+<line x1="698.9" y1="50" x2="698.9" y2="686" style="stroke:var(--muted);stroke-width:1.3;stroke-dasharray:4 4;opacity:0.45"/>
+<rect x="12.0" y="10.0" width="98.3" height="40.0" rx="7" style="fill:var(--hr-soft);stroke:var(--hr);stroke-width:1.2"/>
+<text x="61.1" y="34.0" text-anchor="middle" style="fill:var(--ink);font-size:11.5px;font-weight:600">Hiring manager</text>
+<rect x="118.3" y="10.0" width="98.3" height="40.0" rx="7" style="fill:var(--bg);stroke:var(--line);stroke-width:1.2"/>
+<text x="167.4" y="27.0" text-anchor="middle" style="fill:var(--ink);font-size:11.5px;font-weight:600">Teams bot</text>
+<text x="167.4" y="41.0" text-anchor="middle" style="fill:var(--muted);font-size:9.5px">Entra SSO</text>
+<rect x="224.6" y="10.0" width="98.3" height="40.0" rx="7" style="fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.2"/>
+<text x="273.7" y="27.0" text-anchor="middle" style="fill:var(--ink);font-size:11.5px;font-weight:600">JD Workbench</text>
+<text x="273.7" y="41.0" text-anchor="middle" style="fill:var(--muted);font-size:9.5px">Teams tab</text>
+<rect x="330.9" y="10.0" width="98.3" height="40.0" rx="7" style="fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.2"/>
+<text x="380.0" y="27.0" text-anchor="middle" style="fill:var(--ink);font-size:11.5px;font-weight:600">jd-assistant</text>
+<text x="380.0" y="41.0" text-anchor="middle" style="fill:var(--muted);font-size:9.5px">service</text>
+<rect x="437.1" y="10.0" width="98.3" height="40.0" rx="7" style="fill:var(--bg);stroke:var(--line);stroke-width:1.2"/>
+<text x="486.3" y="27.0" text-anchor="middle" style="fill:var(--ink);font-size:11.5px;font-weight:600">PostgreSQL</text>
+<text x="486.3" y="41.0" text-anchor="middle" style="fill:var(--muted);font-size:9.5px">tables</text>
+<rect x="543.4" y="10.0" width="98.3" height="40.0" rx="7" style="fill:var(--bg);stroke:var(--line);stroke-width:1.2"/>
+<text x="592.6" y="27.0" text-anchor="middle" style="fill:var(--ink);font-size:11.5px;font-weight:600">Claude API</text>
+<text x="592.6" y="41.0" text-anchor="middle" style="fill:var(--muted);font-size:9.5px">Anthropic</text>
+<rect x="649.7" y="10.0" width="98.3" height="40.0" rx="7" style="fill:var(--sap-soft);stroke:var(--line);stroke-width:1.2"/>
+<text x="698.9" y="27.0" text-anchor="middle" style="fill:var(--ink);font-size:11.5px;font-weight:600">SuccessFactors</text>
+<text x="698.9" y="41.0" text-anchor="middle" style="fill:var(--muted);font-size:9.5px">OData API</text>
+<line x1="70.1" y1="104.0" x2="165.9" y2="104.0" marker-end="url(#ah-s3f1)" style="stroke:var(--accent);stroke-width:1.5"/>
+<line x1="176.4" y1="134.0" x2="378.5" y2="134.0" marker-end="url(#ah-s3f1)" style="stroke:var(--accent);stroke-width:1.5"/>
+<circle cx="273.7" cy="134" r="3.5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1.5"/>
+<line x1="389.0" y1="164.0" x2="484.8" y2="164.0" marker-end="url(#ah-s3f1)" style="stroke:var(--accent);stroke-width:1.5"/>
+<line x1="477.3" y1="194.0" x2="381.5" y2="194.0" marker-end="url(#ahm-s3f1)" style="stroke:var(--muted);stroke-width:1.5;stroke-dasharray:5 4"/>
+<line x1="389.0" y1="224.0" x2="484.8" y2="224.0" marker-end="url(#ah-s3f1)" style="stroke:var(--accent);stroke-width:1.5"/>
+<line x1="389.0" y1="254.0" x2="591.1" y2="254.0" marker-end="url(#ah-s3f1)" style="stroke:var(--accent);stroke-width:1.5"/>
+<circle cx="486.3" cy="254" r="3.5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1.5"/>
+<line x1="583.6" y1="284.0" x2="381.5" y2="284.0" marker-end="url(#ahm-s3f1)" style="stroke:var(--muted);stroke-width:1.5;stroke-dasharray:5 4"/>
+<circle cx="486.3" cy="284" r="3.5" style="fill:var(--surface);stroke:var(--muted);stroke-width:1.5"/>
+<rect x="394.0" y="304.0" width="228.8" height="20.0" rx="6" style="fill:var(--surface);stroke:var(--accent);stroke-width:1"/>
+<line x1="389.0" y1="350.0" x2="484.8" y2="350.0" marker-end="url(#ah-s3f1)" style="stroke:var(--accent);stroke-width:1.5"/>
+<line x1="371.0" y1="380.0" x2="62.6" y2="380.0" marker-end="url(#ahm-s3f1)" style="stroke:var(--muted);stroke-width:1.5;stroke-dasharray:5 4"/>
+<circle cx="273.7" cy="380" r="3.5" style="fill:var(--surface);stroke:var(--muted);stroke-width:1.5"/>
+<circle cx="167.4" cy="380" r="3.5" style="fill:var(--surface);stroke:var(--muted);stroke-width:1.5"/>
+<line x1="70.1" y1="446.0" x2="272.2" y2="446.0" marker-end="url(#ah-s3f1)" style="stroke:var(--accent);stroke-width:1.5"/>
+<circle cx="167.4" cy="446" r="3.5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1.5"/>
+<line x1="282.7" y1="476.0" x2="378.5" y2="476.0" marker-end="url(#ah-s3f1)" style="stroke:var(--accent);stroke-width:1.5"/>
+<line x1="389.0" y1="506.0" x2="697.4" y2="506.0" marker-end="url(#ah-s3f1)" style="stroke:var(--accent);stroke-width:1.5"/>
+<circle cx="486.3" cy="506" r="3.5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1.5"/>
+<circle cx="592.6" cy="506" r="3.5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1.5"/>
+<line x1="689.9" y1="536.0" x2="381.5" y2="536.0" marker-end="url(#ahm-s3f1)" style="stroke:var(--muted);stroke-width:1.5;stroke-dasharray:5 4"/>
+<circle cx="486.3" cy="536" r="3.5" style="fill:var(--surface);stroke:var(--muted);stroke-width:1.5"/>
+<circle cx="592.6" cy="536" r="3.5" style="fill:var(--surface);stroke:var(--muted);stroke-width:1.5"/>
+<line x1="70.1" y1="566.0" x2="378.5" y2="566.0" marker-end="url(#ah-s3f1)" style="stroke:var(--accent);stroke-width:1.5"/>
+<circle cx="167.4" cy="566" r="3.5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1.5"/>
+<circle cx="273.7" cy="566" r="3.5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1.5"/>
+<rect x="394.0" y="586.0" width="205.8" height="20.0" rx="6" style="fill:var(--surface);stroke:var(--accent);stroke-width:1"/>
+<line x1="389.0" y1="632.0" x2="697.4" y2="632.0" marker-end="url(#ah-s3f1)" style="stroke:var(--accent);stroke-width:1.5"/>
+<circle cx="486.3" cy="632" r="3.5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1.5"/>
+<circle cx="592.6" cy="632" r="3.5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1.5"/>
+<line x1="389.0" y1="662.0" x2="484.8" y2="662.0" marker-end="url(#ah-s3f1)" style="stroke:var(--accent);stroke-width:1.5"/>
+<text x="10.0" y="94.0" text-anchor="start" style="fill:var(--ink);font-size:11px;paint-order:stroke;stroke:var(--req-soft);stroke-width:4px;stroke-linejoin:round">“Create the JD for Senior ABAP Developer, Pune”</text>
+<text x="221.5" y="124.0" text-anchor="start" style="fill:var(--ink);font-size:11px;paint-order:stroke;stroke:var(--req-soft);stroke-width:4px;stroke-linejoin:round">message + user token</text>
+<text x="380.9" y="154.0" text-anchor="start" style="fill:var(--ink);font-size:11px;paint-order:stroke;stroke:var(--req-soft);stroke-width:4px;stroke-linejoin:round"><tspan style="font-family:var(--font-mono);font-size:10px">USER_MAP</tspan>, <tspan style="font-family:var(--font-mono);font-size:10px">ROLE_CACHE</tspan></text>
+<text x="362.2" y="184.0" text-anchor="start" style="fill:var(--ink);font-size:11px;paint-order:stroke;stroke:var(--req-soft);stroke-width:4px;stroke-linejoin:round">SF user ID, role 1000435</text>
+<text x="364.1" y="214.0" text-anchor="start" style="fill:var(--ink);font-size:11px;paint-order:stroke;stroke:var(--req-soft);stroke-width:4px;stroke-linejoin:round">master, variant, benchmark</text>
+<text x="417.2" y="244.0" text-anchor="start" style="fill:var(--ink);font-size:11px;paint-order:stroke;stroke:var(--req-soft);stroke-width:4px;stroke-linejoin:round">masked prompt, JSON schema</text>
+<text x="420.9" y="274.0" text-anchor="start" style="fill:var(--ink);font-size:11px;paint-order:stroke;stroke:var(--req-soft);stroke-width:4px;stroke-linejoin:round">draft as JSON sections</text>
+<text x="401.0" y="318.0" text-anchor="start" style="fill:var(--ink);font-size:11px"><tspan style="font-family:var(--font-mono);font-size:10px">checks</tspan>: locked, skills, language, pay</text>
+<text x="350.1" y="340.0" text-anchor="start" style="fill:var(--ink);font-size:11px;paint-order:stroke;stroke:var(--req-soft);stroke-width:4px;stroke-linejoin:round"><tspan style="font-family:var(--font-mono);font-size:10px">JD_VARIANT</tspan> = DRAFT, by the user</text>
+<text x="121.6" y="370.0" text-anchor="start" style="fill:var(--ink);font-size:11px;paint-order:stroke;stroke:var(--req-soft);stroke-width:4px;stroke-linejoin:round">summary card + “Open in workbench”</text>
+<text x="90.0" y="436.0" text-anchor="start" style="fill:var(--ink);font-size:11px;paint-order:stroke;stroke:var(--req-soft);stroke-width:4px;stroke-linejoin:round">open the tab (silent sign-in)</text>
+<text x="274.6" y="466.0" text-anchor="start" style="fill:var(--ink);font-size:11px;paint-order:stroke;stroke:var(--req-soft);stroke-width:4px;stroke-linejoin:round">my open requisitions</text>
+<text x="436.8" y="496.0" text-anchor="start" style="fill:var(--ink);font-size:11px;paint-order:stroke;stroke:var(--req-soft);stroke-width:4px;stroke-linejoin:round">token for this user, then requisitions</text>
+<text x="443.3" y="526.0" text-anchor="start" style="fill:var(--ink);font-size:11px;paint-order:stroke;stroke:var(--req-soft);stroke-width:4px;stroke-linejoin:round">requisitions the manager may edit</text>
+<text x="162.7" y="556.0" text-anchor="start" style="fill:var(--ink);font-size:11px;paint-order:stroke;stroke:var(--req-soft);stroke-width:4px;stroke-linejoin:round">compare, pick, approve</text>
+<text x="401.0" y="600.0" text-anchor="start" style="fill:var(--ink);font-size:11px">deviation: APPROVED or PENDING_HR</text>
+<text x="448.0" y="622.0" text-anchor="start" style="fill:var(--ink);font-size:11px;paint-order:stroke;stroke:var(--req-soft);stroke-width:4px;stroke-linejoin:round">write HTML per language, read back</text>
+<text x="355.7" y="652.0" text-anchor="start" style="fill:var(--ink);font-size:11px;paint-order:stroke;stroke:var(--req-soft);stroke-width:4px;stroke-linejoin:round"><tspan style="font-family:var(--font-mono);font-size:10px">REQ_JD_LINK</tspan> + hash, <tspan style="font-family:var(--font-mono);font-size:10px">AUDIT_LOG</tspan></text>
+<circle cx="61.1" cy="104" r="8" style="fill:var(--accent)"/>
+<text x="61.1" y="107.4" text-anchor="middle" style="fill:var(--surface);font-size:9.5px;font-weight:700">1</text>
+<circle cx="167.4" cy="134" r="8" style="fill:var(--accent)"/>
+<text x="167.4" y="137.4" text-anchor="middle" style="fill:var(--surface);font-size:9.5px;font-weight:700">2</text>
+<circle cx="380.0" cy="164" r="8" style="fill:var(--accent)"/>
+<text x="380.0" y="167.4" text-anchor="middle" style="fill:var(--surface);font-size:9.5px;font-weight:700">3</text>
+<circle cx="486.3" cy="194" r="8" style="fill:var(--accent)"/>
+<text x="486.3" y="197.4" text-anchor="middle" style="fill:var(--surface);font-size:9.5px;font-weight:700">4</text>
+<circle cx="380.0" cy="224" r="8" style="fill:var(--accent)"/>
+<text x="380.0" y="227.4" text-anchor="middle" style="fill:var(--surface);font-size:9.5px;font-weight:700">5</text>
+<circle cx="380.0" cy="254" r="8" style="fill:var(--accent)"/>
+<text x="380.0" y="257.4" text-anchor="middle" style="fill:var(--surface);font-size:9.5px;font-weight:700">6</text>
+<circle cx="592.6" cy="284" r="8" style="fill:var(--accent)"/>
+<text x="592.6" y="287.4" text-anchor="middle" style="fill:var(--surface);font-size:9.5px;font-weight:700">7</text>
+<circle cx="380.0" cy="314" r="8" style="fill:var(--accent)"/>
+<text x="380.0" y="317.4" text-anchor="middle" style="fill:var(--surface);font-size:9.5px;font-weight:700">8</text>
+<circle cx="380.0" cy="350" r="8" style="fill:var(--accent)"/>
+<text x="380.0" y="353.4" text-anchor="middle" style="fill:var(--surface);font-size:9.5px;font-weight:700">9</text>
+<circle cx="380.0" cy="380" r="8" style="fill:var(--accent)"/>
+<text x="380.0" y="383.4" text-anchor="middle" style="fill:var(--surface);font-size:9.5px;font-weight:700">10</text>
+<circle cx="61.1" cy="446" r="8" style="fill:var(--accent)"/>
+<text x="61.1" y="449.4" text-anchor="middle" style="fill:var(--surface);font-size:9.5px;font-weight:700">11</text>
+<circle cx="273.7" cy="476" r="8" style="fill:var(--accent)"/>
+<text x="273.7" y="479.4" text-anchor="middle" style="fill:var(--surface);font-size:9.5px;font-weight:700">12</text>
+<circle cx="380.0" cy="506" r="8" style="fill:var(--accent)"/>
+<text x="380.0" y="509.4" text-anchor="middle" style="fill:var(--surface);font-size:9.5px;font-weight:700">13</text>
+<circle cx="698.9" cy="536" r="8" style="fill:var(--accent)"/>
+<text x="698.9" y="539.4" text-anchor="middle" style="fill:var(--surface);font-size:9.5px;font-weight:700">14</text>
+<circle cx="61.1" cy="566" r="8" style="fill:var(--accent)"/>
+<text x="61.1" y="569.4" text-anchor="middle" style="fill:var(--surface);font-size:9.5px;font-weight:700">15</text>
+<circle cx="380.0" cy="596" r="8" style="fill:var(--accent)"/>
+<text x="380.0" y="599.4" text-anchor="middle" style="fill:var(--surface);font-size:9.5px;font-weight:700">16</text>
+<circle cx="380.0" cy="632" r="8" style="fill:var(--accent)"/>
+<text x="380.0" y="635.4" text-anchor="middle" style="fill:var(--surface);font-size:9.5px;font-weight:700">17</text>
+<circle cx="380.0" cy="662" r="8" style="fill:var(--accent)"/>
+<text x="380.0" y="665.4" text-anchor="middle" style="fill:var(--surface);font-size:9.5px;font-weight:700">18</text>
+<text x="14.0" y="76.0" text-anchor="start" style="fill:var(--req);font-size:10.5px;font-weight:600">In Teams · the signed-in manager (Entra) · draft and refine in the chat</text>
+<text x="14.0" y="418.0" text-anchor="start" style="fill:var(--req);font-size:10.5px;font-weight:600">In the JD Workbench · the signed-in manager · approve and apply as that SuccessFactors user</text>
+<line x1="16.0" y1="706.0" x2="44.0" y2="706.0" marker-end="url(#ah-s3f1)" style="stroke:var(--accent);stroke-width:1.5"/>
+<text x="50.0" y="710.0" text-anchor="start" style="fill:var(--muted);font-size:10.5px">call</text>
+<line x1="90.0" y1="706.0" x2="118.0" y2="706.0" marker-end="url(#ahm-s3f1)" style="stroke:var(--muted);stroke-width:1.5;stroke-dasharray:5 4"/>
+<text x="124.0" y="710.0" text-anchor="start" style="fill:var(--muted);font-size:10.5px">reply</text>
+<circle cx="172" cy="706" r="3.5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1.5"/>
+<text x="181.0" y="710.0" text-anchor="start" style="fill:var(--muted);font-size:10.5px">passes through</text>
+<circle cx="280" cy="706" r="8" style="fill:var(--accent)"/>
+<text x="280.0" y="709.4" text-anchor="middle" style="fill:var(--surface);font-size:9.5px;font-weight:700">n</text>
+<text x="293.0" y="710.0" text-anchor="start" style="fill:var(--muted);font-size:10.5px">step number in the list below</text>
+<rect x="460.0" y="697.0" width="22.0" height="18.0" rx="5" style="fill:var(--surface);stroke:var(--accent);stroke-width:1"/>
+<text x="488.0" y="710.0" text-anchor="start" style="fill:var(--muted);font-size:10.5px">work done inside one part</text>
+</svg>
+    </div>
+    <p class="caption scroll-hint">Scroll sideways to see the whole diagram.</p>
+    <ol class="steps">
+      <li>The manager writes to the bot in Teams: “Create the JD for Senior ABAP Developer in Pune, focus on clean core.”</li>
+      <li>Teams single sign-on gives the bot the manager's Entra token; the bot passes the message and the token to the service.</li>
+      <li>The service looks up the manager's SuccessFactors user ID in <code>USER_MAP</code> and the role in <code>ROLE_CACHE</code>.</li>
+      <li>It gets the user ID and role ID <code>1000435</code>, or a short list with family and job code, and the bot asks which role.</li>
+      <li><code>drafting</code> loads the active master, the manager's current variant and the market benchmark.</li>
+      <li><code>mask</code> removes personal data, then <code>drafting</code> calls Claude with the master and evidence as data and the JD schema as the required output format.</li>
+      <li>Claude returns the draft as JSON sections with audiences, already shaped by the schema.</li>
+      <li><code>checks</code> runs, as in every solution.</li>
+      <li><code>store</code> saves the <code>JD_VARIANT</code> as DRAFT, requested by the signed-in user.</li>
+      <li>The bot replies with a summary card and an <b>Open in workbench</b> button. Refinements in the chat repeat steps 5 to 10.</li>
+      <li>The manager opens the workbench tab; inside Teams the Entra sign-in is silent.</li>
+      <li>The workbench asks the service for the manager's open requisitions.</li>
+      <li><code>sf_auth</code> signs a SAML assertion for the manager's SuccessFactors user ID and exchanges it for an OAuth token; the service reads the requisitions with that token.</li>
+      <li>SuccessFactors returns the requisitions this user may see, because the token is issued for that user (check S9).</li>
+      <li>The manager compares, picks requisitions and approves.</li>
+      <li><code>variants</code> scores the deviation: <code>APPROVED</code> or <code>PENDING_HR</code>.</li>
+      <li><code>render</code> builds the HTML; the adapter writes it with the manager's token and reads it back.</li>
+      <li><code>store</code> records <code>REQ_JD_LINK</code> and <code>AUDIT_LOG</code> (channel <code>TEAMS</code> or <code>WEB</code>).</li>
+    </ol>
+  </div>
+
+  <div class="part">
+    <h3>SuccessFactors access without BTP</h3>
+    <p>SuccessFactors' OAuth for the OData API takes a SAML 2.0 assertion that names the user. On BTP the destination service builds it; here the service does. SAP deprecated its <code>/oauth/idp</code> helper, which is deleted on 14 May 2027 because the client has to send its private key. SAP now says the assertion should come from a trusted identity provider or from the client itself. <span class="v">✓</span></p>
+    <ul class="plain">
+      <li>Register an OAuth client in Admin Center → API Center → OAuth Configuration for OData, with the public X.509 certificate. The private key stays in Key Vault. <span class="v">✓</span></li>
+      <li>The assertion: NameID = the SuccessFactors user ID; Recipient = the <code>/oauth/token</code> URL; an <code>api_key</code> attribute with the client ID; NotBefore and NotOnOrAfter; an Audience; signed with SHA-256 (SHA-1 is refused). <span class="v">✓</span></li>
+      <li>Use “Bind to Users” on the client to limit which users can get tokens. <span class="v">✓</span></li>
+      <li>Two clients: one for calls as a user, one for the technical user (sync, events, re-render after approval).</li>
+      <li>SAP lists OpenID Connect first for tenants that use SAP Cloud Identity Services. Whether it can replace the assertion here is part of check S9 <span class="c">◐</span></li>
+    </ul>
+<pre><code># sf_auth.py: a SuccessFactors OAuth token for one user, from an assertion the service signs
+def sf_token(sf_user_id: str) -> str:
+    assertion = saml_assertion(                     # SAML 2.0, signed with SHA-256
+        name_id=sf_user_id,                         # whose permissions the calls will carry
+        recipient=f"{SF_API}/oauth/token",
+        audience=SF_AUDIENCE, api_key=SF_CLIENT_ID,
+        valid_for_s=300, key=key_vault.private_key("sf-oauth"))
+    r = http.post(f"{SF_API}/oauth/token", data={
+        "company_id": SF_COMPANY_ID, "client_id": SF_CLIENT_ID,
+        "grant_type": "urn:ietf:params:oauth:grant-type:saml2-bearer",
+        "assertion": b64encode(assertion).decode()})
+    r.raise_for_status()
+    return r.json()["access_token"]                 # cache per user until it expires
+
+def sf_as_user(request) -> ODataClient:
+    user = entra.verify(request)                    # the signed-in user, never a name typed in chat
+    return ODataClient(SF_API, token=sf_token(user_map.sf_user_id(user.oid)))</code></pre>
+    <p class="rule"><b>The signing key is the biggest risk in this solution.</b> Whoever holds it can act as any SuccessFactors user. Keep it in Key Vault, sign only for the user who signed in on this request, keep lifetimes short, log every token in <code>AUDIT_LOG</code>, and have the SuccessFactors security admin review the client.</p>
+  </div>
+
+  <div class="part">
+    <h3>AI with Claude</h3>
+    <p>One AI call per draft, as in every solution. Claude's structured outputs return JSON that matches the JD schema, so the <code>JDSchema</code> validation stays. The system prompt and merge prompt from <a href="#d6">D6</a> are reused unchanged.</p>
+<pre><code>import anthropic
+
+client = anthropic.Anthropic()      # Claude API; anthropic.AnthropicFoundry(...) for Claude in Microsoft Foundry
+
+def draft(mode, master_json, locked, draft_json, market, hires, instruction) -> JDDraft:
+    data = mask(                                      # Presidio: names, emails, phone numbers
+        f"MODE: {mode}\nMASTER JD (JSON):\n{master_json}\nLOCKED SECTIONS: {locked}\n"
+        f"CURRENT DRAFT (JSON or empty):\n{draft_json}\nMARKET BENCHMARK:\n{market}\n"
+        f"SUCCESSFUL-HIRE PATTERNS:\n{hires}\nINSTRUCTION:\n{instruction}")
+    response = client.beta.messages.parse(
+        model="claude-opus-5-5",
+        max_tokens=16000,
+        system=SYSTEM_PROMPT,                         # the D6 system prompt, unchanged
+        messages=[{"role": "user", "content": data}],
+        output_format=JDDraft,                        # Pydantic model of the JD schema (D4)
+        output_config={"effort": "medium"},
+        betas=["server-side-fallback-2026-07-01"],
+        fallbacks="default",                          # a declined request is retried on a fallback model
+    )
+    if response.stop_reason == "refusal":
+        raise DraftDeclined(response.stop_details)    # shown to the user; nothing is saved
+    return response.parsed_output</code></pre>
+    <ul class="plain">
+      <li><b>Model:</b> Claude Opus 5.5 (<code>claude-opus-5-5</code>). There is no temperature: this model does not take sampling parameters, and <code>effort</code> sets how much it thinks.</li>
+      <li><b>Evidence (F4)</b> is not urgent, so posting extraction runs through the Message Batches API at half the price.</li>
+      <li><b>Fallbacks</b> on the server are a beta on the Claude API only; on Microsoft Foundry the SDK's client-side fallback middleware does the same job.</li>
+      <li><b>Embeddings:</b> Claude has no embedding model. For the deviation score (<a href="#d6">D6</a>), use an embedding model of your choice (Anthropic's documentation points to Voyage AI) stored in pgvector, or compare texts with a diff ratio instead.</li>
+      <li><b>Prompt injection:</b> master, draft, postings and resumes stay data, as in D6. Azure AI Content Safety Prompt Shields can scan postings and resumes for injected instructions before they reach the model (optional).</li>
+      <li><b>Where inference runs:</b> on the Claude API, <code>inference_geo</code> sets it; on Foundry, the deployment does. Which one meets the company's data-residency rules is a business decision.</li>
+    </ul>
+  </div>
+
+  <div class="part">
+    <h3>Database and jobs</h3>
+<pre><code>-- The D5 tables, with types mapped: NVARCHAR → text, NCLOB → jsonb, REAL_VECTOR → vector, DECIMAL → numeric
+CREATE EXTENSION IF NOT EXISTS vector;     -- add "vector" to the azure.extensions allow-list first
+CREATE TABLE jd_master (
+  role_id text, locale text, version int, source text,
+  sections jsonb, status text, sf_hash char(64), sf_last_modified timestamptz,
+  change_note text, created_by text, created_at timestamptz,
+  embedding vector(1024),                  -- the size of the chosen embedding model
+  PRIMARY KEY (role_id, locale, version));
+CREATE TABLE user_map (                    -- new: Entra sign-in → SuccessFactors user ID
+  entra_oid uuid PRIMARY KEY, sf_user_id text NOT NULL,
+  upn text, checked_at timestamptz);       -- matched through the technical user; rechecked nightly</code></pre>
+    <p>The nightly sync and the quarterly evidence refresh are Container Apps jobs with a cron schedule, evaluated in UTC. <code>AUDIT_LOG.CHANNEL</code> takes <code>TEAMS</code>, <code>WEB</code> or <code>SYNC</code>.</p>
+  </div>
+
+  <div class="part">
+    <h3>How each flow changes</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Flow</th><th>In Solution 3</th></tr></thead>
+        <tbody>
+          <tr><td><a href="#f0">F0</a> Nightly sync</td><td>The same steps. A Container Apps job starts it; the technical user's token comes from <code>sf_auth</code>; tables are in PostgreSQL.</td></tr>
+          <tr><td><a href="#f1">F1</a> A manager drafts</td><td>Teams and the workbench, as above.</td></tr>
+          <tr><td><a href="#f2">F2</a> A new requisition</td><td>The same steps and decision table. Integration Center posts to the Container Apps URL; the service checks the call's credentials.</td></tr>
+          <tr><td><a href="#f3">F3</a> HR changes the master</td><td>HR asks the bot or uses the workbench's master editor; approval is in the workbench; the write to Job Profile Builder uses the HR Head's own token.</td></tr>
+          <tr><td><a href="#f4">F4</a> Evidence</td><td>The same rules (<a href="#d7">D7</a>). Posting extraction goes through the Message Batches API; resumes are masked with Presidio before extraction.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="part">
+    <h3>On AWS or Google Cloud</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Part</th><th>Azure (reference)</th><th>AWS</th><th>Google Cloud</th></tr></thead>
+        <tbody>
+          <tr><td>Container runtime</td><td>Container Apps</td><td>ECS on Fargate</td><td>Cloud Run</td></tr>
+          <tr><td>PostgreSQL + pgvector</td><td>Azure Database for PostgreSQL flexible server</td><td>Amazon RDS for PostgreSQL</td><td>Cloud SQL for PostgreSQL</td></tr>
+          <tr><td>Scheduled jobs</td><td>Container Apps jobs</td><td>EventBridge Scheduler</td><td>Cloud Scheduler</td></tr>
+          <tr><td>Secrets</td><td>Key Vault</td><td>Secrets Manager</td><td>Secret Manager</td></tr>
+          <tr><td>Claude</td><td>Claude API, or Microsoft Foundry</td><td>Claude API, Claude Platform on AWS, or Amazon Bedrock</td><td>Claude API, or Vertex AI</td></tr>
+          <tr><td>Chat</td><td>Microsoft Teams</td><td>Microsoft Teams or Slack</td><td>Google Chat or Microsoft Teams</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="caption">Sign-in is the company's identity provider whichever cloud runs the service, usually Microsoft Entra ID.</p>
+  </div>
+
+  <div class="two">
+    <div class="panel">
+      <h3>Strengths</h3>
+      <ul class="plain">
+        <li>No SAP BTP or Joule: only SuccessFactors, an Azure subscription and Claude API access.</li>
+        <li>The user is known from the first chat message, so drafting and approving both run as the real user.</li>
+        <li>Managers draft where they already work, in Teams.</li>
+        <li>Free choice of model, and Claude API features such as batches and structured outputs.</li>
+        <li>The adapter also serves a non-SAP ATS. With no SuccessFactors at all, masters would live in PostgreSQL instead of Job Profile Builder.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>Weaknesses</h3>
+      <ul class="plain">
+        <li>The service holds a signing key that can act as any SuccessFactors user.</li>
+        <li>Data leaves SAP's cloud: data processing agreements with Microsoft and Anthropic, and a region decision.</li>
+        <li>More to build and run: bot, SAML signing, masking, database, scheduling, monitoring.</li>
+        <li>SAP does not support it, so SAP's API and event changes (Basic authentication removal, Intelligent Services end of development) land on your team.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="check">
+    <div><span class="pill unclear">Not confirmed</span><span>How each Entra user maps to a SuccessFactors user ID: the same login name, or a lookup by email through the technical user. Checked on a real tenant (check S9).</span></div>
+    <div><span class="pill unclear">Not confirmed</span><span>SAP's OAuth pages describe the assertion naming the user but do not state outright that the token carries that user's role-based permissions. Expected, and tested in check S9.</span></div>
+  </div>
+</section>
+
+<section id="c5">
+  <div class="chapter-head"><span class="num b">C5</span><div><h2>Costs and how to choose</h2><p class="muted">How each solution is charged, which one fits which customer, and what it changes in the delivery plan.</p></div></div>
+
+  <div class="part">
+    <h3>What each costs to run</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Item</th><th>Solution 1</th><th>Solution 2</th><th>Solution 3</th></tr></thead>
+        <tbody>
+          <tr><td>Conversation</td><td>Joule agent: 0.02 AI Units per action; free until 31 December 2026</td><td>None: pages served by the service</td><td>Azure AI Bot Service: Teams is a standard channel, with unlimited messages on the free tier</td></tr>
+          <tr><td>AI</td><td>AI Core extended plan, capacity units</td><td>The same</td><td>Claude tokens: about USD 0.08 per draft at list price; evidence through batches at half price</td></tr>
+          <tr><td>Database</td><td>HANA Cloud instance</td><td>The same</td><td>PostgreSQL flexible server</td></tr>
+          <tr><td>Runtime</td><td>Cloud Foundry memory</td><td>The same</td><td>Container Apps, billed per use</td></tr>
+          <tr><td>Market data</td><td>Licence or developer plan</td><td>The same</td><td>The same</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="caption">In every solution AI runs only when content is created, so filling requisitions costs nothing (<a href="#h1">H1</a>, decision 4). Claude example: 6,000 tokens in and 3,000 out (including thinking) at the list price of USD 4 per million input and USD 20 per million output tokens for Claude Opus 5.5, November 2026. Hosting for the bot and the service is billed separately from the Bot Service.</p>
+  </div>
+
+  <div class="part">
+    <h3>How to choose</h3>
+    <div class="summary">
+      <ol>
+        <li><b>The customer has Joule with Joule Studio, and managers use it:</b> Solution 1.</li>
+        <li><b>SAP BTP but no Joule</b>, or Joule is not licensed for custom agents: Solution 2.</li>
+        <li><b>No SAP BTP</b>, a Microsoft 365 and Azure standard, or IT wants to choose the model: Solution 3.</li>
+        <li><b>Data must stay in SAP's cloud:</b> Solution 1 or 2.</li>
+      </ol>
+    </div>
+    <div class="answer"><p><b>For this project:</b> build the core and Solution 2 first. The JD Workbench is needed anyway, since it is Solution 1's review page. It runs end to end against the mock SuccessFactors, and it puts off the Joule Studio and MCP set-up until the core works. Then add Solution 1's Joule front door (<code>mcp_tools</code>) as a phase. Solution 3 stays documented as the alternative; the five edges keep it a swap of adapters.</p></div>
+  </div>
+
+  <div class="part">
+    <h3>What it changes in the delivery plan</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Phase (<a href="#p1">P1</a>)</th><th>Solution 1</th><th>Solution 2</th><th>Solution 3</th></tr></thead>
+        <tbody>
+          <tr><td>Sprint 0</td><td>As planned</td><td>No Joule hello-world; a workbench shell showing the signed-in user</td><td>Container app, PostgreSQL, Entra sign-in, a Teams bot that echoes, Claude returning schema-valid JSON; the mock gets an <code>/oauth/token</code> endpoint</td></tr>
+          <tr><td>Phase 1</td><td>As planned</td><td>F1 in the workbench instead of Joule</td><td>F1 in Teams and the workbench, with <code>sf_auth</code> against the mock</td></tr>
+          <tr><td>Phases 2 to 4</td><td>As planned</td><td>The same, with HR's master editor in the workbench</td><td>The same, on Azure</td></tr>
+          <tr><td>Joule</td><td>Phase 1</td><td>Optional later phase: add <code>mcp_tools</code></td><td>–</td></tr>
+          <tr><td>Real-tenant checks</td><td>S1 to S7</td><td>S1 to S5, S7, S8</td><td>S1 to S4, S7, S9</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+</div>
+
+
 <div class="panel-tab" id="how" role="tabpanel" aria-labelledby="tab-how" hidden>
-<p class="tab-intro">The solution end to end: eight decisions, the big picture, then five flows. Each flow has a sequence diagram and numbered steps that match it.</p>
+<p class="tab-intro">Solution 1 (with Joule) end to end: eight decisions, the big picture, then five flows. Each flow has a sequence diagram and numbered steps that match it. Flows F0, F2 and F4 are the same in all three solutions (<a href="#options">tab 5</a>).</p>
 
 <section id="h1">
   <div class="chapter-head"><span class="num b">H1</span><div><h2>Eight design decisions</h2><p class="muted">Everything in the flows below follows from these.</p></div></div>
@@ -2101,6 +3106,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
     </table>
   </div>
   <p class="caption">Without Job Profile Builder on requisitions, check 3 never applies: SuccessFactors copies nothing, so the assistant always writes.</p>
+  <p class="rule"><b>Rechecked 22 November 2026:</b> SAP documents that “Update of Job Requisition” fires when an approved or closed requisition is updated, and Intelligent Services reached end of development on 13 November 2026; SAP recommends SAP Cloud Application Event Hub for new event integrations. The 10-minute poll stays as the safety net. See <a href="#c1">C1</a> and check S7.</p>
 </section>
 
 <section id="f3">
@@ -2328,7 +3334,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 </div>
 
 <div class="panel-tab" id="details" role="tabpanel" aria-labelledby="tab-details" hidden>
-<p class="tab-intro">What a developer needs to build it: modules, SuccessFactors objects, Joule and identity, the JD model, tables, AI, evidence rules and security.</p>
+<p class="tab-intro">What a developer needs to build Solution 1: modules, SuccessFactors objects, Joule and identity, the JD model, tables, AI, evidence rules and security. D2, D4, D5, D7 and D8 apply to all three solutions; <a href="#options">tab 5</a> lists what changes.</p>
 
 <section id="d1">
   <div class="chapter-head"><span class="num b">D1</span><div><h2>Components and modules</h2><p class="muted">Python on SAP BTP Cloud Foundry, no CAP. The core needs only Joule Studio, AI Core, HANA Cloud and Cloud Foundry.</p></div></div>
@@ -2869,7 +3875,7 @@ class SmartRecruitersAdapter:   # later: maps sections to its job ad
 </div>
 
 <div class="panel-tab" id="plan" role="tabpanel" aria-labelledby="tab-plan" hidden>
-<p class="tab-intro">Mock-first delivery, running costs and risks.</p>
+<p class="tab-intro">Mock-first delivery, running costs and risks for Solution 1. <a href="#c5">C5</a> shows what changes for Solutions 2 and 3.</p>
 
 <section id="p1">
   <div class="chapter-head"><span class="num b">P1</span><div><h2>Delivery plan</h2><p class="muted">Mock-first, because there is no SuccessFactors tenant yet. Each phase ends with a demo and a pass/fail test.</p></div></div>
@@ -2908,6 +3914,9 @@ class SmartRecruitersAdapter:   # later: maps sections to its job ad
         <li><b>S4</b> Hired applications and resume access, anonymization.</li>
         <li><b>S5</b> IAS user ↔ SuccessFactors user mapping; principal propagation from BTP to SuccessFactors; which API permissions managers and recruiters need for calls made as them.</li>
         <li><b>S6</b> Joule Studio MCP destinations in both subaccounts on the target tenant.</li>
+        <li><b>S7</b> All solutions: whether SAP Cloud Application Event Hub publishes job requisition events for this tenant, now that Intelligent Services is at end of development; when “Update of Job Requisition” fires for a new requisition.</li>
+        <li><b>S8</b> Solution 2: the quick link or UI Integration Card that opens the JD Workbench; deep links to one requisition's draft; where category 41 to-do items appear.</li>
+        <li><b>S9</b> Solution 3: an OAuth client with the service's certificate; a signed SAML assertion returns a token that carries the user's permissions; Entra user ↔ SuccessFactors user ID mapping; whether OpenID Connect can replace the assertion.</li>
       </ul>
     </div></div>
   </div>
@@ -2930,6 +3939,7 @@ class SmartRecruitersAdapter:   # later: maps sections to its job ad
     </table>
   </div>
   <p class="rule"><b>Honest takeaway:</b> the custom build is not automatically cheaper. Its case is what SAP does not offer: prompts, role-level reuse across requisitions, manager variants with HR control, outside-edit import, and evidence.</p>
+  <p class="caption">Solutions 2 and 3 are costed side by side in <a href="#c5">C5</a>.</p>
 </section>
 
 <section id="p3">
@@ -2941,10 +3951,11 @@ class SmartRecruitersAdapter:   # later: maps sections to its job ad
         <tr><td>Customers move from SuccessFactors Recruiting to SmartRecruiters</td><td>ATS adapter (D8); role masters stay in Job Profile Builder.</td></tr>
         <tr><td>Joule cannot carry the user's identity</td><td>Joule drafts only; changes in the signed-in review page (D3).</td></tr>
         <tr><td>SuccessFactors API gaps or layout differences</td><td>Adapter variations (D2) and real-tenant checks S1 to S3; fallback to <code>JobRequisitionLocale</code> fields.</td></tr>
-        <tr><td>Entitlements differ per customer</td><td>Core needs Joule Studio, AI Core (extended), HANA Cloud and Cloud Foundry only; Build Process Automation optional.</td></tr>
+        <tr><td>Entitlements differ per customer</td><td>Core needs Joule Studio, AI Core (extended), HANA Cloud and Cloud Foundry only; Build Process Automation optional. Without Joule, use Solution 2; without SAP BTP, Solution 3 (<a href="#options">tab 5</a>).</td></tr>
         <tr><td>Legal limits on past-hire data and recruitment AI</td><td>Off by default, legal sign-off per country, human approval and audit log for every change.</td></tr>
         <tr><td>AI quality drifts with model or prompt changes</td><td>Evaluation set rerun before every change (D6).</td></tr>
         <tr><td>SAP releases twice a year</td><td>Read What's New each release; adapter contract tests against the mock.</td></tr>
+        <tr><td>Intelligent Services is at end of development (13 November 2026)</td><td>Keep the 10-minute poll; move the event intake to SAP Cloud Application Event Hub once it carries requisition events (check S7).</td></tr>
       </tbody>
     </table>
   </div>
@@ -3000,8 +4011,37 @@ class SmartRecruitersAdapter:   # later: maps sections to its job ad
         <li><a href="https://community.sap.com/t5/human-capital-management-blog-posts-by-members/tips-and-experiences-of-integrating-job-profile-builder-with-requisition-in/ba-p/13385257" target="_blank" rel="noopener">SAP Community: JPB with Requisition</a> (2018)</li>
       </ul>
     </div>
+    <div>
+      <b>Solutions 2 and 3: SAP</b>
+      <ul>
+        <li><a href="https://userapps.support.sap.com/sap/support/knowledge/en/3671591" target="_blank" rel="noopener">SAP KBA 3671591: custom quick links on the home page</a></li>
+        <li><a href="https://help.sap.com/docs/btp/sap-business-technology-platform/extending-sap-successfactors-in-cloud-foundry-and-kyma-environment" target="_blank" rel="noopener">SAP Help: SuccessFactors Extensibility service</a></li>
+        <li><a href="https://help.sap.com/docs/connectivity/sap-btp-connectivity-cf/user-propagation-from-cloud-foundry-environment-to-sap-successfactors" target="_blank" rel="noopener">SAP Help: user propagation to SuccessFactors</a></li>
+        <li><a href="https://help.sap.com/docs/successfactors-platform/sap-successfactors-api-reference-guide-odata-v2/todoentryv2" target="_blank" rel="noopener">OData: TodoEntryV2</a></li>
+        <li><a href="https://ui5.github.io/webcomponents/" target="_blank" rel="noopener">UI5 Web Components</a></li>
+        <li><a href="https://help.sap.com/docs/successfactors-platform/sap-successfactors-api-reference-guide-odata-v2/registering-your-oauth2-client-application" target="_blank" rel="noopener">SAP Help: registering an OAuth2 client</a></li>
+        <li><a href="https://help.sap.com/docs/successfactors-release-information/8e0d540f96474717bbf18df51e54e522/db7ccbbbc7a54e929a305ff92d12241c.html" target="_blank" rel="noopener">SAP Help: /oauth/idp deprecation</a></li>
+        <li><a href="https://help.sap.com/docs/successfactors-release-information/8e0d540f96474717bbf18df51e54e522/fcc05a902b4140e585d968c2fe4a96bc.html" target="_blank" rel="noopener">SAP Help: Basic authentication retirement</a></li>
+        <li><a href="https://help.sap.com/docs/successfactors-platform/using-integration-center/integrating-intelligent-services-with-integration-center" target="_blank" rel="noopener">SAP Help: Integration Center with Intelligent Services</a></li>
+        <li><a href="https://help.sap.com/docs/successfactors-release-information/8e0d540f96474717bbf18df51e54e522/9d9a65d3d81f41449d5996609cafec8a.html" target="_blank" rel="noopener">SAP Help: Intelligent Services end of development</a></li>
+      </ul>
+    </div>
+    <div>
+      <b>Solution 3: outside SAP</b>
+      <ul>
+        <li><a href="https://learn.microsoft.com/en-us/microsoftteams/platform/bots/how-to/authentication/bot-sso-overview" target="_blank" rel="noopener">Microsoft: Teams bot single sign-on</a></li>
+        <li><a href="https://azure.microsoft.com/en-us/pricing/details/bot-services/" target="_blank" rel="noopener">Azure AI Bot Service pricing</a></li>
+        <li><a href="https://learn.microsoft.com/en-us/azure/postgresql/extensions/how-to-use-pgvector" target="_blank" rel="noopener">Microsoft: pgvector on PostgreSQL flexible server</a></li>
+        <li><a href="https://learn.microsoft.com/en-us/azure/container-apps/jobs" target="_blank" rel="noopener">Microsoft: Container Apps jobs</a></li>
+        <li><a href="https://presidio.dataprivacystack.org/" target="_blank" rel="noopener">Presidio (open source)</a></li>
+        <li><a href="https://learn.microsoft.com/en-us/azure/ai-services/content-safety/concepts/jailbreak-detection" target="_blank" rel="noopener">Azure AI Content Safety: Prompt Shields</a></li>
+        <li><a href="https://platform.claude.com/docs/en/build-with-claude/structured-outputs" target="_blank" rel="noopener">Claude: structured outputs</a></li>
+        <li><a href="https://platform.claude.com/docs/en/build-with-claude/batch-processing" target="_blank" rel="noopener">Claude: Message Batches</a></li>
+        <li><a href="https://platform.claude.com/docs/en/build-with-claude/claude-in-microsoft-foundry" target="_blank" rel="noopener">Claude in Microsoft Foundry</a></li>
+      </ul>
+    </div>
   </div>
-  <p>Prepared 21 November 2026 and reviewed 22 November 2026, from SAP Help Portal (SuccessFactors 2H 2026), SAP Learning, SAP Community and the SuccessFactors OData V2 API reference. Example names, IDs and thresholds are illustrative.</p>
+  <p>Prepared 21 November 2026, reviewed and extended to three solutions on 22 November 2026, from SAP Help Portal (SuccessFactors 2H 2026), SAP Learning, SAP Community, the SuccessFactors OData V2 API reference, and Microsoft's and Anthropic's documentation for Solution 3. Example names, IDs and thresholds are illustrative.</p>
 </footer>
 
 </div>
