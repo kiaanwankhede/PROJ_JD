@@ -1554,7 +1554,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
           <tr><td><code>FR-12</code> <span class="pill part">new</span></td><td>A person's manual edit on a requisition JD is never overwritten.</td><td>After a recruiter edits a requisition's JD, later syncs leave it unchanged and show it as a manual edit; the review page offers re-apply.</td><td><a href="#f2">F2</a></td></tr>
           <tr><td><code>FR-13</code> <span class="pill part">new</span></td><td>Changes made directly in Job Profile Builder are picked up.</td><td>A profile edited in Job Profile Builder appears as a new master version by the next morning, and managers' variants are rebased.</td><td><a href="#f0">F0</a></td></tr>
           <tr><td><code>FR-14</code> <span class="pill part">new</span></td><td>Only a signed-in person can approve or apply a change, with their own SuccessFactors permissions.</td><td>Joule tools cannot change SuccessFactors; every approval in the audit log has a signed-in user; a manager cannot apply to a requisition they may not edit.</td><td><a href="#d3">D3</a></td></tr>
-          <tr><td><code>FR-15</code> <span class="pill part">new</span></td><td>A hiring manager's version describes the job only (skills, education, experience, responsibilities, team) and never promises pay, bonuses, raises, rewards, stock, benefits or promotion.</td><td>A draft with such a promise cannot be approved: the sentence is highlighted, and the manager removes it or asks HR to overrule a false alarm. Pay appears only as the salary range from the requisition. Every promise case in the evaluation set is caught.</td><td><a href="#d6-promises">D6</a></td></tr>
+          <tr><td><code>FR-15</code> <span class="pill part">new</span></td><td>A hiring manager's version describes the job only (skills, education, experience, responsibilities, team) and never promises pay, bonuses, raises, rewards, stock, benefits or promotion.</td><td>A draft with such a promise cannot be approved: the sentence is highlighted, and the manager removes it or asks HR to overrule a false alarm. Pay appears only as the salary range from the requisition. Every promise case in the evaluation set is caught. A promise typed straight into a requisition in SuccessFactors is flagged to HR and the recruiter at the next requisition sync (within about 10 minutes).</td><td><a href="#d6-promises">D6</a></td></tr>
         </tbody>
       </table>
     </div>
@@ -1596,7 +1596,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
           <tr><td>Requisitions created by import or integration</td><td>Picked up by the same event or 10-minute check as manual ones.</td></tr>
           <tr><td>Two roles have the same name</td><td>Joule shows each role's family and job code and asks which; everything is stored by role ID.</td></tr>
           <tr><td>A language version is missing</td><td>Flagged for translation; the requisition keeps its current text until approved.</td></tr>
-          <tr><td>A recruiter edits a requisition's JD by hand</td><td>Not overwritten: marked as a manual edit; the manager or recruiter can re-apply from the review page.</td></tr>
+          <tr><td>A recruiter or manager edits a requisition's JD by hand in SuccessFactors</td><td>Not overwritten: marked as a manual edit; the manager or recruiter can re-apply from the review page. The no-promises check reads the typed sentences and alerts HR and the recruiter if it finds a promise.</td></tr>
           <tr><td>HR edits a job profile directly in Job Profile Builder</td><td>Imported overnight as a new master version; variants are rebased as for any HR change.</td></tr>
           <tr><td>A manager may not edit a requisition's JD in SuccessFactors</td><td>That requisition is refused in the review page and waits for a recruiter.</td></tr>
           <tr><td>A manager asks for a bonus, a raise or a reward in the JD</td><td>The AI does not write it. If a promise appears anyway, Approve and apply is blocked and the sentence is highlighted. A false alarm (for example “raise awareness”) goes to HR with one click.</td></tr>
@@ -3100,8 +3100,8 @@ CREATE TABLE user_map (                    -- new: Entra sign-in → SuccessFact
     <table>
       <thead><tr><th>#</th><th>Check in step 7, in this order</th><th>Action</th><th>Recorded as</th></tr></thead>
       <tbody>
-        <tr><td>1</td><td>Fingerprint unchanged since the last run</td><td>Stop: nothing changed (steps 10 and 11).</td><td>–</td></tr>
-        <tr><td>2</td><td>The JD text no longer matches the hash the assistant stored</td><td>A person edited it: do not write. The review page offers re-apply.</td><td><code>MANUAL_EDIT</code></td></tr>
+        <tr><td>1</td><td>The JD text no longer matches the hash the assistant stored</td><td>A person edited it: do not write. If the edit is new, the no-promises check reads the hand-edited sentences and alerts HR and the recruiter if it finds a promise (FR-15). The review page offers re-apply.</td><td><code>MANUAL_EDIT</code></td></tr>
+        <tr><td>2</td><td>Fingerprint unchanged since the last run</td><td>Stop: nothing changed (steps 10 and 11).</td><td>–</td></tr>
         <tr><td>3</td><td>No variant applies, the language matches, the master has no placeholders, and the copy is from the current master version</td><td>Nothing to write: SuccessFactors' own copy is right.</td><td><code>NATIVE</code></td></tr>
         <tr><td>4</td><td>The requisition is already posted</td><td>Do not write. A recruiter decides in the review page.</td><td><code>PENDING_RECRUITER</code></td></tr>
         <tr><td>5</td><td>Anything else: a variant, another language, placeholders, or a copy from an older master</td><td>Render, write, read back.</td><td><code>SYNCED</code></td></tr>
@@ -3592,17 +3592,29 @@ if link.fingerprint == fp:
     <h4>Write decision (flow F2, step 7)</h4>
 <pre><code>def decide(req, link, master, variant):
     """Every value is an ID, a version or a hash; names are never compared."""
+    if link and sha256(req.jd_text) != link.known_hash:
+        return "MANUAL_EDIT"          # a person changed the JD: never overwrite. Checked first,
+                                      # so a hand edit is seen even when nothing else changed
     if link and link.fingerprint == fingerprint(req, master, variant):
         return "SKIP"                 # nothing changed: no write, no loop
-    if link and sha256(req.jd_text) != link.known_hash:
-        return "MANUAL_EDIT"          # a person changed the JD: never overwrite
     if (TENANT.jpb_on_requisitions and variant is None
             and not master.placeholders and req.locale in master.locales
             and (link is None or link.master_version == master.version)):
         return "NATIVE"               # SuccessFactors' own copy is already right
     if req.posted:
         return "PENDING_RECRUITER"    # a live ad: a recruiter decides
-    return "SYNCED"                   # render, write, read back, store the new hash</code></pre>
+    return "SYNCED"                   # render, write, read back, store the new hash
+
+def on_manual_edit(req, link, master, variant):
+    """FR-15 for text typed straight into SuccessFactors: flag it, never block or overwrite it."""
+    h = sha256(req.jd_text)
+    if h == link.manual_hash:
+        return                        # this hand edit was already scanned
+    link.manual_hash = h
+    typed = new_sentences(req.jd_text, render(master, variant, req))   # what a person added
+    if findings := no_promises_in(typed):                              # word list + AI review (D6)
+        notify(hr_owner(req.role_id), PromiseAlert(req, findings))
+        notify(req.recruiter_user_id, PromiseAlert(req, findings))</code></pre>
     <p class="caption">After every write the adapter reads the JD back and stores the hash of what SuccessFactors kept, in the same request, because SuccessFactors may tidy the HTML. For <code>NATIVE</code>, the hash of the text first seen is stored.</p>
   </div>
   <div class="two">
@@ -3674,6 +3686,7 @@ CREATE TABLE REQ_JD_LINK (
   MASTER_VERSION INTEGER, VARIANT_ID NVARCHAR(36), VARIANT_VERSION INTEGER,
   FINGERPRINT NVARCHAR(64),
   KNOWN_HASH NVARCHAR(64),           -- hash of the JD text last written or accepted
+  MANUAL_HASH NVARCHAR(64),          -- hash of the hand-edited text last scanned (FR-15)
   POSTED BOOLEAN,
   SYNC_STATUS NVARCHAR(20),          -- NATIVE | SYNCED | MANUAL_EDIT | PENDING_RECRUITER | FAILED
   LAST_SYNC TIMESTAMP, PRIMARY KEY (ATS, REQ_ID));
@@ -3809,6 +3822,7 @@ def no_promises(master, draft) -&gt; list[Finding]:
       <li><b>Blocked:</b> bonuses, incentives, salary hikes or raises, rewards, stock or ESOPs, perks and allowances, joining bonuses, guaranteed promotion.</li>
       <li><code>llm.find_promises</code> is one short AI call over the changed sentences only, answering yes or no per sentence as JSON.</li>
       <li>Words with two meanings (“raise awareness”) can cause a false alarm. The manager sends it to HR, who can overrule it; the decision is kept in <code>AUDIT_LOG</code>.</li>
+      <li><b>Hand edits in SuccessFactors:</b> the assistant cannot stop someone typing straight into a requisition. When the requisition sync finds such an edit (<code>MANUAL_EDIT</code>, flow <a href="#f2">F2</a>), it checks the sentences that were typed and alerts HR and the recruiter, who fix it in SuccessFactors.</li>
     </ul>
   </div>
   <div class="two">
